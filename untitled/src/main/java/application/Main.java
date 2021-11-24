@@ -45,9 +45,9 @@ public class Main extends Application {
             mainScene = new Scene(x, primaryStage.getWidth(), primaryStage.getHeight());
             primaryStage.setScene(calibScene);
 
-            Cursor g = new Cursor();
+            Cursor cursor = new Cursor();
 
-            GazeMenu gzm = new GazeMenu(320, g, gazeDeviceManager);
+            GazeMenu gzm = new GazeMenu(320, cursor, gazeDeviceManager);
 
             for (int j = 0; j < 26; j++) {
                 gzm.add(new Circle());
@@ -83,7 +83,7 @@ public class Main extends Application {
             x.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, new Insets(0, 0, 0, 0))));
 
 
-            CircleCalibration cc = new CircleCalibration(x, mainScene, primaryStage, g, gazeDeviceManager);
+            CircleCalibration cc = new CircleCalibration(x, mainScene, primaryStage, cursor, gazeDeviceManager);
 
 
             bp.setCenter(cc);
