@@ -12,7 +12,6 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -32,15 +31,14 @@ import java.util.List;
 
 public class CircleCalibration extends Pane {
 
-    private static final int NUMBER_OF_CALIBRATION_POINTS = 9;
+    private static final int NUMBER_OF_CALIBRATION_POINTS = 2;
 
     GazeDeviceManager gazeDeviceManager;
     Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
     double x, y;
     Group cross;
     int test = 0;
-    Pane p;
-    Scene mainScene;
+    Pane gazeMenu;
     Stage primaryStage;
 
     List<Double> xs = new LinkedList<>();
@@ -52,13 +50,12 @@ public class CircleCalibration extends Pane {
     Group[] crossTable = new Group[NUMBER_OF_CALIBRATION_POINTS];
     Circle[] cercleTable = new Circle[NUMBER_OF_CALIBRATION_POINTS];
 
-    public CircleCalibration(Pane p, Scene mainScene, Stage primaryStage, Cursor g1, GazeDeviceManager gazeDeviceManager) {
+    public CircleCalibration(Pane gazeMenu, Stage primaryStage, Cursor g1, GazeDeviceManager gazeDeviceManager) {
         super();
         this.gazeDeviceManager = gazeDeviceManager;
         this.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         this.setFocusTraversable(true);
-        this.p = p;
-        this.mainScene = mainScene;
+        this.gazeMenu = gazeMenu;
         this.primaryStage = primaryStage;
         this.g1 = g1;
         installEventHandler(this);
@@ -161,11 +158,13 @@ public class CircleCalibration extends Pane {
 
                 t3.setOnFinished(e3 -> {
 
+                    Pane mainGazeMenu = new Pane();
+                    mainGazeMenu.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, new Insets(0, 0, 0, 0))));
+                    mainGazeMenu.getChildren().add(gazeMenu);
+                    primaryStage.getScene().setRoot(mainGazeMenu);
 
-                    primaryStage.setScene(mainScene);
 
-
-                    primaryStage.setFullScreen(true);
+                    //primaryStage.setFullScreen(true);
 
 
                     g1.crossOffsetX = finalMoyenneX - width;

@@ -20,7 +20,6 @@ import javafx.util.Duration;
 
 public class Main extends Application {
 
-    public Scene mainScene;
     GazeDeviceManager gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener();
 
     public static void main(String[] args) {
@@ -39,23 +38,19 @@ public class Main extends Application {
             primaryStage.setFullScreen(true);
             primaryStage.setFullScreenExitHint("");
 
-            Pane x = new Pane();
             BorderPane bp = new BorderPane();
             Scene calibScene = new Scene(bp, primaryStage.getWidth(), primaryStage.getHeight());
-            mainScene = new Scene(x, primaryStage.getWidth(), primaryStage.getHeight());
             primaryStage.setScene(calibScene);
 
             Cursor cursor = new Cursor();
 
-            GazeMenu gzm = new GazeMenu(320, cursor, gazeDeviceManager);
+            GazeMenu gzm = new GazeMenu(180, cursor, gazeDeviceManager);
 
             for (int j = 0; j < 26; j++) {
                 gzm.add(new Circle());
             }
 
             gzm.draw();
-
-            x.getChildren().add(gzm);
             gzm.setLayoutX(primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() / 2);
             gzm.setLayoutY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight() / 2);
 
@@ -80,10 +75,7 @@ public class Main extends Application {
 
             });
 
-            x.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, new Insets(0, 0, 0, 0))));
-
-
-            CircleCalibration cc = new CircleCalibration(x, mainScene, primaryStage, cursor, gazeDeviceManager);
+            CircleCalibration cc = new CircleCalibration(gzm, primaryStage, cursor, gazeDeviceManager);
 
 
             bp.setCenter(cc);

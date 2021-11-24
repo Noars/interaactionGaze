@@ -24,7 +24,6 @@ public class MainPane extends Pane {
     Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 
     Button buttonStart;
-    int repetition = 0;
     int currentIndex = -1;
     int totalAttempt = 0;
     int goodAttempt = 0;
@@ -43,10 +42,6 @@ public class MainPane extends Pane {
         installEventHandler(circleTest);
         setButtonStart();
         setButtonRestart();
-    }
-
-    public Button getButtonStart() {
-        return buttonStart;
     }
 
     public void updateInfoViewer() {
