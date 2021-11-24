@@ -31,12 +31,10 @@ public class MainPane extends Pane {
     Text textX;
     Text textY;
     CircleTests circleTest;
-    File file;
 
     public MainPane(CircleTests ct, File fichier) {
         super();
         circleTest = ct;
-        file = fichier;
         this.getChildren().add(circleTest);
         createInfoViewer();
         installEventHandler(circleTest);
@@ -80,19 +78,8 @@ public class MainPane extends Pane {
             buttonStart.setOpacity(0.2);
         });
         this.getChildren().add(buttonStart);
-        buttonStart.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                onStartPause();
-            }
-        });
+        buttonStart.setOnAction(actionEvent -> onStartPause());
 
-    }
-
-    public void comeBack() {
-        if (click != 0) {
-            circleTest.setHandler();
-        }
     }
 
     public void onStartPause() {
@@ -133,14 +120,11 @@ public class MainPane extends Pane {
 
         this.getChildren().add(restart);
 
-        restart.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                totalAttempt = 0;
-                goodAttempt = 0;
-                updateInfoViewer();
+        restart.setOnAction(actionEvent -> {
+            totalAttempt = 0;
+            goodAttempt = 0;
+            updateInfoViewer();
 
-            }
         });
 
     }
@@ -149,12 +133,10 @@ public class MainPane extends Pane {
     public void installEventHandler(final Node keyNode) {
         // handler for enter key press / release events, other keys are
         // handled by the parent (keyboard) node handler
-        final EventHandler<KeyEvent> keyEventHandler = new EventHandler<KeyEvent>() {
-            public void handle(final KeyEvent keyEvent) {
-                if (keyEvent.getCode() == KeyCode.P) {
-                    if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
-                        onStartPause();
-                    }
+        final EventHandler<KeyEvent> keyEventHandler = keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.P) {
+                if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
+                    onStartPause();
                 }
             }
         };
@@ -203,24 +185,6 @@ public class MainPane extends Pane {
             this.currentIndex = circleTest.choosePart();
         }
 
-    }
-
-    public void writeResults() {
-        if (totalAttempt > 0) {
-            int i = 0;
-            try {
-                file.createNewFile();
-                final FileWriter writer = new FileWriter(file, true);
-                try {
-                    writer.write("Test number " + circleTest.numberOfParts + " of size " + circleTest.size + "\n");
-                    writer.write(this.goodAttempt + "/" + this.totalAttempt + "\n");
-                } finally {
-                    writer.close();
-                }
-            } catch (Exception e) {
-                System.out.println("Impossible de creer le fichier");
-            }
-        }
     }
 
     public double calculateAngle(double x1, double y1, double x2, double y2) {

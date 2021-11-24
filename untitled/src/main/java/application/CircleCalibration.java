@@ -185,6 +185,7 @@ public class CircleCalibration extends Pane {
         double width = primaryScreenBounds.getWidth() / 10;
         double height = primaryScreenBounds.getHeight() / 10;
         if (test == NUMBER_OF_CALIBRATION_POINTS) {
+            cross.setOpacity(0);
             calibrAnim();
         } else if (test == 0) {
             cross.setLayoutX(width);
