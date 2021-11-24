@@ -1,16 +1,12 @@
 package gaze.devicemanager;
 
 import com.sun.glass.ui.Screen;
-
 import gaze.GazeMotionListener;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
-import lombok.extern.slf4j.Slf4j;
 import tobii.Tobii;
-
-import java.awt.*;
 
 public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
 
@@ -78,16 +74,16 @@ public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
         }
     }
 
-	@Override
-	public void addGazeMotionListener(GazeMotionListener listener) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void addGazeMotionListener(GazeMotionListener listener) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void removeGazeMotionListener(GazeMotionListener listener) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
+
+    @Override
+    public void removeGazeMotionListener(GazeMotionListener listener) {
+        // TODO Auto-generated method stub
+
+    }
 
 }

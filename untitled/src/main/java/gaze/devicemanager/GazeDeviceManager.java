@@ -1,7 +1,7 @@
 package gaze.devicemanager;
 
-import javafx.scene.Node;
 import gaze.GazeMotionListener;
+import javafx.scene.Node;
 
 public interface GazeDeviceManager {
 

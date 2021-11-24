@@ -1,8 +1,6 @@
 package gaze.devicemanager;
 
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import gaze.EyeTracker;
 
 /**
  * Created by schwab on 16/08/2016.

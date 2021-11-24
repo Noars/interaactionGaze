@@ -1,7 +1,6 @@
 package gaze.devicemanager;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 
 final class IdentityKey<T> {
 

@@ -65,10 +65,8 @@ public class GazeEvent extends InputEvent {
      * to {@code null}, it is replaced by the {@code NULL_SOURCE_TARGET} value. All LightningEvents have their type set
      * to {@code PLASMA_STRIKE}.
      *
-     * @param source
-     *            the event source which sent the event
-     * @param target
-     *            the event Target to associate with the event
+     * @param source the event source which sent the event
+     * @param target the event Target to associate with the event
      */
     public GazeEvent(Object source, EventTarget target) {
         super(source, target, GAZE_ENTERED);

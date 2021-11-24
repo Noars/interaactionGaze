@@ -20,97 +20,97 @@ import javafx.util.Duration;
 
 public class Main extends Application {
 
-	public Scene mainScene;
-	GazeDeviceManager gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener();
+    public Scene mainScene;
+    GazeDeviceManager gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener();
 
-	@Override
-	public void start(Stage primaryStage) {
-		try {
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-			Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-			primaryStage.setX(primaryScreenBounds.getMinX());
-			primaryStage.setY(primaryScreenBounds.getMinY());
-			primaryStage.setWidth(primaryScreenBounds.getWidth());
-			primaryStage.setHeight(primaryScreenBounds.getHeight());
-			primaryStage.setFullScreen(true);
-			primaryStage.setFullScreenExitHint("");
-			
-			Pane x = new Pane();
-			BorderPane bp = new BorderPane();
-			Scene calibScene = new Scene(bp,primaryStage.getWidth(),primaryStage.getHeight());
-			mainScene = new Scene(x,primaryStage.getWidth(),primaryStage.getHeight());
-			primaryStage.setScene(calibScene);
+    @Override
+    public void start(Stage primaryStage) {
+        try {
 
-			Cursor g = new Cursor();
+            Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+            primaryStage.setX(primaryScreenBounds.getMinX());
+            primaryStage.setY(primaryScreenBounds.getMinY());
+            primaryStage.setWidth(primaryScreenBounds.getWidth());
+            primaryStage.setHeight(primaryScreenBounds.getHeight());
+            primaryStage.setFullScreen(true);
+            primaryStage.setFullScreenExitHint("");
 
-			GazeMenu gzm = new GazeMenu(320,g,gazeDeviceManager);
+            Pane x = new Pane();
+            BorderPane bp = new BorderPane();
+            Scene calibScene = new Scene(bp, primaryStage.getWidth(), primaryStage.getHeight());
+            mainScene = new Scene(x, primaryStage.getWidth(), primaryStage.getHeight());
+            primaryStage.setScene(calibScene);
 
-			for(int j = 0; j<26 ; j++) {
-				gzm.add(new Circle());
-			}
+            Cursor g = new Cursor();
 
-			gzm.draw();
+            GazeMenu gzm = new GazeMenu(320, g, gazeDeviceManager);
 
-			x.getChildren().add(gzm);
-			gzm.setLayoutX(primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth()/2);
-			gzm.setLayoutY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight()/2);
+            for (int j = 0; j < 26; j++) {
+                gzm.add(new Circle());
+            }
 
-			gzm.activatedSection.addListener(e->{
-					char index = gzm.getChat(gzm.activatedSection.get());
-					if (gzm.enabled.get()&& gzm.activatedSection.get()!=-1) {
+            gzm.draw();
 
-						setChar(gzm, index);
-						gzm.colorSelected(gzm.activatedSection.get(),Color.DARKSEAGREEN);
-						gzm.enabled.set(false);
-						
-					}else if (gzm.enabled.get() && index!='\0') {
+            x.getChildren().add(gzm);
+            gzm.setLayoutX(primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() / 2);
+            gzm.setLayoutY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight() / 2);
 
-						setChar(gzm, index);
-						gzm.circles[gzm.activatedSection.get()].setFill(Color.INDIANRED);
-						gzm.enabled.set(false);
+            gzm.activatedSection.addListener(e -> {
+                char index = gzm.getChat(gzm.activatedSection.get());
+                if (gzm.enabled.get() && gzm.activatedSection.get() != -1) {
 
-					}else if (index =='\0') {
+                    setChar(gzm, index);
+                    gzm.colorSelected(gzm.activatedSection.get(), Color.DARKSEAGREEN);
+                    gzm.enabled.set(false);
 
-						gzm.enabled.set(true);;
-					}
+                } else if (gzm.enabled.get() && index != '\0') {
 
-			});
+                    setChar(gzm, index);
+                    gzm.circles[gzm.activatedSection.get()].setFill(Color.INDIANRED);
+                    gzm.enabled.set(false);
 
-			x.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY,new Insets(0, 0, 0, 0))));
+                } else if (index == '\0') {
 
+                    gzm.enabled.set(true);
+				}
 
-			CircleCalibration cc = new CircleCalibration(x,mainScene,primaryStage,g, gazeDeviceManager);
+            });
 
-
-			bp.setCenter(cc);
+            x.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, new Insets(0, 0, 0, 0))));
 
 
-			cc.startCalibration();
-			primaryStage.show();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
+            CircleCalibration cc = new CircleCalibration(x, mainScene, primaryStage, g, gazeDeviceManager);
 
-	private void setChar(GazeMenu gzm, char index) {
-		Text letter = new Text(""+index);
-		letter.setX(gzm.shadows[gzm.activatedSection.get()].getCenterX()-letter.getBoundsInLocal().getWidth()/2);
-		letter.setY(gzm.shadows[gzm.activatedSection.get()].getCenterY());
-		Timeline timeline = new Timeline();
-		timeline.getKeyFrames().addAll(
-				new KeyFrame(Duration.ZERO, // set start position at 0
-						new KeyValue(letter.scaleXProperty(), 0),
-						new KeyValue(letter.scaleYProperty(),0)),
-new KeyFrame(Duration.millis(100), // set start position at 0
-new KeyValue(letter.scaleXProperty(), 2.5),
-new KeyValue(letter.scaleYProperty(), 2.5)
-));
-		timeline.play();
-	}
 
-	public static void main(String[] args) {
-		launch(args);
-	}
+            bp.setCenter(cc);
+
+
+            cc.startCalibration();
+            primaryStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setChar(GazeMenu gzm, char index) {
+        Text letter = new Text("" + index);
+        letter.setX(gzm.shadows[gzm.activatedSection.get()].getCenterX() - letter.getBoundsInLocal().getWidth() / 2);
+        letter.setY(gzm.shadows[gzm.activatedSection.get()].getCenterY());
+        Timeline timeline = new Timeline();
+        timeline.getKeyFrames().addAll(
+                new KeyFrame(Duration.ZERO, // set start position at 0
+                        new KeyValue(letter.scaleXProperty(), 0),
+                        new KeyValue(letter.scaleYProperty(), 0)),
+                new KeyFrame(Duration.millis(100), // set start position at 0
+                        new KeyValue(letter.scaleXProperty(), 2.5),
+                        new KeyValue(letter.scaleYProperty(), 2.5)
+                ));
+        timeline.play();
+    }
 
 
 }

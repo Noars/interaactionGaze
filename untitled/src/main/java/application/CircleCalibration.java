@@ -1,7 +1,5 @@
 package application;
 
-import java.util.LinkedList;
-
 import gaze.devicemanager.GazeDeviceManager;
 import gaze.devicemanager.GazeEvent;
 import javafx.animation.KeyFrame;
@@ -29,278 +27,279 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.LinkedList;
+
 public class CircleCalibration extends Pane {
 
-	GazeDeviceManager gazeDeviceManager;
-	Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-	double x, y;
-	Group g;
-	int test = 0;
-	Pane p;
-	Scene mainScene;
-	Stage primaryStage;
-
-	double crossOffsetX =0;
-	double crossOffsetY =0;
-
-	LinkedList xs = new LinkedList();
-	LinkedList ys = new LinkedList();
-
-	Cursor g1;
-
-
-	Group crossTable[] = new Group[5];
-	Circle cercleTable[] = new Circle[5];
-
-	public CircleCalibration(Pane p , Scene mainScene, Stage primaryStage,Cursor g1, GazeDeviceManager gazeDeviceManager) {
-		super();
-		this.gazeDeviceManager=gazeDeviceManager;
-		this.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-		this.setFocusTraversable(true);
-		this.p = p;
-		this.mainScene = mainScene;
-		this.primaryStage = primaryStage;
-		this.g1 = g1;
-		installEventHandler(this);
-	}
+    GazeDeviceManager gazeDeviceManager;
+    Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+    double x, y;
+    Group g;
+    int test = 0;
+    Pane p;
+    Scene mainScene;
+    Stage primaryStage;
+
+    double crossOffsetX = 0;
+    double crossOffsetY = 0;
+
+    LinkedList xs = new LinkedList();
+    LinkedList ys = new LinkedList();
+
+    Cursor g1;
+
+
+    Group[] crossTable = new Group[5];
+    Circle[] cercleTable = new Circle[5];
+
+    public CircleCalibration(Pane p, Scene mainScene, Stage primaryStage, Cursor g1, GazeDeviceManager gazeDeviceManager) {
+        super();
+        this.gazeDeviceManager = gazeDeviceManager;
+        this.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+        this.setFocusTraversable(true);
+        this.p = p;
+        this.mainScene = mainScene;
+        this.primaryStage = primaryStage;
+        this.g1 = g1;
+        installEventHandler(this);
+    }
 
 
-	public void startCalibration() {
-		Line l1 = new Line();
-		Line l2 = new Line();
-		l1.setStartX(-10);
-		l1.setEndX(10);
-		l2.setStartY(-10);
-		l2.setEndY(10);
-		g = new Group(l1,l2);
-		getChildren().add(g);
+    public void startCalibration() {
+        Line l1 = new Line();
+        Line l2 = new Line();
+        l1.setStartX(-10);
+        l1.setEndX(10);
+        l2.setStartY(-10);
+        l2.setEndY(10);
+        g = new Group(l1, l2);
+        getChildren().add(g);
 
-		EventHandler<Event> event = e -> {
-			double[] pos = new double[2];
-			if (e.getEventType() == GazeEvent.GAZE_MOVED) {
-				pos = getGazePosition( ((GazeEvent)e).getX(),((GazeEvent)e).getY());
-			}else if (e.getEventType() == MouseEvent.MOUSE_MOVED) {
-				pos[0] = ((MouseEvent)e).getX();
-				pos[1] = ((MouseEvent)e).getY();
-			}
-			x = pos[0];
-			y = pos[1];
+        EventHandler<Event> event = e -> {
+            double[] pos = new double[2];
+            if (e.getEventType() == GazeEvent.GAZE_MOVED) {
+                pos = getGazePosition(((GazeEvent) e).getX(), ((GazeEvent) e).getY());
+            } else if (e.getEventType() == MouseEvent.MOUSE_MOVED) {
+                pos[0] = ((MouseEvent) e).getX();
+                pos[1] = ((MouseEvent) e).getY();
+            }
+            x = pos[0];
+            y = pos[1];
 
-		};
+        };
 
-		//this.addEventHandler(GazeEvent.GAZE_MOVED, event);
-		this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
-		gazeDeviceManager.addEventFilter(this);
+        //this.addEventHandler(GazeEvent.GAZE_MOVED, event);
+        this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
+        gazeDeviceManager.addEventFilter(this);
 
-		testNext();
+        testNext();
 
-	}
+    }
 
-	public void calibrAnim() {
+    public void calibrAnim() {
 
-		double width = primaryScreenBounds.getWidth()/2;
-		double height = primaryScreenBounds.getHeight()/2;
-
-		Timeline t = new Timeline();
-
-		for(int i = 0 ; i < 5; i++) {
-			t.getKeyFrames().add(new KeyFrame(Duration.millis(500),
-					new KeyValue (crossTable[i].layoutXProperty(), width),
-					new KeyValue (crossTable[i].layoutYProperty(), height),
-					new KeyValue (cercleTable[i].centerXProperty(), width + cercleTable[i].getCenterX() - crossTable[i].getLayoutX()),
-					new KeyValue (cercleTable[i].centerYProperty(),  height + cercleTable[i].getCenterY() - crossTable[i].getLayoutY())));
-		}
-		t.play();
-
-		t.setOnFinished(e->{
-
-			Timeline t2 = new Timeline();
-
-			double moyenneX = 	(cercleTable[0].getCenterX() + 
-					cercleTable[1].getCenterX() +
-					cercleTable[2].getCenterX()	+
-					cercleTable[3].getCenterX()	+
-					cercleTable[4].getCenterX())/5;
-			double moyenneY = 	(cercleTable[0].getCenterY() + 
-					cercleTable[1].getCenterY() +
-					cercleTable[2].getCenterY()	+
-					cercleTable[3].getCenterY()	+
-					cercleTable[4].getCenterY())/5;
-
-			for(int i = 0 ; i < 5; i++) {
-				t2.getKeyFrames().add(new KeyFrame(Duration.millis(500),
-						new KeyValue (cercleTable[i].centerXProperty(),moyenneX)));
-				t2.getKeyFrames().add(new KeyFrame(Duration.millis(500),
-						new KeyValue (cercleTable[i].centerYProperty(),moyenneY)));
-				t2.getKeyFrames().add(new KeyFrame(Duration.millis(500),
-						new KeyValue (cercleTable[i].fillProperty(),Color.INDIANRED)));
-
-			}
-			t2.play();
+        double width = primaryScreenBounds.getWidth() / 2;
+        double height = primaryScreenBounds.getHeight() / 2;
+
+        Timeline t = new Timeline();
+
+        for (int i = 0; i < 5; i++) {
+            t.getKeyFrames().add(new KeyFrame(Duration.millis(500),
+                    new KeyValue(crossTable[i].layoutXProperty(), width),
+                    new KeyValue(crossTable[i].layoutYProperty(), height),
+                    new KeyValue(cercleTable[i].centerXProperty(), width + cercleTable[i].getCenterX() - crossTable[i].getLayoutX()),
+                    new KeyValue(cercleTable[i].centerYProperty(), height + cercleTable[i].getCenterY() - crossTable[i].getLayoutY())));
+        }
+        t.play();
+
+        t.setOnFinished(e -> {
+
+            Timeline t2 = new Timeline();
+
+            double moyenneX = (cercleTable[0].getCenterX() +
+                    cercleTable[1].getCenterX() +
+                    cercleTable[2].getCenterX() +
+                    cercleTable[3].getCenterX() +
+                    cercleTable[4].getCenterX()) / 5;
+            double moyenneY = (cercleTable[0].getCenterY() +
+                    cercleTable[1].getCenterY() +
+                    cercleTable[2].getCenterY() +
+                    cercleTable[3].getCenterY() +
+                    cercleTable[4].getCenterY()) / 5;
+
+            for (int i = 0; i < 5; i++) {
+                t2.getKeyFrames().add(new KeyFrame(Duration.millis(500),
+                        new KeyValue(cercleTable[i].centerXProperty(), moyenneX)));
+                t2.getKeyFrames().add(new KeyFrame(Duration.millis(500),
+                        new KeyValue(cercleTable[i].centerYProperty(), moyenneY)));
+                t2.getKeyFrames().add(new KeyFrame(Duration.millis(500),
+                        new KeyValue(cercleTable[i].fillProperty(), Color.INDIANRED)));
 
-			t2.setOnFinished(e2->{
+            }
+            t2.play();
 
-				Timeline t3 = new Timeline();
-
-				for(int i = 0 ; i < 5; i++) {
-					t3.getKeyFrames().add(new KeyFrame(Duration.millis(500),
-							//new KeyValue (cercleTable[i].centerXProperty(),width),
-							//new KeyValue (cercleTable[i].centerYProperty(),height),
-							new KeyValue (cercleTable[i].fillProperty(),Color.DARKSEAGREEN)));
+            t2.setOnFinished(e2 -> {
 
-				}
-				t3.play();
+                Timeline t3 = new Timeline();
+
+                for (int i = 0; i < 5; i++) {
+                    t3.getKeyFrames().add(new KeyFrame(Duration.millis(500),
+                            new KeyValue(cercleTable[i].fillProperty(),
+                                    Color.DARKSEAGREEN)));
 
-				t3.setOnFinished(e3->{
+                }
+                t3.play();
 
+                t3.setOnFinished(e3 -> {
 
-					primaryStage.setScene(mainScene);
 
+                    primaryStage.setScene(mainScene);
 
-					primaryStage.setFullScreen(true);
 
+                    primaryStage.setFullScreen(true);
 
-					g1.crossOffsetX = moyenneX - width;
-					g1.crossOffsetY =moyenneY - height;
 
-				});
+                    g1.crossOffsetX = moyenneX - width;
+                    g1.crossOffsetY = moyenneY - height;
 
-			});
+                });
 
-		});
+            });
 
+        });
 
-	}
 
+    }
 
-	public void testNext() {
 
-		double width = primaryScreenBounds.getWidth()/5;
-		double height = primaryScreenBounds.getHeight()/5;
+    public void testNext() {
 
-		if (test==0) {
-			g.setLayoutX(width);
-			g.setLayoutY(height);
-			nextCross();
-		}else if (test==1) {
-			g.setLayoutX(primaryScreenBounds.getWidth()-width);
-			g.setLayoutY(height);
-			nextCross();
-		}else if (test==2) {
-			g.setLayoutX(width);
-			g.setLayoutY(primaryScreenBounds.getHeight()-height);
-			nextCross();
-		}else if (test==3) {
-			g.setLayoutX(primaryScreenBounds.getWidth()-width);
-			g.setLayoutY(primaryScreenBounds.getHeight()-height);
-			nextCross();
-		}else if (test==4) {
-			g.setLayoutX(primaryScreenBounds.getWidth()/2);
-			g.setLayoutY(primaryScreenBounds.getHeight()/2);
-			nextCross();
-		}else if (test==5) {
-			calibrAnim();
-		}
-		test++;
-	}
+        double width = primaryScreenBounds.getWidth() / 5;
+        double height = primaryScreenBounds.getHeight() / 5;
 
-	public void nextCross() {
-		Line l1 = new Line();
-		Line l2 = new Line();
-		l1.setStartX(-10);
-		l1.setEndX(10);
-		l2.setStartY(-10);
-		l2.setEndY(10);
-		Group g1 = new Group();
-		g1.getChildren().addAll(l1,l2);
-		getChildren().add(g1);
-		g1.setLayoutX(g.getLayoutX());
-		g1.setLayoutY(g.getLayoutY());   
-		crossTable[test] = g1;
-	}
+        if (test == 0) {
+            g.setLayoutX(width);
+            g.setLayoutY(height);
+            nextCross();
+        } else if (test == 1) {
+            g.setLayoutX(primaryScreenBounds.getWidth() - width);
+            g.setLayoutY(height);
+            nextCross();
+        } else if (test == 2) {
+            g.setLayoutX(width);
+            g.setLayoutY(primaryScreenBounds.getHeight() - height);
+            nextCross();
+        } else if (test == 3) {
+            g.setLayoutX(primaryScreenBounds.getWidth() - width);
+            g.setLayoutY(primaryScreenBounds.getHeight() - height);
+            nextCross();
+        } else if (test == 4) {
+            g.setLayoutX(primaryScreenBounds.getWidth() / 2);
+            g.setLayoutY(primaryScreenBounds.getHeight() / 2);
+            nextCross();
+        } else if (test == 5) {
+            calibrAnim();
+        }
+        test++;
+    }
 
-	public void addValue(int iteration) {
-		if (xs.size()<iteration) {
-			Circle c = new Circle();
-			c.setRadius(5);
-			c.setCenterX(x);
-			c.setCenterY(y);
-			c.setFill(Color.LIGHTGOLDENRODYELLOW);
-			c.setOpacity(0);
+    public void nextCross() {
+        Line l1 = new Line();
+        Line l2 = new Line();
+        l1.setStartX(-10);
+        l1.setEndX(10);
+        l2.setStartY(-10);
+        l2.setEndY(10);
+        Group g1 = new Group();
+        g1.getChildren().addAll(l1, l2);
+        getChildren().add(g1);
+        g1.setLayoutX(g.getLayoutX());
+        g1.setLayoutY(g.getLayoutY());
+        crossTable[test] = g1;
+    }
 
-			xs.add(x);
-			ys.add(y);
+    public void addValue(int iteration) {
+        if (xs.size() < iteration) {
+            Circle c = new Circle();
+            c.setRadius(5);
+            c.setCenterX(x);
+            c.setCenterY(y);
+            c.setFill(Color.LIGHTGOLDENRODYELLOW);
+            c.setOpacity(0);
 
-			getChildren().add(c);
-		}else if(xs.size()==iteration && cercleTable[test-1] ==null) {
-			double sumxs = 0 , sumys = 0;
+            xs.add(x);
+            ys.add(y);
 
-			for(int i = 0; i < xs.size(); i++) {
+            getChildren().add(c);
+        } else if (xs.size() == iteration && cercleTable[test - 1] == null) {
+            double sumxs = 0, sumys = 0;
 
-				sumxs = sumxs + (double)xs.get(i);
-				sumys = sumys + (double)ys.get(i);
-			}
-			sumxs = sumxs / (double)xs.size();
-			sumys = sumys / (double)ys.size();
+            for (int i = 0; i < xs.size(); i++) {
 
+                sumxs = sumxs + (double) xs.get(i);
+                sumys = sumys + (double) ys.get(i);
+            }
+            sumxs = sumxs / (double) xs.size();
+            sumys = sumys / (double) ys.size();
 
-			Circle c = new Circle();
-			c.setRadius(5);
-			c.setCenterX(sumxs);
-			c.setCenterY(sumys);
 
-			c.setFill(Color.DARKRED);
+            Circle c = new Circle();
+            c.setRadius(5);
+            c.setCenterX(sumxs);
+            c.setCenterY(sumys);
 
-			getChildren().add(c);
+            c.setFill(Color.DARKRED);
 
-			cercleTable[test-1]=c;
-		}
-	}
+            getChildren().add(c);
 
-	public void displayCircle() {
+            cercleTable[test - 1] = c;
+        }
+    }
 
-		if(cercleTable[test-1] !=null) {
+    public void displayCircle() {
 
-		xs.clear();
-		ys.clear();
+        if (cercleTable[test - 1] != null) {
 
-		testNext();
-		}
-		
-	}
+            xs.clear();
+            ys.clear();
 
-	public void installEventHandler(final Node keyNode) {
-		final EventHandler<KeyEvent> keyEventHandler = new EventHandler<KeyEvent>() {
-			public void handle(final KeyEvent keyEvent) {
-				if (keyEvent.getCode() == KeyCode.SPACE) {
-					if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
-						if(test<=5) {
-							addValue(1);
-						}
-					}else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
-						if(test<=5) {
-							displayCircle();
-						}
-					}
-				}
-			}
-		};
+            testNext();
+        }
 
-		keyNode.setOnKeyPressed(keyEventHandler);
-		keyNode.setOnKeyReleased(keyEventHandler);
-	}
+    }
 
-	public double[] getGazePosition(double x, double y) {
+    public void installEventHandler(final Node keyNode) {
+        final EventHandler<KeyEvent> keyEventHandler = new EventHandler<KeyEvent>() {
+            public void handle(final KeyEvent keyEvent) {
+                if (keyEvent.getCode() == KeyCode.SPACE) {
+                    if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
+                        if (test <= 5) {
+                            addValue(1);
+                        }
+                    } else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
+                        if (test <= 5) {
+                            displayCircle();
+                        }
+                    }
+                }
+            }
+        };
 
+        keyNode.setOnKeyPressed(keyEventHandler);
+        keyNode.setOnKeyReleased(keyEventHandler);
+    }
 
-		double[] res = {x,y};
+    public double[] getGazePosition(double x, double y) {
 
-		Point2D p = this.screenToLocal(res[0],res[1]);
-		if (p!=null) {
-			res[0] = p.getX();
-			res[1] = p.getY();
-		}
 
-		return res;
-	}
+        double[] res = {x, y};
+
+        Point2D p = this.screenToLocal(res[0], res[1]);
+        if (p != null) {
+            res[0] = p.getX();
+            res[1] = p.getY();
+        }
+
+        return res;
+    }
 }
