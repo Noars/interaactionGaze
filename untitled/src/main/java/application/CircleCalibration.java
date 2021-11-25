@@ -27,6 +27,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -181,13 +182,19 @@ public class CircleCalibration extends Pane {
 
                     StringBuilder s = new StringBuilder();
                     for (int angleIndex = 0; angleIndex < 8; angleIndex++) {
-                        s.append("\n").append(angle[angleIndex]);
+                        s.append("\n").append((int)angle[angleIndex] + " " + (int)fixedCrossTable[angleIndex].getLayoutX() + " ; " +(int)fixedCrossTable[angleIndex].getLayoutY());
                         System.out.println(angle[angleIndex]);
+                        Line l = new Line(fixedCrossTable[angleIndex].getLayoutX(), fixedCrossTable[angleIndex].getLayoutY(),fixedCrossTable[(angleIndex+1)%8].getLayoutX(), fixedCrossTable[(angleIndex+1)%8].getLayoutY());
+                        this.getChildren().add(l);
                     }
 
                     Label text = new Label("test");
                     text.setLayoutX(fixedCrossTable[CircleCalibration.CENTER].getLayoutX() + 100);
                     this.getChildren().add(text);
+
+                    Line l = new Line(fixedCrossTable[CENTER].getLayoutX(), fixedCrossTable[CENTER].getLayoutY(),fixedCrossTable[CENTER].getLayoutX(), fixedCrossTable[CENTER].getLayoutY());
+                    this.getChildren().add(l);
+
 
                     System.out.println("calibration done");
                     cursor.crossOffsetX = finalMoyenneX - width;
@@ -202,9 +209,38 @@ public class CircleCalibration extends Pane {
                                 break;
                             }
                         }
-                        text.setText(s + "\n" + getValueOf(i) + " " + angleCursor);
-                        cursor.setLayoutX(mouseEvent.getX() - (fixedCercleTable[i].getCenterX() - fixedCrossTable[i].getLayoutX()));
-                        cursor.setLayoutY(mouseEvent.getY() - (fixedCercleTable[i].getCenterY() - fixedCrossTable[i].getLayoutY()));
+                        double previousOffsetX =  (fixedCercleTable[i].getCenterX() - fixedCrossTable[i].getLayoutX());
+                        double previousOffsetY = (fixedCercleTable[i].getCenterY() - fixedCrossTable[i].getLayoutY());
+                        double nextOffsetX =  (fixedCercleTable[(i+1)%8].getCenterX() - fixedCrossTable[(i+1)%8].getLayoutX());
+                        double nextOffsetY = (fixedCercleTable[(i+1)%8].getCenterY() - fixedCrossTable[(i+1)%8].getLayoutY());
+
+                        Point2D intersect = getPosInter(mouseEvent.getX(), mouseEvent.getY(),
+                                fixedCrossTable[CENTER].getLayoutX(), fixedCrossTable[CENTER].getLayoutY(),
+                                fixedCrossTable[i].getLayoutX(),fixedCrossTable[i].getLayoutY(),
+                                fixedCrossTable[(i+1)%8].getLayoutX(),fixedCrossTable[(i+1)%8].getLayoutY()
+                                );
+
+                        l.setEndY(intersect.getY());
+                        l.setEndX(intersect.getX());
+
+                        double smallDistance = Point.distance(intersect.getX(),intersect.getY(),fixedCrossTable[i].getLayoutX(),fixedCrossTable[i].getLayoutY());
+                        double bigDistance = Point.distance(fixedCrossTable[i].getLayoutX(),fixedCrossTable[i].getLayoutY(),fixedCrossTable[(i+1)%8].getLayoutX(),fixedCrossTable[(i+1)%8].getLayoutY());
+
+                        double newX = (1-(smallDistance/bigDistance)) * (fixedCercleTable[i].getCenterX()-fixedCrossTable[i].getLayoutX()) + ((smallDistance/bigDistance))*(fixedCercleTable[(i+1)%8].getCenterX()-fixedCrossTable[(i+1)%8].getLayoutX());
+                        double newY = (1-(smallDistance/bigDistance)) * (fixedCercleTable[i].getCenterY()-fixedCrossTable[i].getLayoutY()) + ((smallDistance/bigDistance))*(fixedCercleTable[(i+1)%8].getCenterY()-fixedCrossTable[(i+1)%8].getLayoutY());
+
+                        double distanceToCursor = Point.distance(mouseEvent.getX(),mouseEvent.getY(),fixedCrossTable[CENTER].getLayoutX(),fixedCrossTable[CENTER].getLayoutY());
+                        double distanceToIntersect = Point.distance(intersect.getX(),intersect.getY(),fixedCrossTable[CENTER].getLayoutX(),fixedCrossTable[CENTER].getLayoutY());
+
+                        newX = (1-(distanceToCursor/distanceToIntersect))*(fixedCercleTable[CENTER].getCenterX()-fixedCrossTable[CENTER].getLayoutX()) + ((distanceToCursor/distanceToIntersect))* newX ;
+                        newY = (1-(distanceToCursor/distanceToIntersect))*(fixedCercleTable[CENTER].getCenterY()-fixedCrossTable[CENTER].getLayoutY()) + ((distanceToCursor/distanceToIntersect))* newY ;
+
+                        cursor.setLayoutX(mouseEvent.getX() + newX);
+                        cursor.setLayoutY(mouseEvent.getY() + newY);
+
+                        text.setText(s + "\n" + getValueOf(i) + " " + (int)angleCursor +" " + (int)mouseEvent.getX() + " ; " + (int)mouseEvent.getY()+
+                                "\n "+ (int)intersect.getX() + " ; " + (int)intersect.getY() +
+                                "\n" + (smallDistance*100./bigDistance) +"%");
                     });
                 });
 
@@ -214,6 +250,17 @@ public class CircleCalibration extends Pane {
 
 
     }
+
+    Point2D getPosInter(double xcursor, double ycursor, double xcenter, double ycenter, double xcurent, double ycurent, double xprevious, double yprevious ) {
+        Point2D vector = new Point2D(xcursor-xcenter,ycursor-ycenter);
+        double coef = 1;
+        if(xcurent==xprevious){
+            coef = (xcurent - xcenter) / vector.getX();
+        } else if (ycurent == yprevious){
+            coef = (ycurent - ycenter) / vector.getY();
+        }
+        return new Point2D(vector.getX()*coef + xcenter,vector.getY()*coef + ycenter);
+    };
 
     String getValueOf(int i) {
         switch (i) {
