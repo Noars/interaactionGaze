@@ -12,6 +12,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -31,33 +32,46 @@ import java.util.List;
 
 public class CircleCalibration extends Pane {
 
-    private static final int NUMBER_OF_CALIBRATION_POINTS = 2;
+    private static final int NUMBER_OF_CALIBRATION_POINTS = 9;
+
+    private static final int TOP_LEFT = 0;
+    private static final int TOP_CENTER = 1;
+    private static final int TOP_RIGHT = 2;
+    private static final int RIGHT_CENTER = 3;
+    private static final int BOTTOM_RIGHT = 4;
+    private static final int BOTTOM_CENTER = 5;
+    private static final int BOTTOM_LEFT = 6;
+    private static final int LEFT_CENTER = 7;
+    private static final int CENTER = 8;
 
     GazeDeviceManager gazeDeviceManager;
     Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
     double x, y;
     Group cross;
     int test = 0;
-    Pane gazeMenu;
     Stage primaryStage;
 
     List<Double> xs = new LinkedList<>();
     List<Double> ys = new LinkedList<>();
 
-    Cursor g1;
+    Cursor cursor;
 
 
+    Group[] fixedCrossTable = new Group[NUMBER_OF_CALIBRATION_POINTS];
     Group[] crossTable = new Group[NUMBER_OF_CALIBRATION_POINTS];
+
+    Circle[] fixedCercleTable = new Circle[NUMBER_OF_CALIBRATION_POINTS];
     Circle[] cercleTable = new Circle[NUMBER_OF_CALIBRATION_POINTS];
 
-    public CircleCalibration(Pane gazeMenu, Stage primaryStage, Cursor g1, GazeDeviceManager gazeDeviceManager) {
+    double[] angle = new double[NUMBER_OF_CALIBRATION_POINTS];
+
+    public CircleCalibration(Stage primaryStage, Cursor cursor, GazeDeviceManager gazeDeviceManager) {
         super();
         this.gazeDeviceManager = gazeDeviceManager;
         this.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         this.setFocusTraversable(true);
-        this.gazeMenu = gazeMenu;
         this.primaryStage = primaryStage;
-        this.g1 = g1;
+        this.cursor = cursor;
         installEventHandler(this);
     }
 
@@ -118,7 +132,6 @@ public class CircleCalibration extends Pane {
         t.play();
 
         t.setOnFinished(e -> {
-
             Timeline t2 = new Timeline();
             double moyenneX = 0;
             for (int i = 0; i < NUMBER_OF_CALIBRATION_POINTS; i++) {
@@ -138,7 +151,6 @@ public class CircleCalibration extends Pane {
                         new KeyValue(cercleTable[i].centerYProperty(), moyenneY)));
                 t2.getKeyFrames().add(new KeyFrame(Duration.millis(500),
                         new KeyValue(cercleTable[i].fillProperty(), Color.INDIANRED)));
-
             }
             t2.play();
 
@@ -157,19 +169,43 @@ public class CircleCalibration extends Pane {
                 t3.play();
 
                 t3.setOnFinished(e3 -> {
+                    angle[0] = angleBetween(fixedCrossTable[CircleCalibration.CENTER], fixedCrossTable[CircleCalibration.TOP_LEFT], fixedCrossTable[CircleCalibration.TOP_LEFT]);
+                    angle[1] = angleBetween(fixedCrossTable[CircleCalibration.CENTER], fixedCrossTable[CircleCalibration.TOP_LEFT], fixedCrossTable[CircleCalibration.TOP_CENTER]);
+                    angle[2] = angleBetween(fixedCrossTable[CircleCalibration.CENTER], fixedCrossTable[CircleCalibration.TOP_LEFT], fixedCrossTable[CircleCalibration.TOP_RIGHT]);
+                    angle[3] = angleBetween(fixedCrossTable[CircleCalibration.CENTER], fixedCrossTable[CircleCalibration.TOP_LEFT], fixedCrossTable[CircleCalibration.RIGHT_CENTER]);
+                    angle[4] = angleBetween(fixedCrossTable[CircleCalibration.CENTER], fixedCrossTable[CircleCalibration.TOP_LEFT], fixedCrossTable[CircleCalibration.BOTTOM_RIGHT]);
+                    angle[5] = angleBetween(fixedCrossTable[CircleCalibration.CENTER], fixedCrossTable[CircleCalibration.TOP_LEFT], fixedCrossTable[CircleCalibration.BOTTOM_CENTER]);
+                    angle[6] = angleBetween(fixedCrossTable[CircleCalibration.CENTER], fixedCrossTable[CircleCalibration.TOP_LEFT], fixedCrossTable[CircleCalibration.BOTTOM_LEFT]);
+                    angle[7] = angleBetween(fixedCrossTable[CircleCalibration.CENTER], fixedCrossTable[CircleCalibration.TOP_LEFT], fixedCrossTable[CircleCalibration.LEFT_CENTER]);
 
-                    Pane mainGazeMenu = new Pane();
-                    mainGazeMenu.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, new Insets(0, 0, 0, 0))));
-                    mainGazeMenu.getChildren().add(gazeMenu);
-                    primaryStage.getScene().setRoot(mainGazeMenu);
 
+                    StringBuilder s = new StringBuilder();
+                    for (int angleIndex = 0; angleIndex < 8; angleIndex++) {
+                        s.append("\n").append(angle[angleIndex]);
+                        System.out.println(angle[angleIndex]);
+                    }
 
-                    //primaryStage.setFullScreen(true);
+                    Label text = new Label("test");
+                    text.setLayoutX(fixedCrossTable[CircleCalibration.CENTER].getLayoutX() + 100);
+                    this.getChildren().add(text);
 
-
-                    g1.crossOffsetX = finalMoyenneX - width;
-                    g1.crossOffsetY = finalMoyenneY - height;
-
+                    System.out.println("calibration done");
+                    cursor.crossOffsetX = finalMoyenneX - width;
+                    cursor.crossOffsetY = finalMoyenneY - height;
+                    this.getChildren().add(cursor);
+                    this.setOnMouseMoved(mouseEvent -> {
+                        //TODO find the good angle and set the corresponding offset
+                        double angleCursor = angleBetween(fixedCrossTable[CircleCalibration.CENTER], fixedCrossTable[CircleCalibration.TOP_LEFT], mouseEvent.getX(), mouseEvent.getY());
+                        int i;
+                        for (i = 0; i < 7; i++) {
+                            if (angleCursor < angle[i + 1]) {
+                                break;
+                            }
+                        }
+                        text.setText(s + "\n" + getValueOf(i) + " " + angleCursor);
+                        cursor.setLayoutX(mouseEvent.getX() - (fixedCercleTable[i].getCenterX() - fixedCrossTable[i].getLayoutX()));
+                        cursor.setLayoutY(mouseEvent.getY() - (fixedCercleTable[i].getCenterY() - fixedCrossTable[i].getLayoutY()));
+                    });
                 });
 
             });
@@ -179,6 +215,42 @@ public class CircleCalibration extends Pane {
 
     }
 
+    String getValueOf(int i) {
+        switch (i) {
+            case TOP_LEFT:
+                return "TOP_LEFT";
+            case TOP_RIGHT:
+                return "TOP_RIGHT";
+            case BOTTOM_LEFT:
+                return "BOTTOM_LEFT";
+            case BOTTOM_RIGHT:
+                return "BOTTOM_RIGHT";
+            case RIGHT_CENTER:
+                return "RIGHT_CENTER";
+            case BOTTOM_CENTER:
+                return "BOTTOM_CENTER";
+            case LEFT_CENTER:
+                return "LEFT_CENTER";
+            case TOP_CENTER:
+                return "TOP_CENTER";
+            case CENTER:
+                return "CENTER";
+            default:
+                return "WHAAT ?";
+        }
+    }
+
+    private double angleBetween(Group center, Group current, Group previous) {
+
+        return (Math.toDegrees(Math.atan2(current.getLayoutX() - center.getLayoutX(), current.getLayoutY() - center.getLayoutY()) -
+                Math.atan2(previous.getLayoutX() - center.getLayoutX(), previous.getLayoutY() - center.getLayoutY())) + 360) % 360;
+    }
+
+    private double angleBetween(Group center, Group current, double mouseX, double mouseY) {
+
+        return (Math.toDegrees(Math.atan2(current.getLayoutX() - center.getLayoutX(), current.getLayoutY() - center.getLayoutY()) -
+                Math.atan2(mouseX - center.getLayoutX(), mouseY - center.getLayoutY())) + 360) % 360;
+    }
 
     public void testNext() {
 
@@ -192,20 +264,20 @@ public class CircleCalibration extends Pane {
             cross.setLayoutY(height);
             nextCross();
         } else if (test == 1) {
-            cross.setLayoutX(primaryScreenBounds.getWidth() - width);
+            cross.setLayoutX(primaryScreenBounds.getWidth() / 2);
             cross.setLayoutY(height);
             nextCross();
         } else if (test == 2) {
-            cross.setLayoutX(width);
-            cross.setLayoutY(primaryScreenBounds.getHeight() - height);
+            cross.setLayoutX(primaryScreenBounds.getWidth() - width);
+            cross.setLayoutY(height);
             nextCross();
         } else if (test == 3) {
             cross.setLayoutX(primaryScreenBounds.getWidth() - width);
-            cross.setLayoutY(primaryScreenBounds.getHeight() - height);
+            cross.setLayoutY(primaryScreenBounds.getHeight() / 2);
             nextCross();
         } else if (test == 4) {
             cross.setLayoutX(primaryScreenBounds.getWidth() - width);
-            cross.setLayoutY(primaryScreenBounds.getHeight() / 2);
+            cross.setLayoutY(primaryScreenBounds.getHeight() - height);
             nextCross();
         } else if (test == 5) {
             cross.setLayoutX(primaryScreenBounds.getWidth() / 2);
@@ -213,11 +285,11 @@ public class CircleCalibration extends Pane {
             nextCross();
         } else if (test == 6) {
             cross.setLayoutX(width);
-            cross.setLayoutY(primaryScreenBounds.getHeight() / 2);
+            cross.setLayoutY(primaryScreenBounds.getHeight() - height);
             nextCross();
         } else if (test == 7) {
-            cross.setLayoutX(primaryScreenBounds.getWidth() / 2);
-            cross.setLayoutY(height);
+            cross.setLayoutX(width);
+            cross.setLayoutY(primaryScreenBounds.getHeight() / 2);
             nextCross();
         } else if (test == 8) {
             cross.setLayoutX(primaryScreenBounds.getWidth() / 2);
@@ -234,12 +306,20 @@ public class CircleCalibration extends Pane {
         l1.setEndX(10);
         l2.setStartY(-10);
         l2.setEndY(10);
-        Group g1 = new Group();
-        g1.getChildren().addAll(l1, l2);
-        getChildren().add(g1);
-        g1.setLayoutX(cross.getLayoutX());
-        g1.setLayoutY(cross.getLayoutY());
-        crossTable[test] = g1;
+        Group newCross = new Group();
+        newCross.getChildren().addAll(l1, l2);
+        getChildren().add(newCross);
+        newCross.setLayoutX(cross.getLayoutX());
+        newCross.setLayoutY(cross.getLayoutY());
+
+        Group newCrossFixed = new Group();
+        newCrossFixed.getChildren().addAll(l1, l2);
+        getChildren().add(newCrossFixed);
+        newCrossFixed.setLayoutX(cross.getLayoutX());
+        newCrossFixed.setLayoutY(cross.getLayoutY());
+
+        fixedCrossTable[test] = newCrossFixed;
+        crossTable[test] = newCross;
     }
 
     public void addValue(int iteration) {
@@ -260,23 +340,30 @@ public class CircleCalibration extends Pane {
 
             for (int i = 0; i < xs.size(); i++) {
 
-                sumxs = sumxs + (double) xs.get(i);
-                sumys = sumys + (double) ys.get(i);
+                sumxs = sumxs + xs.get(i);
+                sumys = sumys + ys.get(i);
             }
             sumxs = sumxs / (double) xs.size();
             sumys = sumys / (double) ys.size();
 
 
-            Circle c = new Circle();
-            c.setRadius(5);
-            c.setCenterX(sumxs);
-            c.setCenterY(sumys);
+            Circle newCircleFixed = new Circle();
+            newCircleFixed.setRadius(8);
+            newCircleFixed.setCenterX(sumxs);
+            newCircleFixed.setCenterY(sumys);
+            newCircleFixed.setFill(Color.LIGHTSKYBLUE);
 
-            c.setFill(Color.DARKRED);
+            getChildren().add(newCircleFixed);
+            fixedCercleTable[test - 1] = newCircleFixed;
 
-            getChildren().add(c);
+            Circle newCircle = new Circle();
+            newCircle.setRadius(5);
+            newCircle.setCenterX(sumxs);
+            newCircle.setCenterY(sumys);
+            newCircle.setFill(Color.DARKRED);
 
-            cercleTable[test - 1] = c;
+            getChildren().add(newCircle);
+            cercleTable[test - 1] = newCircle;
         }
     }
 

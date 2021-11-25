@@ -1,5 +1,7 @@
 package gaze.devicemanager;
 
+import application.Configuration;
+import application.Cursor;
 import lombok.Getter;
 
 /**
@@ -13,12 +15,12 @@ public class GazeDeviceManagerFactory {
     private GazeDeviceManagerFactory() {
     }
 
-    public GazeDeviceManager createNewGazeListener() {
+    public GazeDeviceManager createNewGazeListener( Cursor cursor) {
 
-        final GazeDeviceManager gazeDeviceManager;
-        gazeDeviceManager = new TobiiGazeDeviceManager();
+        final TobiiGazeDeviceManager gazeDeviceManager;
+        gazeDeviceManager = new TobiiGazeDeviceManager(cursor);
 
-        gazeDeviceManager.init();
+        //gazeDeviceManager.init(new Configuration());
         return gazeDeviceManager;
     }
 
