@@ -32,7 +32,7 @@ public class Main extends Application {
             Scene calibScene = new Scene(bp, primaryStage.getWidth(), primaryStage.getHeight());
             primaryStage.setScene(calibScene);
 
-            Cursor cursor = new Cursor();
+            Cross cursor = new Cross();
             GazeDeviceManager gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(cursor);
 
             CircleCalibration cc = new CircleCalibration(primaryStage, cursor, gazeDeviceManager);

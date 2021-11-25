@@ -4,27 +4,24 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Cursor extends Group {
+public class Cross extends Group {
 
-    @Getter
-    double crossOffsetX = 0;
-    @Getter
-    double crossOffsetY = 0;
+    public Cross() {
+        Line horizontalLine = new Line();
+        horizontalLine.setStartX(-10);
+        horizontalLine.setEndX(10);
 
-    public Cursor() {
-        Line l1 = new Line();
-        Line l2 = new Line();
-        l1.setStartX(-10);
-        l1.setEndX(10);
-        l2.setStartY(-10);
-        l2.setEndY(10);
+        Line verticalLine = new Line();
+        verticalLine.setStartY(-10);
+        verticalLine.setEndY(10);
+
         Circle center = new Circle();
         center.setRadius(2);
-        getChildren().addAll(l1, l2, center);
+
+        getChildren().addAll(horizontalLine, verticalLine, center);
         setMouseTransparent(true);
     }
 

@@ -1,7 +1,7 @@
 package gaze.devicemanager;
 
 import application.Configuration;
-import application.Cursor;
+import application.Cross;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
@@ -16,13 +16,13 @@ public class PositionPollerRunnable implements Runnable {
 
     private final Configuration configuration;
     Robot robot = new Robot();
-    private Cursor cursor;
+    private Cross cross;
     @Setter
     private transient boolean stopRequested = false;
 
-    public PositionPollerRunnable(Configuration configuration, Cursor cursor ) throws AWTException {
+    public PositionPollerRunnable(Configuration configuration, Cross cross) throws AWTException {
         this.configuration = configuration;
-        this.cursor = cursor;
+        this.cross = cross;
     }
 
     @Override
@@ -54,8 +54,8 @@ public class PositionPollerRunnable implements Runnable {
         final double positionY = yRatio * screenDimension.getHeight();
 
 
-        final double offsetX = 0;//cursor.getCrossOffsetX();
-        final double offsetY = 0;//cursor.getCrossOffsetY();
+        final double offsetX = 0;//cross.getCrossOffsetX();
+        final double offsetY = 0;//cross.getCrossOffsetY();
 
         if (configuration.waitForUserMove()) {
 

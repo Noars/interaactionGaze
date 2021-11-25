@@ -1,7 +1,7 @@
 package gaze.devicemanager;
 
 import application.Configuration;
-import application.Cursor;
+import application.Cross;
 
 import java.awt.*;
 import java.util.concurrent.ExecutorService;
@@ -9,20 +9,20 @@ import java.util.concurrent.Executors;
 
 public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
 
-    private  Cursor cursor;
+    private Cross cross;
 
     private ExecutorService executorService;
 
     private PositionPollerRunnable positionPollerRunnable;
 
-    public TobiiGazeDeviceManager( Cursor cursor) {
+    public TobiiGazeDeviceManager( Cross cross) {
         super();
-        this.cursor = cursor;
+        this.cross = cross;
     }
 
     public void init(Configuration configuration) {
         try {
-            positionPollerRunnable = new PositionPollerRunnable(configuration,cursor);
+            positionPollerRunnable = new PositionPollerRunnable(configuration, cross);
         } catch (AWTException e) {
             e.printStackTrace();
         }
