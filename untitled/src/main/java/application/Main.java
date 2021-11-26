@@ -1,7 +1,9 @@
 package application;
 
+import application.ui.Home;
 import gaze.devicemanager.GazeDeviceManager;
 import gaze.devicemanager.GazeDeviceManagerFactory;
+import gaze.devicemanager.TobiiGazeDeviceManager;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
@@ -23,18 +25,21 @@ public class Main extends Application {
         try {
 
             Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-            primaryStage.setX(primaryScreenBounds.getMinX());
-            primaryStage.setY(primaryScreenBounds.getMinY());
-            primaryStage.setWidth(primaryScreenBounds.getWidth());
-            primaryStage.setHeight(primaryScreenBounds.getHeight());
-            primaryStage.setFullScreen(true);
-            primaryStage.setFullScreenExitHint("");
+//            primaryStage.setX(primaryScreenBounds.getMinX());
+//            primaryStage.setY(primaryScreenBounds.getMinY());
+//            primaryStage.setWidth(primaryScreenBounds.getWidth());
+//            primaryStage.setHeight(primaryScreenBounds.getHeight());
+           // primaryStage.setFullScreen(true);
+           // primaryStage.setFullScreenExitHint("");
+            primaryStage.setWidth(500);
+            primaryStage.setHeight(200);
 
             Cross cursor = new Cross();
-            GazeDeviceManager gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(cursor);
+            TobiiGazeDeviceManager gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(cursor);
 
             CircleCalibration cc = new CircleCalibration(primaryStage, cursor, gazeDeviceManager);
-            Scene calibScene = new Scene(cc, primaryStage.getWidth(), primaryStage.getHeight());
+            // Scene calibScene = new Scene(cc, primaryStage.getWidth(), primaryStage.getHeight());
+             Scene calibScene = new Scene(new Home(gazeDeviceManager), primaryStage.getWidth(), primaryStage.getHeight());
             primaryStage.setScene(calibScene);
             calibScene.setCursor(Cursor.CROSSHAIR);
 //            primaryStage.initStyle(StageStyle.TRANSPARENT);

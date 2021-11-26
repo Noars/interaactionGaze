@@ -20,6 +20,9 @@ public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
         super();
         this.cross = cross;
     }
+    public void setPause(boolean b){
+        positionPollerRunnable.setPauseRequested(b);
+    }
 
     public void init(Configuration configuration) {
 

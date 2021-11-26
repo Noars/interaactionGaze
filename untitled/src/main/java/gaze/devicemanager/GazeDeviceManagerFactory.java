@@ -15,7 +15,7 @@ public class GazeDeviceManagerFactory {
     private GazeDeviceManagerFactory() {
     }
 
-    public GazeDeviceManager createNewGazeListener(Cross cross) {
+    public TobiiGazeDeviceManager createNewGazeListener(Cross cross) {
 
         final TobiiGazeDeviceManager gazeDeviceManager;
         gazeDeviceManager = new TobiiGazeDeviceManager(cross);

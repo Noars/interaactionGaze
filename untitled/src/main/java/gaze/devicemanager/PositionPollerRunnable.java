@@ -21,6 +21,8 @@ public class PositionPollerRunnable implements Runnable {
     private Cross cross;
     @Setter
     private transient boolean stopRequested = false;
+    @Setter
+    private transient boolean pauseRequested = false;
 
     public PositionPollerRunnable(Configuration configuration, Cross cross, final TobiiGazeDeviceManager tobiiGazeDeviceManager) throws AWTException {
         this.configuration = configuration;
@@ -32,8 +34,10 @@ public class PositionPollerRunnable implements Runnable {
     public void run() {
         while (!stopRequested) {
             try {
-                configuration.analyse(MouseInfo.getPointerInfo().getLocation().getX(), MouseInfo.getPointerInfo().getLocation().getY());
-                poll();
+                if(!pauseRequested) {
+                    configuration.analyse(MouseInfo.getPointerInfo().getLocation().getX(), MouseInfo.getPointerInfo().getLocation().getY());
+                    poll();
+                }
             } catch (final RuntimeException e) {
                 log.warn("Exception while polling position of main.gaze", e);
             }
