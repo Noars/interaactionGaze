@@ -54,8 +54,8 @@ public class PositionPollerRunnable implements Runnable {
         final double positionY = yRatio * screenDimension.getHeight();
 
 
-        final double offsetX = 0;//cross.getCrossOffsetX();
-        final double offsetY = 0;//cross.getCrossOffsetY();
+        final double offsetX = cross.getTranslateX();
+        final double offsetY = cross.getTranslateY();
 
         if (configuration.waitForUserMove()) {
 

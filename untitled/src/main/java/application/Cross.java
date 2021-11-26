@@ -22,22 +22,8 @@ public class Cross extends Group {
         center.setRadius(2);
 
         getChildren().addAll(horizontalLine, verticalLine, center);
-        setMouseTransparent(true);
+        //setMouseTransparent(true);
     }
 
-
-    public void setCursorOn() {
-        ((Line) getChildren().get(0)).setStroke(Color.CORAL);
-        ((Line) getChildren().get(0)).setStrokeWidth(8);
-        ((Line) getChildren().get(1)).setStroke(Color.CORAL);
-        ((Line) getChildren().get(1)).setStrokeWidth(8);
-    }
-
-    public void setCursorOff() {
-        ((Line) getChildren().get(0)).setStroke(Color.BLACK);
-        ((Line) getChildren().get(0)).setStrokeWidth(1);
-        ((Line) getChildren().get(1)).setStroke(Color.BLACK);
-        ((Line) getChildren().get(1)).setStrokeWidth(1);
-    }
 
 }

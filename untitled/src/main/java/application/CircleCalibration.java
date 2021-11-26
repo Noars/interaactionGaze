@@ -21,6 +21,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -46,7 +47,7 @@ public class CircleCalibration extends Pane {
     Cross cursor;
     int currentTest = TOP_LEFT;
 
-    Point2D curCoord;
+    Point2D curCoord = new Point2D(0,0);
     Stage primaryStage;
 
     CalibrationPoint[] calibrationPoints = new CalibrationPoint[9];
@@ -72,31 +73,40 @@ public class CircleCalibration extends Pane {
     public void startCalibration() {
         calibrationCross = new Cross();
         getChildren().add(calibrationCross);
-
-        EventHandler<Event> event = e -> {
-            if (e.getEventType() == GazeEvent.GAZE_MOVED) {
-                curCoord = getGazePosition(((GazeEvent) e).getX(), ((GazeEvent) e).getY());
-            } else if (e.getEventType() == MouseEvent.MOUSE_MOVED) {
-                curCoord = new Point2D (((MouseEvent) e).getX(),((MouseEvent) e).getY());
+        EventHandler<Event> event0 = e -> {
+            for (Node n :calibrationCross.getChildren()){
+                ((Line)n).setFill(Color.RED);
+                ((Line)n).setStroke(Color.RED);
             }
         };
+        this.addEventHandler(GazeEvent.GAZE_ENTERED, event0);
+        //this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
+        gazeDeviceManager.addEventHandler(calibrationCross);
 
-        Timeline timeline = new Timeline();
-        timeline.getKeyFrames().addAll(
+        EventHandler<Event> event = e -> {
+           // if (e.getEventType() == GazeEvent.GAZE_MOVED) {
+                curCoord = getGazePosition(((GazeEvent) e).getX(), ((GazeEvent) e).getY());
+//            } else if (e.getEventType() == MouseEvent.MOUSE_MOVED) {
+//                curCoord = new Point2D (((MouseEvent) e).getX(),((MouseEvent) e).getY());
+//            }
+        };
+
+        Timeline rotateCalibrationCross = new Timeline();
+        rotateCalibrationCross.getKeyFrames().addAll(
                 new KeyFrame(Duration.seconds(1), // set start position at 0
                         new KeyValue(calibrationCross.rotateProperty(), 0),
                         new KeyValue(calibrationCross.rotateProperty(), 360)));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+        rotateCalibrationCross.setCycleCount(Timeline.INDEFINITE);
+        rotateCalibrationCross.play();
 
-        //this.addEventHandler(GazeEvent.GAZE_MOVED, event);
-        this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
-        gazeDeviceManager.addEventFilter(this);
+        this.addEventHandler(GazeEvent.GAZE_MOVED, event);
+        //this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
+        gazeDeviceManager.addEventHandler(this);
 
         startCurrentTest();
     }
 
-    public void calibrAnim() {
+    public void endCalibration() {
 
         this.getChildren().add(this.cursor);
 
@@ -104,47 +114,57 @@ public class CircleCalibration extends Pane {
             angle[angleIndex] = angleBetween(calibrationPoints[CENTER].cross, calibrationPoints[TOP_LEFT].cross, calibrationPoints[angleIndex].cross);
         }
 
-        this.setOnMouseMoved(mouseEvent -> {
-            double mouseAngle = angleBetween(calibrationPoints[CENTER].cross, calibrationPoints[TOP_LEFT].cross, mouseEvent.getX(), mouseEvent.getY());
-            int sectionIndex;
-            for (sectionIndex = 0; sectionIndex < 7; sectionIndex++) {
-                if (mouseAngle < angle[sectionIndex + 1]) {
-                    break;
-                }
+        EventHandler<Event> event = e -> {
+            if (e.getEventType() == GazeEvent.GAZE_MOVED) {
+               handle(((GazeEvent) e).getX(), ((GazeEvent) e).getY());
+            } else if (e.getEventType() == MouseEvent.MOUSE_MOVED) {
+                handle(((MouseEvent) e).getX(),((MouseEvent) e).getY());
             }
+        };
 
-            Point2D intersect = getPosInter(mouseEvent.getX(), mouseEvent.getY(),
-                    calibrationPoints[CENTER].getCrossX(), calibrationPoints[CENTER].getCrossY(),
-                    calibrationPoints[sectionIndex].getCrossX(), calibrationPoints[sectionIndex].getCrossY(),
-                    calibrationPoints[(sectionIndex + 1) % 8].getCrossX(), calibrationPoints[(sectionIndex + 1) % 8].getCrossY()
-            );
+        this.addEventHandler(GazeEvent.GAZE_MOVED, event);
+        //this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
+        gazeDeviceManager.addEventFilter(this);
 
-            double smallDistance = Point.distance(intersect.getX(), intersect.getY(), calibrationPoints[sectionIndex].getCrossX(), calibrationPoints[sectionIndex].getCrossY());
-            double bigDistance = Point.distance(calibrationPoints[sectionIndex].getCrossX(), calibrationPoints[sectionIndex].getCrossY(), calibrationPoints[(sectionIndex + 1) % 8].getCrossX(), calibrationPoints[(sectionIndex + 1) % 8].getCrossY());
-
-            double newX = (1 - (smallDistance / bigDistance)) * getOffsetX(sectionIndex) + ((smallDistance / bigDistance)) * getOffsetX((sectionIndex + 1) % 8);
-            double newY = (1 - (smallDistance / bigDistance)) * getOffsetY(sectionIndex) + ((smallDistance / bigDistance)) * getOffsetY((sectionIndex + 1) % 8);
-
-            double distanceToCursor = Point.distance(mouseEvent.getX(), mouseEvent.getY(), calibrationPoints[CENTER].getCrossX(), calibrationPoints[CENTER].getCrossY());
-            double distanceToIntersect = Point.distance(intersect.getX(), intersect.getY(), calibrationPoints[CENTER].getCrossX(), calibrationPoints[CENTER].getCrossY());
-
-            newX = (1 - (distanceToCursor / distanceToIntersect)) * getOffsetX(CENTER) + ((distanceToCursor / distanceToIntersect)) * newX;
-            newY = (1 - (distanceToCursor / distanceToIntersect)) * getOffsetY(CENTER) + ((distanceToCursor / distanceToIntersect)) * newY;
-
-            cursor.setLayoutX(mouseEvent.getX() + newX);
-            cursor.setLayoutY(mouseEvent.getY() + newY);
-
-
-        });
     }
 
-    double getOffsetX(int calibrationPointIndex) {
-        return calibrationPoints[calibrationPointIndex].getOffsetX() - calibrationPoints[calibrationPointIndex].getCrossX();
+    void handle(double eventX,double eventY){
+
+        double mouseAngle = angleBetween(calibrationPoints[CENTER].cross, calibrationPoints[TOP_LEFT].cross, eventX, eventY);
+
+        int previousPoint;
+        for (previousPoint = 0; previousPoint < 7; previousPoint++) {
+            if (mouseAngle < angle[previousPoint + 1]) {
+                break;
+            }
+        }
+        int nextPoint = (previousPoint + 1) % 8;
+
+        Point2D intersect = getPosInter(
+                eventX, eventY,
+                calibrationPoints[CENTER].getCrossX(), calibrationPoints[CENTER].getCrossY(),
+                calibrationPoints[previousPoint].getCrossX(), calibrationPoints[previousPoint].getCrossY(),
+                calibrationPoints[nextPoint].getCrossX(), calibrationPoints[nextPoint].getCrossY()
+        );
+
+        double interToNext = Point.distance(intersect.getX(), intersect.getY(), calibrationPoints[previousPoint].getCrossX(), calibrationPoints[previousPoint].getCrossY());
+        double previousToNext = Point.distance(calibrationPoints[previousPoint].getCrossX(), calibrationPoints[previousPoint].getCrossY(), calibrationPoints[nextPoint].getCrossX(), calibrationPoints[nextPoint].getCrossY());
+
+        double newX = (1 - (interToNext / previousToNext)) * calibrationPoints[previousPoint].getOffsetX() + ((interToNext / previousToNext)) * calibrationPoints[nextPoint].getOffsetX();
+        double newY = (1 - (interToNext / previousToNext)) * calibrationPoints[previousPoint].getOffsetY() + ((interToNext / previousToNext)) * calibrationPoints[nextPoint].getOffsetY();
+
+        double centerToMouse = Point.distance(eventX, eventY, calibrationPoints[CENTER].getCrossX(), calibrationPoints[CENTER].getCrossY());
+        double centerToInter = Point.distance(intersect.getX(), intersect.getY(), calibrationPoints[CENTER].getCrossX(), calibrationPoints[CENTER].getCrossY());
+
+        newX = (1 - (centerToMouse / centerToInter)) * calibrationPoints[CENTER].getOffsetX() + ((centerToMouse / centerToInter)) * newX;
+        newY = (1 - (centerToMouse / centerToInter)) * calibrationPoints[CENTER].getOffsetY() + ((centerToMouse / centerToInter)) * newY;
+
+        cursor.setLayoutX(eventX);
+        cursor.setTranslateX(-newX);
+        cursor.setLayoutY(eventY);
+        cursor.setTranslateY(-newY);
     }
 
-    double getOffsetY(int calibrationPointIndex) {
-        return calibrationPoints[calibrationPointIndex].getOffsetY() - calibrationPoints[calibrationPointIndex].getCrossY();
-    }
 
     Point2D getPosInter(double xcursor, double ycursor, double xcenter, double ycenter, double xcurent, double ycurent, double xprevious, double yprevious) {
         Point2D vector = new Point2D(xcursor - xcenter, ycursor - ycenter);
@@ -176,7 +196,7 @@ public class CircleCalibration extends Pane {
 
         if (currentTest == TESTENDED) {
             calibrationCross.setOpacity(0);
-            calibrAnim();
+            endCalibration();
         } else {
             if (currentTest == TOP_LEFT) {
                 calibrationCross.setLayoutX(width);
@@ -230,7 +250,7 @@ public class CircleCalibration extends Pane {
             calibrationPoints[currentTest].capturedCoordinates.add(curCoord);
 
             getChildren().add(c);
-        } else if (calibrationPoints[currentTest].capturedCoordinates.size() == numberOfCoordinateToTest && calibrationPoints[currentTest].offset == null) {
+        } else if (calibrationPoints[currentTest].capturedCoordinates.size() == numberOfCoordinateToTest && calibrationPoints[currentTest].circle == null) {
             double coordXsum = 0, coordYsum = 0;
 
             for (Point2D gazedCoordinate : calibrationPoints[currentTest].capturedCoordinates) {
@@ -247,7 +267,7 @@ public class CircleCalibration extends Pane {
             newCircle.setFill(Color.LIGHTSKYBLUE);
 
             getChildren().add(newCircle);
-            calibrationPoints[currentTest].offset = newCircle;
+            calibrationPoints[currentTest].circle = newCircle;
         }
     }
 
@@ -259,7 +279,7 @@ public class CircleCalibration extends Pane {
                         addValue(10);
                     }
                 } else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
-                    if (currentTest < 9 && calibrationPoints[currentTest].offset != null) {
+                    if (currentTest < 9 && calibrationPoints[currentTest].circle != null) {
                         currentTest++;
                         startCurrentTest();
                     }
@@ -277,6 +297,7 @@ public class CircleCalibration extends Pane {
         if (localPointCoord != null) {
             return localPointCoord;
         }
+        System.out.println(x+ " " + y);
         return pointCoord;
     }
 }

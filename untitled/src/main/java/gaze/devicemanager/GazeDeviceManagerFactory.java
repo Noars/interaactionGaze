@@ -1,5 +1,6 @@
 package gaze.devicemanager;
 
+import application.Configuration;
 import application.Cross;
 import lombok.Getter;
 
@@ -19,7 +20,7 @@ public class GazeDeviceManagerFactory {
         final TobiiGazeDeviceManager gazeDeviceManager;
         gazeDeviceManager = new TobiiGazeDeviceManager(cross);
 
-        //gazeDeviceManager.init(new Configuration());
+        gazeDeviceManager.init(new Configuration());
         return gazeDeviceManager;
     }
 
