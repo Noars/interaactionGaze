@@ -111,7 +111,7 @@ public abstract class AbstractGazeDeviceManager implements GazeDeviceManager {
     }
 
     /**
-     * Clear all Nodes in both EventFilter and EventHandler. There is no more main.gaze event after this function is called
+     * Clear all Nodes in both EventFilter and EventHandler. There is no more event after this function is called
      */
     @Override
     public void clear() {
@@ -198,9 +198,9 @@ public abstract class AbstractGazeDeviceManager implements GazeDeviceManager {
                         return true;
                     }
                 }
-            } else {// main.gaze is not on the shape
-                if (event.equals("main/gaze")) {
-                    if (gi.isOnGaze()) {// main.gaze was on the shape previously
+            } else {// gaze is not on the shape
+                if (event.equals("gaze")) {
+                    if (gi.isOnGaze()) {// gaze was on the shape previously
                         gi.setOnGaze(false);
                         gi.setTime(-1);
                         if (localPosition != null) {
@@ -211,7 +211,7 @@ public abstract class AbstractGazeDeviceManager implements GazeDeviceManager {
                         }
                     }
                 } else {
-                    if (gi.isOnMouse()) {// main.gaze was on the shape previously
+                    if (gi.isOnMouse()) {// gaze was on the shape previously
                         gi.setOnMouse(false);
                         gi.setTime(-1);
                         if (localPosition != null) {
