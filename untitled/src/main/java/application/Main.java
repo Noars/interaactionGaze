@@ -7,6 +7,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -29,19 +30,16 @@ public class Main extends Application {
             primaryStage.setFullScreen(true);
             primaryStage.setFullScreenExitHint("");
 
-            BorderPane bp = new BorderPane();
-            Scene calibScene = new Scene(bp, primaryStage.getWidth(), primaryStage.getHeight());
-            primaryStage.setScene(calibScene);
-
             Cross cursor = new Cross();
             GazeDeviceManager gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(cursor);
 
             CircleCalibration cc = new CircleCalibration(primaryStage, cursor, gazeDeviceManager);
-
-            bp.setCenter(cc);
+            Scene calibScene = new Scene(cc, primaryStage.getWidth(), primaryStage.getHeight());
+            primaryStage.setScene(calibScene);
             calibScene.setCursor(Cursor.CROSSHAIR);
 //            primaryStage.initStyle(StageStyle.TRANSPARENT);
-//            calibScene.setFill(Color.TRANSPARENT);
+            calibScene.setFill(Color.LIGHTGRAY);
+            cc.installEventHandler(primaryStage);
             cc.startCalibration();
             primaryStage.show();
         } catch (Exception e) {

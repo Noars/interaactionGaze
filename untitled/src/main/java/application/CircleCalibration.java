@@ -61,7 +61,6 @@ public class CircleCalibration extends Pane {
 
         //this.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         this.setFocusTraversable(true);
-        installEventHandler(this);
     }
 
 
@@ -70,11 +69,11 @@ public class CircleCalibration extends Pane {
         getChildren().add(calibrationCross);
 
         EventHandler<Event> event = e -> {
-            // if (e.getEventType() == GazeEvent.GAZE_MOVED) {
+             if (e.getEventType() == GazeEvent.GAZE_MOVED) {
             curCoord = getGazePosition(((GazeEvent) e).getX(), ((GazeEvent) e).getY());
-//            } else if (e.getEventType() == MouseEvent.MOUSE_MOVED) {
-//                curCoord = new Point2D (((MouseEvent) e).getX(),((MouseEvent) e).getY());
-//            }
+            } else if (e.getEventType() == MouseEvent.MOUSE_MOVED) {
+                curCoord = new Point2D (((MouseEvent) e).getX(),((MouseEvent) e).getY());
+            }
         };
 
         Timeline rotateCalibrationCross = new Timeline();
@@ -254,7 +253,7 @@ public class CircleCalibration extends Pane {
         }
     }
 
-    public void installEventHandler(final Node keyNode) {
+    public void installEventHandler(final Stage keyNode) {
         final EventHandler<KeyEvent> keyEventHandler = keyEvent -> {
             if (keyEvent.getCode() == KeyCode.SPACE) {
                 if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
@@ -270,8 +269,8 @@ public class CircleCalibration extends Pane {
             }
         };
 
-        keyNode.setOnKeyPressed(keyEventHandler);
-        keyNode.setOnKeyReleased(keyEventHandler);
+        keyNode.getScene().setOnKeyPressed(keyEventHandler);
+        keyNode.getScene().setOnKeyReleased(keyEventHandler);
     }
 
     public Point2D getGazePosition(double x, double y) {

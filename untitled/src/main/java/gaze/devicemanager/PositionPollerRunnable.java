@@ -63,8 +63,8 @@ public class PositionPollerRunnable implements Runnable {
 
             final Point2D point = new Point2D(positionX + offsetX, positionY + offsetY);
             robot.mouseMove((int) point.getX(), (int) point.getY());
-//            configuration.currentPoint.add(new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
-//                    MouseInfo.getPointerInfo().getLocation().getY()));
+            configuration.currentPoint.add(new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
+                    MouseInfo.getPointerInfo().getLocation().getY()));
             Platform.runLater(() -> tobiiGazeDeviceManager.onGazeUpdate(point, "gaze"));
         } else {
             configuration.updateLastPositions();
