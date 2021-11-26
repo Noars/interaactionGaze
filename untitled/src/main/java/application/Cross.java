@@ -1,7 +1,6 @@
 package application;
 
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import lombok.extern.slf4j.Slf4j;

@@ -16,23 +16,23 @@ public class CalibrationPoint {
 
 
     public CalibrationPoint() {
-       this.cross = new Cross();
-       this.capturedCoordinates =  new LinkedList<>();
+        this.cross = new Cross();
+        this.capturedCoordinates = new LinkedList<>();
     }
 
-    public double getCrossX(){
+    public double getCrossX() {
         return cross.getLayoutX();
     }
 
-    public double getCrossY(){
+    public double getCrossY() {
         return cross.getLayoutY();
     }
 
-    public double getCircleX(){
+    public double getCircleX() {
         return circle.getCenterX();
     }
 
-    public double getCircleY(){
+    public double getCircleY() {
         return circle.getCenterY();
     }
 

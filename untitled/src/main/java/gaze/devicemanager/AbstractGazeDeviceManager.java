@@ -42,12 +42,6 @@ public abstract class AbstractGazeDeviceManager implements GazeDeviceManager {
         this.gazeMotionListeners.remove(listener);
     }
 
-    private void notifyAllGazeMotionListeners(Point2D position) {
-        for (GazeMotionListener l : this.gazeMotionListeners) {
-            l.gazeMoved(position);
-        }
-    }
-
     @Override
     public void addEventFilter(Node gs) {
         toAdd.add(gs);
@@ -126,10 +120,10 @@ public abstract class AbstractGazeDeviceManager implements GazeDeviceManager {
         // notifyAllGazeMotionListeners(gazePositionOnScreen);
         final double positionX = gazePositionOnScreen.getX();
         final double positionY = gazePositionOnScreen.getY();
-        updatePosition(positionX, positionY, event, false);
+        updatePosition(positionX, positionY, event);
     }
 
-    void updatePosition(double positionX, double positionY, String event, Boolean isBeingReplayed) {
+    void updatePosition(double positionX, double positionY, String event) {
         add();
         delete();
 
@@ -150,10 +144,6 @@ public abstract class AbstractGazeDeviceManager implements GazeDeviceManager {
     }
 
 
-    public void eventFire(double positionX, double positionY, GazeInfos gi, String event) {
-        eventFire(positionX, positionY, gi, event, null);
-    }
-
     public boolean eventFire(double positionX, double positionY, GazeInfos gi, String event, Collection<GazeInfos> c) {
         Node node = gi.getNode();
         if (!node.isDisable()) {
@@ -161,7 +151,7 @@ public abstract class AbstractGazeDeviceManager implements GazeDeviceManager {
             Point2D localPosition = node.screenToLocal(positionX, positionY);
 
             if (localPosition != null && contains(node, positionX, positionY)) {
-                if (event.equals("main/gaze")) {
+                if (event.equals("gaze")) {
                     if (gi.isOnGaze()) {
                         Platform.runLater(
                                 () ->

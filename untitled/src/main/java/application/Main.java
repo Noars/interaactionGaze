@@ -4,6 +4,7 @@ import gaze.devicemanager.GazeDeviceManager;
 import gaze.devicemanager.GazeDeviceManagerFactory;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
@@ -38,7 +39,9 @@ public class Main extends Application {
             CircleCalibration cc = new CircleCalibration(primaryStage, cursor, gazeDeviceManager);
 
             bp.setCenter(cc);
-
+            calibScene.setCursor(Cursor.CROSSHAIR);
+//            primaryStage.initStyle(StageStyle.TRANSPARENT);
+//            calibScene.setFill(Color.TRANSPARENT);
             cc.startCalibration();
             primaryStage.show();
         } catch (Exception e) {
