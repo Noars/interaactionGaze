@@ -1,5 +1,7 @@
-package application;
+package application.ui;
 
+import application.CalibrationPoint;
+import application.Cross;
 import gaze.devicemanager.GazeDeviceManager;
 import gaze.devicemanager.GazeEvent;
 import javafx.animation.KeyFrame;
@@ -23,7 +25,7 @@ import javafx.util.Duration;
 
 import java.awt.*;
 
-public class CircleCalibration extends Pane {
+public class CalibrationPane extends Pane {
 
     private static final int TOP_LEFT = 0;
     private static final int TOP_CENTER = 1;
@@ -49,7 +51,7 @@ public class CircleCalibration extends Pane {
 
     double[] angle = new double[9];
 
-    public CircleCalibration(Stage primaryStage, Cross cursor, GazeDeviceManager gazeDeviceManager) {
+    public CalibrationPane(Stage primaryStage, Cross cursor, GazeDeviceManager gazeDeviceManager) {
         super();
         this.gazeDeviceManager = gazeDeviceManager;
         this.primaryStage = primaryStage;

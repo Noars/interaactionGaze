@@ -1,15 +1,15 @@
 package application;
 
-import application.ui.Home;
+import application.ui.CalibrationPane;
+import application.ui.MainPane;
+import application.ui.OptionsPane;
 import gaze.MouseInfo;
-import gaze.devicemanager.GazeDeviceManager;
 import gaze.devicemanager.GazeDeviceManagerFactory;
 import gaze.devicemanager.TobiiGazeDeviceManager;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -25,13 +25,15 @@ public class Main extends Application {
     @Getter
     TobiiGazeDeviceManager gazeDeviceManager;
     @Getter
-    CircleCalibration cc;
+    CalibrationPane calibrationPane;
     @Getter
-    Home home;
+    MainPane home;
     @Getter
     Cross cursor;
     @Getter
     MouseInfo mouseInfo;
+    @Getter
+    OptionsPane optionsPane;
 
     @Override
     public void start(Stage primaryStage) {
@@ -43,14 +45,15 @@ public class Main extends Application {
             mouseInfo = new MouseInfo();
             gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(this);
 
-            cc = new CircleCalibration(primaryStage, cursor, gazeDeviceManager);
-            home = new Home(this,primaryStage);
+            optionsPane = new OptionsPane(primaryStage,this);
+            calibrationPane = new CalibrationPane(primaryStage, cursor, gazeDeviceManager);
+            home = new MainPane(this,primaryStage);
              Scene calibScene = new Scene(home, primaryStage.getWidth(), primaryStage.getHeight());
             primaryStage.setScene(calibScene);
             calibScene.setCursor(Cursor.CROSSHAIR);
             calibScene.setFill(Color.LIGHTGRAY);
-            cc.installEventHandler(primaryStage);
-            cc.startCalibration();
+            calibrationPane.installEventHandler(primaryStage);
+            calibrationPane.startCalibration();
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,7 +68,15 @@ public class Main extends Application {
         primaryStage.setHeight(primaryScreenBounds.getHeight());
         primaryStage.setFullScreen(true);
         primaryStage.setFullScreenExitHint("");
-        primaryStage.getScene().setRoot(this.getCc());
+        primaryStage.getScene().setRoot(this.getCalibrationPane());
+    }
+
+    public void goToOptions(Stage primaryStage){
+        primaryStage.getScene().setRoot(this.getOptionsPane());
+    }
+
+    public void goToMain(Stage primaryStage){
+        primaryStage.getScene().setRoot(this.getHome());
     }
 
 }

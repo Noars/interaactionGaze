@@ -16,13 +16,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class Home extends BorderPane {
+public class MainPane extends BorderPane {
 
     boolean running = true;
     boolean displayed = true;
     boolean clikcActivated = false;
 
-    public Home(Main main, Stage primaryStage){
+    public MainPane(Main main, Stage primaryStage){
         super();
         this.setWidth(500);
         this.setHeight(200);
@@ -69,6 +69,7 @@ public class Home extends BorderPane {
         });
 
         Button options = new Button("Options");
+        options.setOnAction((e)->{main.goToOptions(primaryStage);});
 
         Button calibrate = new Button("Calibrate");
         calibrate.setOnAction((e)->{main.startCalibration(primaryStage);});
