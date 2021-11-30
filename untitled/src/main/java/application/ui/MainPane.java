@@ -1,7 +1,6 @@
 package application.ui;
 
 import application.Main;
-import gaze.devicemanager.TobiiGazeDeviceManager;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -9,18 +8,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.util.Timer;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 public class MainPane extends BorderPane {
 
     boolean running = true;
     boolean displayed = true;
-    boolean clikcActivated = false;
+    boolean iscancelled = false;
 
     public MainPane(Main main, Stage primaryStage){
         super();
@@ -28,6 +20,23 @@ public class MainPane extends BorderPane {
         this.setHeight(200);
         this.setTop(new Label("InteraactionGaze"));
 
+        Button startstop = createStartStopButton(main);
+
+        Button hide = createHideButton();
+
+        Button clickActivation = createClickActivationButton(main);
+
+        Button options = createOptionsButton(main, primaryStage);
+
+        Button calibrate = createCalibrateButton(main, primaryStage);
+
+        this.setBottom(new HBox(startstop,hide,clickActivation,calibrate,options));
+
+
+        main.getMouseInfo().initTimer();
+    }
+
+    public Button createStartStopButton(Main main){
         Button startstop = new Button("Stop");
         startstop.setOnAction((e)->{
             if(running){
@@ -40,7 +49,10 @@ public class MainPane extends BorderPane {
                 startstop.setText("Stop");
             }
         });
+        return startstop;
+    }
 
+    public Button createHideButton(){
         Button hide = new Button("Cacher le curseur");
         hide.setOnAction((e)->{
             if(displayed) {
@@ -53,44 +65,34 @@ public class MainPane extends BorderPane {
                 hide.setText("Cacher le curseur");
             }
         });
+        return hide;
+    }
 
+    public Button createClickActivationButton(Main main){
         Button clickActivation = new Button("Activer le click");
-        Runnable helloRunnable = () -> {click(main.getMouseInfo());};
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(helloRunnable, 0, 5, TimeUnit.SECONDS);
         clickActivation.setOnAction((e)->{
-            if(clikcActivated){
-                clikcActivated = false;
+            if(main.getMouseInfo().isClikcActivated()){
+                main.getMouseInfo().setClikcActivated(false);
+                iscancelled = true;
                 clickActivation.setText("Activer le clic");
             }else{
-                clikcActivated = true;
+                main.getMouseInfo().setClikcActivated(true);
+                iscancelled = false;
                 clickActivation.setText("Desactiver le clic");
             }
         });
-
-        Button options = new Button("Options");
-        options.setOnAction((e)->{main.goToOptions(primaryStage);});
-
-        Button calibrate = new Button("Calibrate");
-        calibrate.setOnAction((e)->{main.startCalibration(primaryStage);});
-
-        this.setBottom(new HBox(startstop,hide,clickActivation, options,calibrate));
+        return clickActivation;
     }
 
-    public void click(gaze.MouseInfo mouseInfo){
-        if(clikcActivated && mouseInfo.isBeingDwelled()) {
-            System.out.println("clicking");
-            Robot bot;
-            try {
-                int x = (int) MouseInfo.getPointerInfo().getLocation().getX();
-                int y = (int) MouseInfo.getPointerInfo().getLocation().getY();
-                bot = new Robot();
-                bot.mouseMove(x, y);
-                bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-                bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-            } catch (AWTException e) {
-                e.printStackTrace();
-            }
-        }
+    public Button createOptionsButton(Main main, Stage primaryStage){
+        Button options = new Button("Options");
+        options.setOnAction((e)->{main.goToOptions(primaryStage);});
+        return options;
+    }
+
+    public Button createCalibrateButton(Main main, Stage primaryStage){
+        Button calibrate = new Button("Calibrate");
+        calibrate.setOnAction((e)->{main.startCalibration(primaryStage);});
+        return calibrate;
     }
 }
