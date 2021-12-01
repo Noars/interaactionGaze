@@ -38,7 +38,7 @@ public class MainPane extends BorderPane {
         BorderPane.setAlignment(hbox, Pos.CENTER);
         this.setCenter(hbox);
 
-        this.setStyle("-fx-background-color: #535e65");
+        this.setStyle("-fx-background-color: #535e65; -fx-background-radius: 0 0 15 15");
 
         main.getMouseInfo().initTimer();
     }

@@ -1,18 +1,23 @@
 package application;
 
 import application.ui.CalibrationPane;
+import application.ui.DecoratedPane;
 import application.ui.MainPane;
 import application.ui.OptionsPane;
 import gaze.MouseInfo;
 import gaze.devicemanager.GazeDeviceManagerFactory;
 import gaze.devicemanager.TobiiGazeDeviceManager;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,14 +55,21 @@ public class Main extends Application {
             optionsPane = new OptionsPane(primaryStage, this);
             calibrationPane = new CalibrationPane(primaryStage, cursor, gazeDeviceManager);
             home = new MainPane(this, primaryStage);
-            Scene calibScene = new Scene(home, primaryStage.getWidth(), primaryStage.getHeight());
+
+            DecoratedPane decoratedPane = new DecoratedPane(primaryStage);
+            decoratedPane.setCenter(home);
+
+            Scene calibScene = new Scene(decoratedPane, primaryStage.getWidth(), primaryStage.getHeight());
             calibScene.getStylesheets().add("style.css");
             primaryStage.setScene(calibScene);
-            //primaryStage.initStyle(StageStyle.UNDECORATED);
-            calibScene.setFill(Color.LIGHTGRAY);
+            calibScene.setFill(Color.TRANSPARENT);
             calibrationPane.installEventHandler(primaryStage, this);
             calibrationPane.startCalibration(this);
+
+            primaryStage.initStyle(StageStyle.TRANSPARENT);
+
             primaryStage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,13 +88,13 @@ public class Main extends Application {
     }
 
     public void goToOptions(Stage primaryStage) {
-        primaryStage.getScene().setRoot(this.getOptionsPane());
+        ((BorderPane)primaryStage.getScene().getRoot()).setCenter(this.getOptionsPane());
         primaryStage.getScene().setCursor(Cursor.DEFAULT);
     }
 
     public void goToMain(Stage primaryStage) {
         primaryStage.setFullScreen(false);
-        primaryStage.getScene().setRoot(this.getHome());
+        ((BorderPane)primaryStage.getScene().getRoot()).setCenter(this.getHome());
         primaryStage.getScene().setCursor(Cursor.DEFAULT);
     }
 
