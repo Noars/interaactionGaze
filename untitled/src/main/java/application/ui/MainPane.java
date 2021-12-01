@@ -88,7 +88,7 @@ public class MainPane extends BorderPane {
                 ((ImageView) hide.getGraphic()).setImage(new Image("images/white/show.png"));
             } else {
                 displayed = true;
-                this.setCursor(Cursor.CROSSHAIR);
+                this.setCursor(Cursor.DEFAULT);
                 hide.setText("Cacher le curseur");
                 ((ImageView) hide.getGraphic()).setImage(new Image("images/white/hide.png"));
             }

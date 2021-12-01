@@ -4,6 +4,9 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -19,11 +22,23 @@ public class DecoratedPane extends BorderPane {
 
     public DecoratedPane(Stage primaryStage) {
         Button exit = new Button("fermer");
+        ImageView exitImage = new ImageView(new Image("images/white/close.png"));
+        exit.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        exit.getStyleClass().add("topBarButton");
+        exitImage.setPreserveRatio(true);
+        exitImage.setFitWidth(50);
+        exit.setGraphic(exitImage);
         exit.setOnAction((e) -> {
             System.exit(0);
         });
 
         Button minimize = new Button("minimiser");
+        ImageView minimizeImage = new ImageView(new Image("images/white/minimize.png"));
+        minimize.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        minimize.getStyleClass().add("topBarButton");
+        minimizeImage.setPreserveRatio(true);
+        minimizeImage.setFitWidth(50);
+        minimize.setGraphic(minimizeImage);
         minimize.setOnAction((e) -> {
             primaryStage.setIconified(true);
         });
@@ -32,7 +47,7 @@ public class DecoratedPane extends BorderPane {
         topBar.setAlignment(Pos.CENTER_RIGHT);
         BorderPane.setAlignment(topBar, Pos.CENTER_RIGHT);
         this.setTop(topBar);
-        this.setStyle("-fx-background-color: white; -fx-background-radius: 15");
+        this.setStyle("-fx-background-color: #282e35; -fx-background-radius: 15");
 
         topBar.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
