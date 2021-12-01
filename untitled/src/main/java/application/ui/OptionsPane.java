@@ -58,7 +58,7 @@ public class OptionsPane extends BorderPane {
         BorderPane.setAlignment(gridPane, Pos.CENTER);
         this.setCenter(hbox);
 
-        this.setStyle("-fx-background-color: #535e65");
+        this.setStyle("-fx-background-color: #535e65; -fx-background-radius: 0 0 15 15");
     }
 
     public Button createCalibrateButton(Main main, Stage primaryStage) {
