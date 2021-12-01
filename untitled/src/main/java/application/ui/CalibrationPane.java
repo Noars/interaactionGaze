@@ -13,7 +13,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -73,10 +72,10 @@ public class CalibrationPane extends Pane {
         getChildren().add(calibrationCross);
 
         EventHandler<Event> event = e -> {
-             if (e.getEventType() == GazeEvent.GAZE_MOVED) {
-            curCoord = getGazePosition(((GazeEvent) e).getX(), ((GazeEvent) e).getY());
+            if (e.getEventType() == GazeEvent.GAZE_MOVED) {
+                curCoord = getGazePosition(((GazeEvent) e).getX(), ((GazeEvent) e).getY());
             } else if (e.getEventType() == MouseEvent.MOUSE_MOVED) {
-                curCoord = new Point2D (((MouseEvent) e).getX(),((MouseEvent) e).getY());
+                curCoord = new Point2D(((MouseEvent) e).getX(), ((MouseEvent) e).getY());
             }
         };
 
@@ -98,7 +97,7 @@ public class CalibrationPane extends Pane {
     public void endCalibration(Main main) {
 
         Button backHome = new Button("Valider");
-        backHome.setOnAction((e)->{
+        backHome.setOnAction((e) -> {
             main.goToMain(primaryStage);
 
         });

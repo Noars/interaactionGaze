@@ -1,7 +1,6 @@
 package gaze.devicemanager;
 
 import application.Configuration;
-import application.Cross;
 import application.Main;
 import lombok.Getter;
 

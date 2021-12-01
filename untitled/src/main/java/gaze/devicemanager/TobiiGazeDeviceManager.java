@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
 
     private Cross cross;
-private MouseInfo mouseInfo;
+    private MouseInfo mouseInfo;
     private ExecutorService executorService;
 
     private PositionPollerRunnable positionPollerRunnable;
@@ -23,7 +23,8 @@ private MouseInfo mouseInfo;
         this.cross = main.getCursor();
         this.mouseInfo = main.getMouseInfo();
     }
-    public void setPause(boolean b){
+
+    public void setPause(boolean b) {
         positionPollerRunnable.setPauseRequested(b);
     }
 

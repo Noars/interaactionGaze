@@ -37,7 +37,7 @@ public class PositionPollerRunnable implements Runnable {
         while (!stopRequested) {
 
             try {
-                if(!pauseRequested) {
+                if (!pauseRequested) {
                     configuration.analyse(MouseInfo.getPointerInfo().getLocation().getX(), MouseInfo.getPointerInfo().getLocation().getY());
                     poll();
                 }
@@ -66,7 +66,7 @@ public class PositionPollerRunnable implements Runnable {
 
         final double offsetX = cross.getTranslateX();
         final double offsetY = cross.getTranslateY();
-        if(xRatio != 0.5 || yRatio !=0.5) {
+        if (xRatio != 0.5 || yRatio != 0.5) {
             if (configuration.waitForUserMove()) {
 
                 final Point2D point = new Point2D(positionX + offsetX, positionY + offsetY);

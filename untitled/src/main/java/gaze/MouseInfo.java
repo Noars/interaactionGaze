@@ -3,7 +3,6 @@ package gaze;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
@@ -16,39 +15,37 @@ import java.awt.event.InputEvent;
 import java.util.LinkedList;
 
 public class MouseInfo {
-    LinkedList<Point2D> previousPosition = new LinkedList<>();
     private static final int POINTS_TO_TEST = 10;
-
     public int DWELL_TIME = 2000;
-
+    LinkedList<Point2D> previousPosition = new LinkedList<>();
     @Getter
     @Setter
     boolean clikcActivated = false;
-    @Getter
-    private IntegerProperty dwellRatio = new SimpleIntegerProperty(0);
     Timeline dwellTimeline;
     boolean dwellStarted;
+    @Getter
+    private IntegerProperty dwellRatio = new SimpleIntegerProperty(0);
 
-    public MouseInfo(){
+    public MouseInfo() {
         initTimer();
     }
 
-    synchronized public void addPosition(Point2D point){
-         if(previousPosition.size() >= POINTS_TO_TEST){
-             previousPosition.pop();
-         };
-         previousPosition.add(point);
+    synchronized public void addPosition(Point2D point) {
+        if (previousPosition.size() >= POINTS_TO_TEST) {
+            previousPosition.pop();
+        }
+        previousPosition.add(point);
 
         if (clikcActivated && isBeingDwelled() && !dwellStarted()) {
-           startTimer();
-        } else if((!clikcActivated || !isBeingDwelled()) &&  dwellStarted ) {
+            startTimer();
+        } else if ((!clikcActivated || !isBeingDwelled()) && dwellStarted) {
             stopTimer();
         }
-     }
+    }
 
-    public boolean isBeingDwelled(){
+    public boolean isBeingDwelled() {
         LinkedList<Point2D> temp = new LinkedList<Point2D>(previousPosition);
-        if(temp.size()>=POINTS_TO_TEST) {
+        if (temp.size() >= POINTS_TO_TEST) {
             Point2D meanValue = getMeanValue();
             boolean isCloseEnough = true;
             int i = 0;
@@ -61,23 +58,23 @@ public class MouseInfo {
             return isCloseEnough;
         }
         return false;
-     }
+    }
 
-     Point2D getMeanValue(){
-        double x = 0,y = 0;
-         for (Point2D point:previousPosition) {
-             x+=point.getX();
-             y+=point.getY();
-         }
-         return new Point2D(x/previousPosition.size(), y/previousPosition.size());
-     }
+    Point2D getMeanValue() {
+        double x = 0, y = 0;
+        for (Point2D point : previousPosition) {
+            x += point.getX();
+            y += point.getY();
+        }
+        return new Point2D(x / previousPosition.size(), y / previousPosition.size());
+    }
 
-     public void initTimer(){
+    public void initTimer() {
         dwellTimeline = new Timeline();
         dwellTimeline.getKeyFrames().addAll(
-                new KeyFrame(Duration.ZERO,new KeyValue(dwellRatio,0),new KeyValue(dwellRatio,0)),
-                new KeyFrame(Duration.millis(DWELL_TIME),new KeyValue(dwellRatio,0),new KeyValue(dwellRatio,100)));
-        dwellTimeline.setOnFinished((e)->{
+                new KeyFrame(Duration.ZERO, new KeyValue(dwellRatio, 0), new KeyValue(dwellRatio, 0)),
+                new KeyFrame(Duration.millis(DWELL_TIME), new KeyValue(dwellRatio, 0), new KeyValue(dwellRatio, 100)));
+        dwellTimeline.setOnFinished((e) -> {
             Robot bot;
             try {
                 int x = (int) java.awt.MouseInfo.getPointerInfo().getLocation().getX();
@@ -94,18 +91,18 @@ public class MouseInfo {
         });
     }
 
-     public void startTimer(){
-         dwellStarted = true;
-         initTimer();
+    public void startTimer() {
+        dwellStarted = true;
+        initTimer();
         dwellTimeline.play();
-     }
+    }
 
-     public void stopTimer(){
-         dwellStarted = false;
+    public void stopTimer() {
+        dwellStarted = false;
         dwellTimeline.stop();
-     }
+    }
 
-     public boolean dwellStarted(){
+    public boolean dwellStarted() {
         return dwellStarted;
-     }
+    }
 }
