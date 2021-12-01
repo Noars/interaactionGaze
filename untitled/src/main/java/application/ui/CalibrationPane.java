@@ -1,5 +1,8 @@
-package application;
+package application.ui;
 
+import application.CalibrationPoint;
+import application.Cross;
+import application.Main;
 import gaze.devicemanager.GazeDeviceManager;
 import gaze.devicemanager.GazeEvent;
 import javafx.animation.KeyFrame;
@@ -10,7 +13,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -23,7 +26,7 @@ import javafx.util.Duration;
 
 import java.awt.*;
 
-public class CircleCalibration extends Pane {
+public class CalibrationPane extends Pane {
 
     private static final int TOP_LEFT = 0;
     private static final int TOP_CENTER = 1;
@@ -49,7 +52,7 @@ public class CircleCalibration extends Pane {
 
     double[] angle = new double[9];
 
-    public CircleCalibration(Stage primaryStage, Cross cursor, GazeDeviceManager gazeDeviceManager) {
+    public CalibrationPane(Stage primaryStage, Cross cursor, GazeDeviceManager gazeDeviceManager) {
         super();
         this.gazeDeviceManager = gazeDeviceManager;
         this.primaryStage = primaryStage;
@@ -64,15 +67,15 @@ public class CircleCalibration extends Pane {
     }
 
 
-    public void startCalibration() {
+    public void startCalibration(Main main) {
         calibrationCross = new Cross();
         getChildren().add(calibrationCross);
 
         EventHandler<Event> event = e -> {
-             if (e.getEventType() == GazeEvent.GAZE_MOVED) {
-            curCoord = getGazePosition(((GazeEvent) e).getX(), ((GazeEvent) e).getY());
+            if (e.getEventType() == GazeEvent.GAZE_MOVED) {
+                curCoord = getGazePosition(((GazeEvent) e).getX(), ((GazeEvent) e).getY());
             } else if (e.getEventType() == MouseEvent.MOUSE_MOVED) {
-                curCoord = new Point2D (((MouseEvent) e).getX(),((MouseEvent) e).getY());
+                curCoord = new Point2D(((MouseEvent) e).getX(), ((MouseEvent) e).getY());
             }
         };
 
@@ -88,10 +91,18 @@ public class CircleCalibration extends Pane {
         //this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
         gazeDeviceManager.addEventFilter(this);
 
-        startCurrentTest();
+        startCurrentTest(main);
     }
 
-    public void endCalibration() {
+    public void endCalibration(Main main) {
+
+        Button backHome = new Button("Valider");
+        backHome.setOnAction((e) -> {
+            main.goToMain(primaryStage);
+
+        });
+
+        this.getChildren().add(backHome);
 
         for (int angleIndex = 0; angleIndex <= 7; angleIndex++) {
             angle[angleIndex] = angleBetween(calibrationPoints[CENTER].cross, calibrationPoints[TOP_LEFT].cross, calibrationPoints[angleIndex].cross);
@@ -171,14 +182,14 @@ public class CircleCalibration extends Pane {
                 Math.atan2(mouseX - center.getLayoutX(), mouseY - center.getLayoutY())) + 360) % 360;
     }
 
-    public void startCurrentTest() {
+    public void startCurrentTest(Main main) {
 
         double width = primaryScreenBounds.getWidth() / 10;
         double height = primaryScreenBounds.getHeight() / 10;
 
         if (currentTest == TESTENDED) {
             calibrationCross.setOpacity(0);
-            endCalibration();
+            endCalibration(main);
         } else {
             if (currentTest == TOP_LEFT) {
                 calibrationCross.setLayoutX(width);
@@ -253,7 +264,7 @@ public class CircleCalibration extends Pane {
         }
     }
 
-    public void installEventHandler(final Stage keyNode) {
+    public void installEventHandler(final Stage keyNode, Main main) {
         final EventHandler<KeyEvent> keyEventHandler = keyEvent -> {
             if (keyEvent.getCode() == KeyCode.SPACE) {
                 if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
@@ -263,7 +274,7 @@ public class CircleCalibration extends Pane {
                 } else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
                     if (currentTest < 9 && calibrationPoints[currentTest].circle != null) {
                         currentTest++;
-                        startCurrentTest();
+                        startCurrentTest(main);
                     }
                 }
             }

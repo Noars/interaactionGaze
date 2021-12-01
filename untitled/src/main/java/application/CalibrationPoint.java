@@ -10,9 +10,9 @@ import java.util.List;
 @Slf4j
 public class CalibrationPoint {
 
-    Cross cross;
-    Circle circle = null;
-    List<Point2D> capturedCoordinates;
+    public Cross cross;
+    public Circle circle = null;
+    public List<Point2D> capturedCoordinates;
 
 
     public CalibrationPoint() {
@@ -36,11 +36,11 @@ public class CalibrationPoint {
         return circle.getCenterY();
     }
 
-    double getOffsetX() {
+    public double getOffsetX() {
         return getCircleX() - getCrossX();
     }
 
-    double getOffsetY() {
+    public double getOffsetY() {
         return getCircleY() - getCrossY();
     }
 }

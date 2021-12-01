@@ -19,21 +19,28 @@ public class PositionPollerRunnable implements Runnable {
     private final Configuration configuration;
     Robot robot = new Robot();
     private Cross cross;
+    private gaze.MouseInfo mouseInfo;
     @Setter
     private transient boolean stopRequested = false;
+    @Setter
+    private transient boolean pauseRequested = false;
 
-    public PositionPollerRunnable(Configuration configuration, Cross cross, final TobiiGazeDeviceManager tobiiGazeDeviceManager) throws AWTException {
+    public PositionPollerRunnable(Configuration configuration, Cross cross, gaze.MouseInfo mouseInfo, final TobiiGazeDeviceManager tobiiGazeDeviceManager) throws AWTException {
         this.configuration = configuration;
         this.cross = cross;
+        this.mouseInfo = mouseInfo;
         this.tobiiGazeDeviceManager = tobiiGazeDeviceManager;
     }
 
     @Override
     public void run() {
         while (!stopRequested) {
+
             try {
-                configuration.analyse(MouseInfo.getPointerInfo().getLocation().getX(), MouseInfo.getPointerInfo().getLocation().getY());
-                poll();
+                if (!pauseRequested) {
+                    configuration.analyse(MouseInfo.getPointerInfo().getLocation().getX(), MouseInfo.getPointerInfo().getLocation().getY());
+                    poll();
+                }
             } catch (final RuntimeException e) {
                 log.warn("Exception while polling position of main.gaze", e);
             }
@@ -59,15 +66,19 @@ public class PositionPollerRunnable implements Runnable {
 
         final double offsetX = cross.getTranslateX();
         final double offsetY = cross.getTranslateY();
-        if (configuration.waitForUserMove()) {
+        if (xRatio != 0.5 || yRatio != 0.5) {
+            if (configuration.waitForUserMove()) {
 
-            final Point2D point = new Point2D(positionX + offsetX, positionY + offsetY);
-            robot.mouseMove((int) point.getX(), (int) point.getY());
-            configuration.currentPoint.add(new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
-                    MouseInfo.getPointerInfo().getLocation().getY()));
-            Platform.runLater(() -> tobiiGazeDeviceManager.onGazeUpdate(point, "gaze"));
-        } else {
-            configuration.updateLastPositions();
+                final Point2D point = new Point2D(positionX + offsetX, positionY + offsetY);
+                robot.mouseMove((int) point.getX(), (int) point.getY());
+                Point2D newPoint = new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
+                        MouseInfo.getPointerInfo().getLocation().getY());
+                mouseInfo.addPosition(newPoint);
+                configuration.currentPoint.add(newPoint);
+                Platform.runLater(() -> tobiiGazeDeviceManager.onGazeUpdate(point, "gaze"));
+            } else {
+                configuration.updateLastPositions();
+            }
         }
     }
 
