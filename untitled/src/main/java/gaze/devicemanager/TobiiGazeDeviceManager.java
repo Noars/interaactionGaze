@@ -1,89 +1,47 @@
 package gaze.devicemanager;
 
-import com.sun.glass.ui.Screen;
-import gaze.GazeMotionListener;
-import javafx.application.Platform;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-import javafx.geometry.Point2D;
+import application.Configuration;
+import application.Cross;
 import tobii.Tobii;
+
+import java.awt.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
 
-    private Service<Void> calculateService;
+    private Cross cross;
 
-    private transient boolean stopRequested = false;
+    private ExecutorService executorService;
 
-    public TobiiGazeDeviceManager() {
+    private PositionPollerRunnable positionPollerRunnable;
+
+    public TobiiGazeDeviceManager(Cross cross) {
         super();
-
+        this.cross = cross;
     }
 
-    public void init() {
+    public void init(Configuration configuration) {
+
         Tobii.gazePosition();
 
-        Screen mainScreen = Screen.getMainScreen();
-        final int screenWidth = mainScreen.getWidth();
-        final int screenHeight = mainScreen.getHeight();
-
-        calculateService = new Service<Void>() {
-
-            @Override
-            protected Task<Void> createTask() {
-                return new Task<Void>() {
-
-                    @Override
-                    protected Void call() {
-                        while (!stopRequested) {
-                            float[] pointAsFloatArray = Tobii.gazePosition();
-
-                            final float xRatio = pointAsFloatArray[0];
-                            final float yRatio = pointAsFloatArray[1];
-
-                            final double positionX = xRatio * screenWidth;
-                            final double positionY = yRatio * screenHeight;
-
-                            Point2D point = new Point2D(positionX, positionY);
-                            Platform.runLater(() -> onGazeUpdate(point));
-
-                            // sleep is mandatory to avoid too much calls to gazePosition()
-                            try {
-                                Thread.sleep(10);
-                            } catch (InterruptedException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-
-                        }
-                        return null;
-                    }
-                };
-            }
-        };
-
-        calculateService.start();
+        try {
+            positionPollerRunnable = new PositionPollerRunnable(configuration, cross, this);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(positionPollerRunnable);
     }
+
 
     @Override
     public void destroy() {
-        stopRequested = true;
-        Service<Void> calculateService = this.calculateService;
-        if (calculateService != null) {
-            while (!calculateService.cancel())
-                calculateService.reset();
+        positionPollerRunnable.setStopRequested(true);
+        ExecutorService executorService = this.executorService;
+        if (executorService != null) {
+            executorService.shutdown();
         }
-    }
-
-    @Override
-    public void addGazeMotionListener(GazeMotionListener listener) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeGazeMotionListener(GazeMotionListener listener) {
-        // TODO Auto-generated method stub
-
     }
 
 }
