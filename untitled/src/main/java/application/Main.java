@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,8 +39,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            primaryStage.setWidth(500);
-            primaryStage.setHeight(200);
+            primaryStage.setWidth(600);
+            primaryStage.setHeight(250);
+            primaryStage.setTitle("InteraactionGaze");
 
             cursor = new Cross();
             mouseInfo = new MouseInfo();
@@ -49,11 +51,12 @@ public class Main extends Application {
             calibrationPane = new CalibrationPane(primaryStage, cursor, gazeDeviceManager);
             home = new MainPane(this,primaryStage);
              Scene calibScene = new Scene(home, primaryStage.getWidth(), primaryStage.getHeight());
+            calibScene.getStylesheets().add("style.css");
             primaryStage.setScene(calibScene);
-            calibScene.setCursor(Cursor.CROSSHAIR);
+            //primaryStage.initStyle(StageStyle.UNDECORATED);
             calibScene.setFill(Color.LIGHTGRAY);
-            calibrationPane.installEventHandler(primaryStage);
-            calibrationPane.startCalibration();
+            calibrationPane.installEventHandler(primaryStage,this);
+            calibrationPane.startCalibration(this);
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,14 +72,18 @@ public class Main extends Application {
         primaryStage.setFullScreen(true);
         primaryStage.setFullScreenExitHint("");
         primaryStage.getScene().setRoot(this.getCalibrationPane());
+        primaryStage.getScene().setCursor(Cursor.CROSSHAIR);
     }
 
     public void goToOptions(Stage primaryStage){
         primaryStage.getScene().setRoot(this.getOptionsPane());
+        primaryStage.getScene().setCursor(Cursor.DEFAULT);
     }
 
     public void goToMain(Stage primaryStage){
+        primaryStage.setFullScreen(false);
         primaryStage.getScene().setRoot(this.getHome());
+        primaryStage.getScene().setCursor(Cursor.DEFAULT);
     }
 
 }

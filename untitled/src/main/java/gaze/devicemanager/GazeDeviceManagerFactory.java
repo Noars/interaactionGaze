@@ -17,7 +17,6 @@ public class GazeDeviceManagerFactory {
     }
 
     public TobiiGazeDeviceManager createNewGazeListener(Main main) {
-
         final TobiiGazeDeviceManager gazeDeviceManager;
         gazeDeviceManager = new TobiiGazeDeviceManager(main);
 

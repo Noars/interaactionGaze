@@ -36,7 +36,13 @@ private MouseInfo mouseInfo;
         } catch (AWTException e) {
             e.printStackTrace();
         }
-        executorService = Executors.newSingleThreadExecutor();
+        executorService = Executors.newFixedThreadPool(4,
+                (Runnable r) -> {
+                    Thread t = new Thread(r);
+                    t.setDaemon(true);
+                    return t;
+                }
+        );
         executorService.submit(positionPollerRunnable);
     }
 

@@ -19,7 +19,7 @@ public class MouseInfo {
     LinkedList<Point2D> previousPosition = new LinkedList<>();
     private static final int POINTS_TO_TEST = 10;
 
-    private static final int DWELL_TIME = 2000;
+    public int DWELL_TIME = 2000;
 
     @Getter
     @Setter
