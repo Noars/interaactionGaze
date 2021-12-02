@@ -63,8 +63,6 @@ public class Main extends Application {
             primaryStage.setScene(calibScene);
             calibScene.setFill(Color.TRANSPARENT);
             calibrationPane.installEventHandler(primaryStage, this);
-            calibrationPane.startCalibration(this);
-
             primaryStage.initStyle(StageStyle.TRANSPARENT);
 
             primaryStage.show();
@@ -84,6 +82,7 @@ public class Main extends Application {
         primaryStage.setFullScreenExitHint("");
         primaryStage.getScene().setRoot(this.getCalibrationPane());
         primaryStage.getScene().setCursor(Cursor.CROSSHAIR);
+        calibrationPane.startCalibration(this);
     }
 
     public void goToOptions(Stage primaryStage) {

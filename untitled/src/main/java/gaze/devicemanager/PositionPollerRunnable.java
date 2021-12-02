@@ -63,12 +63,14 @@ public class PositionPollerRunnable implements Runnable {
         final double positionX = xRatio * screenDimension.getWidth();
         final double positionY = yRatio * screenDimension.getHeight();
 
+        double offsetX = 0;
+        double offsetY = 0;
+
         if (calibrationConfig.isAngleSetUpDone()) {
             calibrationConfig.handle(positionX, positionY);
+            offsetX = calibrationConfig.getMainOffsetX();
+            offsetY = calibrationConfig.getMainOffsetY();
         }
-
-        final double offsetX = calibrationConfig.getMainOffsetX();
-        final double offsetY = calibrationConfig.getMainOffsetY();
 
         if (xRatio != 0.5 || yRatio != 0.5) {
             if (configuration.waitForUserMove()) {

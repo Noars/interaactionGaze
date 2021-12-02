@@ -47,13 +47,13 @@ public class CalibrationPane extends Pane {
     Point2D curCoord = new Point2D(0, 0);
     Stage primaryStage;
 
-    CalibrationConfig calibrationPoints;
+    CalibrationConfig calibrationConfig;
 
     public CalibrationPane(Stage primaryStage, GazeDeviceManager gazeDeviceManager, CalibrationConfig mainCalibrationConfig) {
         super();
         this.gazeDeviceManager = gazeDeviceManager;
         this.primaryStage = primaryStage;
-        this.calibrationPoints = mainCalibrationConfig;
+        this.calibrationConfig = mainCalibrationConfig;
 
         //this.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         this.setFocusTraversable(true);
@@ -61,6 +61,9 @@ public class CalibrationPane extends Pane {
 
 
     public void startCalibration(Main main) {
+        getChildren().clear();
+        currentTest = 0;
+        resetCalibrationPoints();
         calibrationCross = new Cross();
         getChildren().add(calibrationCross);
 
@@ -97,9 +100,9 @@ public class CalibrationPane extends Pane {
 
         this.getChildren().add(backHome);
 
-        calibrationPoints.setAllAngles();
+        calibrationConfig.setAllAngles();
         try {
-            calibrationPoints.save();
+            calibrationConfig.save();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -142,7 +145,7 @@ public class CalibrationPane extends Pane {
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() / 2);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() / 2);
             }
-            calibrationPoints.get(currentTest).setCross(nextCross());
+            calibrationConfig.get(currentTest).setCross(nextCross());
         }
     }
 
@@ -155,7 +158,7 @@ public class CalibrationPane extends Pane {
     }
 
     public void addValue(int numberOfCoordinateToTest) {
-        if (calibrationPoints.get(currentTest).capturedCoordinates.size() < numberOfCoordinateToTest) {
+        if (calibrationConfig.get(currentTest).capturedCoordinates.size() < numberOfCoordinateToTest) {
             Circle c = new Circle();
             c.setRadius(5);
             c.setCenterX(curCoord.getX());
@@ -163,18 +166,18 @@ public class CalibrationPane extends Pane {
             c.setFill(Color.RED);
             c.setOpacity(1);
 
-            calibrationPoints.get(currentTest).capturedCoordinates.add(curCoord);
+            calibrationConfig.get(currentTest).capturedCoordinates.add(curCoord);
 
             getChildren().add(c);
-        } else if (calibrationPoints.get(currentTest).capturedCoordinates.size() == numberOfCoordinateToTest && calibrationPoints.get(currentTest).circle == null) {
+        } else if (calibrationConfig.get(currentTest).capturedCoordinates.size() == numberOfCoordinateToTest && calibrationConfig.get(currentTest).circle == null) {
             double coordXsum = 0, coordYsum = 0;
 
-            for (Point2D gazedCoordinate : calibrationPoints.get(currentTest).capturedCoordinates) {
+            for (Point2D gazedCoordinate : calibrationConfig.get(currentTest).capturedCoordinates) {
                 coordXsum = coordXsum + gazedCoordinate.getX();
                 coordYsum = coordYsum + gazedCoordinate.getY();
             }
-            coordXsum = coordXsum / (double) calibrationPoints.get(currentTest).capturedCoordinates.size();
-            coordYsum = coordYsum / (double) calibrationPoints.get(currentTest).capturedCoordinates.size();
+            coordXsum = coordXsum / (double) calibrationConfig.get(currentTest).capturedCoordinates.size();
+            coordYsum = coordYsum / (double) calibrationConfig.get(currentTest).capturedCoordinates.size();
 
             Circle newCircle = new Circle();
             newCircle.setRadius(5);
@@ -183,7 +186,17 @@ public class CalibrationPane extends Pane {
             newCircle.setFill(Color.LIGHTSKYBLUE);
 
             getChildren().add(newCircle);
-            calibrationPoints.get(currentTest).setCircle(newCircle);
+            calibrationConfig.get(currentTest).setCircle(newCircle);
+        }
+    }
+
+    public void resetCalibrationPoints() {
+        calibrationConfig.setAngleSetUpDone(false);
+        for (CalibrationPoint calibrationPoint : calibrationConfig.calibrationPoints) {
+            calibrationPoint.capturedCoordinates.clear();
+            calibrationPoint.circle = null;
+            calibrationPoint.offsetY = 0;
+            calibrationPoint.offsetX = 0;
         }
     }
 
@@ -195,7 +208,7 @@ public class CalibrationPane extends Pane {
                         addValue(10);
                     }
                 } else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
-                    if (currentTest < 9 && calibrationPoints.get(currentTest).circle != null) {
+                    if (currentTest < 9 && calibrationConfig.get(currentTest).circle != null) {
                         currentTest++;
                         startCurrentTest(main);
                     }
