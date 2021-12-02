@@ -1,4 +1,4 @@
-package application;
+package utils;
 
 import javafx.scene.Group;
 import javafx.scene.shape.Circle;

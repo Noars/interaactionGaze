@@ -1,10 +1,10 @@
 package gaze.devicemanager;
 
 import application.Configuration;
-import application.Cross;
 import application.Main;
 import gaze.MouseInfo;
 import tobii.Tobii;
+import utils.CalibrationConfig;
 
 import java.awt.*;
 import java.util.concurrent.ExecutorService;
@@ -12,16 +12,16 @@ import java.util.concurrent.Executors;
 
 public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
 
-    private Cross cross;
     private MouseInfo mouseInfo;
     private ExecutorService executorService;
 
     private PositionPollerRunnable positionPollerRunnable;
+    private CalibrationConfig calibrationConfig;
 
-    public TobiiGazeDeviceManager(Main main) {
+    public TobiiGazeDeviceManager(Main main, CalibrationConfig calibrationConfig) {
         super();
-        this.cross = main.getCursor();
         this.mouseInfo = main.getMouseInfo();
+        this.calibrationConfig = calibrationConfig;
     }
 
     public void setPause(boolean b) {
@@ -33,7 +33,7 @@ public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
         Tobii.gazePosition();
 
         try {
-            positionPollerRunnable = new PositionPollerRunnable(configuration, cross, mouseInfo, this);
+            positionPollerRunnable = new PositionPollerRunnable(configuration, mouseInfo, calibrationConfig, this);
         } catch (AWTException e) {
             e.printStackTrace();
         }

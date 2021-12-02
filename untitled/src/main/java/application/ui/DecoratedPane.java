@@ -43,7 +43,7 @@ public class DecoratedPane extends BorderPane {
             primaryStage.setIconified(true);
         });
 
-        HBox topBar = new HBox(minimize,exit);
+        HBox topBar = new HBox(minimize, exit);
         topBar.setAlignment(Pos.CENTER_RIGHT);
         BorderPane.setAlignment(topBar, Pos.CENTER_RIGHT);
         this.setTop(topBar);
