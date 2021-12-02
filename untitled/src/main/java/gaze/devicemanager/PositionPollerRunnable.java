@@ -36,7 +36,6 @@ public class PositionPollerRunnable implements Runnable {
     @Override
     public void run() {
         while (!stopRequested) {
-
             try {
                 if (!pauseRequested) {
                     configuration.analyse(MouseInfo.getPointerInfo().getLocation().getX(), MouseInfo.getPointerInfo().getLocation().getY());
