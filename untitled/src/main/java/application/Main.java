@@ -8,11 +8,9 @@ import gaze.MouseInfo;
 import gaze.devicemanager.GazeDeviceManagerFactory;
 import gaze.devicemanager.TobiiGazeDeviceManager;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
@@ -20,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import utils.CalibrationConfig;
 
 @Slf4j
 public class Main extends Application {
@@ -31,11 +30,11 @@ public class Main extends Application {
     @Getter
     MainPane home;
     @Getter
-    Cross cursor;
-    @Getter
     MouseInfo mouseInfo;
     @Getter
     OptionsPane optionsPane;
+
+    DecoratedPane decoratedPane;
 
     public static void main(String[] args) {
         launch(args);
@@ -48,15 +47,15 @@ public class Main extends Application {
             primaryStage.setHeight(250);
             primaryStage.setTitle("InteraactionGaze");
 
-            cursor = new Cross();
             mouseInfo = new MouseInfo();
-            gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(this);
+            CalibrationConfig calibrationConfig = new CalibrationConfig();
+            gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(this, calibrationConfig);
 
             optionsPane = new OptionsPane(primaryStage, this);
-            calibrationPane = new CalibrationPane(primaryStage, cursor, gazeDeviceManager);
+            calibrationPane = new CalibrationPane(primaryStage, gazeDeviceManager, calibrationConfig);
             home = new MainPane(this, primaryStage);
 
-            DecoratedPane decoratedPane = new DecoratedPane(primaryStage);
+            decoratedPane = new DecoratedPane(primaryStage);
             decoratedPane.setCenter(home);
 
             Scene calibScene = new Scene(decoratedPane, primaryStage.getWidth(), primaryStage.getHeight());
@@ -88,13 +87,14 @@ public class Main extends Application {
     }
 
     public void goToOptions(Stage primaryStage) {
-        ((BorderPane)primaryStage.getScene().getRoot()).setCenter(this.getOptionsPane());
+        ((BorderPane) primaryStage.getScene().getRoot()).setCenter(this.getOptionsPane());
         primaryStage.getScene().setCursor(Cursor.DEFAULT);
     }
 
     public void goToMain(Stage primaryStage) {
         primaryStage.setFullScreen(false);
-        ((BorderPane)primaryStage.getScene().getRoot()).setCenter(this.getHome());
+        primaryStage.getScene().setRoot(decoratedPane);
+        ((BorderPane) primaryStage.getScene().getRoot()).setCenter(this.getHome());
         primaryStage.getScene().setCursor(Cursor.DEFAULT);
     }
 

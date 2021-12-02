@@ -1,7 +1,8 @@
-package application;
+package utils;
 
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Circle;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedList;
@@ -13,6 +14,10 @@ public class CalibrationPoint {
     public Cross cross;
     public Circle circle = null;
     public List<Point2D> capturedCoordinates;
+    @Getter
+    public double offsetX;
+    @Getter
+    public double offsetY;
 
 
     public CalibrationPoint() {
@@ -20,6 +25,16 @@ public class CalibrationPoint {
         this.capturedCoordinates = new LinkedList<>();
     }
 
+    public void setCross(Cross newcross){
+        this.cross = newcross;
+    }
+
+    public void setCircle(Circle newCircle){
+        this.circle = newCircle;
+        this.offsetX = getCircleX() - getCrossX();
+        this.offsetY = getCircleY() - getCrossY();
+
+    }
     public double getCrossX() {
         return cross.getLayoutX();
     }
@@ -36,11 +51,4 @@ public class CalibrationPoint {
         return circle.getCenterY();
     }
 
-    public double getOffsetX() {
-        return getCircleX() - getCrossX();
-    }
-
-    public double getOffsetY() {
-        return getCircleY() - getCrossY();
-    }
 }

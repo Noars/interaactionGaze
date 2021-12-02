@@ -1,7 +1,6 @@
 package gaze.devicemanager;
 
 import application.Configuration;
-import application.Cross;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
@@ -9,6 +8,7 @@ import javafx.stage.Screen;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import tobii.Tobii;
+import utils.CalibrationConfig;
 
 import java.awt.*;
 
@@ -18,18 +18,19 @@ public class PositionPollerRunnable implements Runnable {
     private final TobiiGazeDeviceManager tobiiGazeDeviceManager;
     private final Configuration configuration;
     Robot robot = new Robot();
-    private Cross cross;
     private gaze.MouseInfo mouseInfo;
     @Setter
     private transient boolean stopRequested = false;
     @Setter
     private transient boolean pauseRequested = false;
 
-    public PositionPollerRunnable(Configuration configuration, Cross cross, gaze.MouseInfo mouseInfo, final TobiiGazeDeviceManager tobiiGazeDeviceManager) throws AWTException {
+    private CalibrationConfig calibrationConfig;
+
+    public PositionPollerRunnable(Configuration configuration, gaze.MouseInfo mouseInfo, CalibrationConfig calibrationConfig, final TobiiGazeDeviceManager tobiiGazeDeviceManager) throws AWTException {
         this.configuration = configuration;
-        this.cross = cross;
         this.mouseInfo = mouseInfo;
         this.tobiiGazeDeviceManager = tobiiGazeDeviceManager;
+        this.calibrationConfig = calibrationConfig;
     }
 
     @Override
@@ -39,7 +40,7 @@ public class PositionPollerRunnable implements Runnable {
             try {
                 if (!pauseRequested) {
                     configuration.analyse(MouseInfo.getPointerInfo().getLocation().getX(), MouseInfo.getPointerInfo().getLocation().getY());
-                    poll();
+                    poll(calibrationConfig);
                 }
             } catch (final RuntimeException e) {
                 log.warn("Exception while polling position of main.gaze", e);
@@ -53,7 +54,7 @@ public class PositionPollerRunnable implements Runnable {
         }
     }
 
-    private void poll() {
+    private void poll(CalibrationConfig calibrationConfig) {
         final float[] pointAsFloatArray = Tobii.gazePosition();
 
         final float xRatio = pointAsFloatArray[0];
@@ -63,9 +64,13 @@ public class PositionPollerRunnable implements Runnable {
         final double positionX = xRatio * screenDimension.getWidth();
         final double positionY = yRatio * screenDimension.getHeight();
 
+        if (calibrationConfig.isAngleSetUpDone()) {
+            calibrationConfig.handle(positionX, positionY);
+        }
 
-        final double offsetX = cross.getTranslateX();
-        final double offsetY = cross.getTranslateY();
+        final double offsetX = calibrationConfig.getMainOffsetX();
+        final double offsetY = calibrationConfig.getMainOffsetY();
+
         if (xRatio != 0.5 || yRatio != 0.5) {
             if (configuration.waitForUserMove()) {
 
