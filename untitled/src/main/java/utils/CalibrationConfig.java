@@ -1,12 +1,15 @@
 package utils;
 
 import application.ui.CalibrationPane;
+import com.google.gson.Gson;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import lombok.Getter;
 import lombok.Setter;
+import utils.save.Coordinates;
 
 import java.awt.*;
+import java.io.*;
 
 public class CalibrationConfig {
 
@@ -24,12 +27,12 @@ public class CalibrationConfig {
 
     double[] angle = new double[9];
 
-    public CalibrationPoint get(int i){
-        return calibrationPoints[i];
+    public CalibrationConfig(){
+        loadSave();
     }
 
-    public void set(int i, CalibrationPoint calibrationPoint){
-        calibrationPoints[i] = calibrationPoint;
+    public CalibrationPoint get(int i){
+        return calibrationPoints[i];
     }
 
     public void handle(double eventX, double eventY) {
@@ -97,5 +100,54 @@ public class CalibrationConfig {
             angle[angleIndex] = angleBetween(get(CalibrationPane.CENTER).cross, get(CalibrationPane.TOP_LEFT).cross, get(angleIndex).cross);
         }
         angleSetUpDone = true;
+    }
+
+    public boolean save() throws IOException {
+        Coordinates[] coordinates = new Coordinates[9];
+        for(int i = 0; i <9 ; i++){
+            coordinates[i] = new Coordinates(this.calibrationPoints[i].offsetX,this.calibrationPoints[i].offsetY,
+                    this.calibrationPoints[i].cross.getLayoutX(), this.calibrationPoints[i].cross.getLayoutY());
+        }
+        createDirectories();
+        createFile();
+        writeSaveToFile(coordinates);
+        return true;
+    }
+
+    public boolean createDirectories(){
+        File file = new File(System.getProperty("user.home")+"/interaactionPoint/profiles/calibrations/");
+        return file.mkdirs();
+    }
+
+    public boolean createFile() throws IOException {
+        File file = new File(System.getProperty("user.home")+"/interaactionPoint/profiles/calibrations/userCalibration.json");
+        return file.createNewFile();
+    }
+
+    public void writeSaveToFile(Coordinates[] coordinates) throws IOException {
+        FileWriter myWriter = new FileWriter(System.getProperty("user.home")+"/interaactionPoint/profiles/calibrations/userCalibration.json");
+        myWriter.write(new Gson().toJson(coordinates));
+        myWriter.close();
+    }
+
+    public boolean loadSave(){
+        try {
+            FileReader myReader =new FileReader(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/userCalibration.json");
+            Coordinates[] coordinates = new Gson().fromJson(myReader, Coordinates[].class);
+            if(coordinates!= null && coordinates.length ==9) {
+                for (int i = 0; i < 9; i++) {
+                    calibrationPoints[i] = new CalibrationPoint(coordinates[i].offsetX, coordinates[i].offsetY, coordinates[i].calibrationX, coordinates[i].calibrationY);
+                }
+                setAllAngles();
+                return true;
+            } else {
+                throw new FileNotFoundException();
+            }
+        } catch(FileNotFoundException e){
+            for (int i = 0; i < 9; i++) {
+                calibrationPoints[i] = new CalibrationPoint();
+            }
+            return false;
+        }
     }
 }

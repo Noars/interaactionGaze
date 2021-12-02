@@ -73,7 +73,6 @@ public class PositionPollerRunnable implements Runnable {
 
         if (xRatio != 0.5 || yRatio != 0.5) {
             if (configuration.waitForUserMove()) {
-
                 final Point2D point = new Point2D(positionX + offsetX, positionY + offsetY);
                 robot.mouseMove((int) point.getX(), (int) point.getY());
                 Point2D newPoint = new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),

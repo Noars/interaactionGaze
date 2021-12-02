@@ -24,6 +24,14 @@ public class CalibrationPoint {
         this.cross = new Cross();
         this.capturedCoordinates = new LinkedList<>();
     }
+    public CalibrationPoint(double x, double y,double crossX, double crossY) {
+        this.cross = new Cross();
+        this.capturedCoordinates = new LinkedList<>();
+        this.offsetX = x;
+        this.offsetY = y;
+        this.cross.setLayoutX(crossX);
+        this.cross.setLayoutY(crossY);
+    }
 
     public void setCross(Cross newcross){
         this.cross = newcross;

@@ -24,6 +24,8 @@ import utils.CalibrationConfig;
 import utils.CalibrationPoint;
 import utils.Cross;
 
+import java.io.IOException;
+
 public class CalibrationPane extends Pane {
 
     public static final int TOP_LEFT = 0;
@@ -53,10 +55,6 @@ public class CalibrationPane extends Pane {
         this.primaryStage = primaryStage;
         this.calibrationPoints = mainCalibrationConfig;
 
-        for (int i = 0; i < 9; i++) {
-            calibrationPoints.set(i, new CalibrationPoint());
-        }
-
         //this.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         this.setFocusTraversable(true);
     }
@@ -82,8 +80,8 @@ public class CalibrationPane extends Pane {
         rotateCalibrationCross.setCycleCount(Timeline.INDEFINITE);
         rotateCalibrationCross.play();
 
-        //this.addEventHandler(GazeEvent.GAZE_MOVED, event);
-        this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
+        this.addEventHandler(GazeEvent.GAZE_MOVED, event);
+        //this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
         gazeDeviceManager.addEventFilter(this);
 
         startCurrentTest(main);
@@ -100,7 +98,11 @@ public class CalibrationPane extends Pane {
         this.getChildren().add(backHome);
 
         calibrationPoints.setAllAngles();
-
+        try {
+            calibrationPoints.save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void startCurrentTest(Main main) {
