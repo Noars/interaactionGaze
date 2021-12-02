@@ -13,7 +13,9 @@ import java.io.*;
 
 public class CalibrationConfig {
 
-    CalibrationPoint[] calibrationPoints = new CalibrationPoint[9];
+
+    public CalibrationPoint[] calibrationPoints = new CalibrationPoint[9];
+
     @Getter
     @Setter
     double mainOffsetX = 0;
@@ -23,6 +25,7 @@ public class CalibrationConfig {
     double mainOffsetY = 0;
 
     @Getter
+    @Setter
     boolean angleSetUpDone = false;
 
     double[] angle = new double[9];
