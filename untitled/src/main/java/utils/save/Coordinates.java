@@ -6,7 +6,7 @@ public class Coordinates {
     public double calibrationX;
     public double calibrationY;
 
-    public Coordinates(double offsetX, double offsetY, double calibrationX, double calibrationY){
+    public Coordinates(double offsetX, double offsetY, double calibrationX, double calibrationY) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         this.calibrationX = calibrationX;

@@ -1,6 +1,5 @@
 package utils;
 
-import application.ui.CalibrationPane;
 import javafx.scene.Group;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;

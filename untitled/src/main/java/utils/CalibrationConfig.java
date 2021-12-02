@@ -27,11 +27,11 @@ public class CalibrationConfig {
 
     double[] angle = new double[9];
 
-    public CalibrationConfig(){
+    public CalibrationConfig() {
         loadSave();
     }
 
-    public CalibrationPoint get(int i){
+    public CalibrationPoint get(int i) {
         return calibrationPoints[i];
     }
 
@@ -71,7 +71,6 @@ public class CalibrationConfig {
     }
 
 
-
     Point2D getPosInter(double xcursor, double ycursor, double xcenter, double ycenter, double xcurent, double ycurent, double xprevious, double yprevious) {
         Point2D vector = new Point2D(xcursor - xcenter, ycursor - ycenter);
         double coef = 1;
@@ -95,7 +94,7 @@ public class CalibrationConfig {
                 Math.atan2(mouseX - center.getLayoutX(), mouseY - center.getLayoutY())) + 360) % 360;
     }
 
-    public void setAllAngles(){
+    public void setAllAngles() {
         for (int angleIndex = 0; angleIndex <= 7; angleIndex++) {
             angle[angleIndex] = angleBetween(get(CalibrationPane.CENTER).cross, get(CalibrationPane.TOP_LEFT).cross, get(angleIndex).cross);
         }
@@ -104,8 +103,8 @@ public class CalibrationConfig {
 
     public boolean save() throws IOException {
         Coordinates[] coordinates = new Coordinates[9];
-        for(int i = 0; i <9 ; i++){
-            coordinates[i] = new Coordinates(this.calibrationPoints[i].offsetX,this.calibrationPoints[i].offsetY,
+        for (int i = 0; i < 9; i++) {
+            coordinates[i] = new Coordinates(this.calibrationPoints[i].offsetX, this.calibrationPoints[i].offsetY,
                     this.calibrationPoints[i].cross.getLayoutX(), this.calibrationPoints[i].cross.getLayoutY());
         }
         createDirectories();
@@ -114,27 +113,27 @@ public class CalibrationConfig {
         return true;
     }
 
-    public boolean createDirectories(){
-        File file = new File(System.getProperty("user.home")+"/interaactionPoint/profiles/calibrations/");
+    public boolean createDirectories() {
+        File file = new File(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/");
         return file.mkdirs();
     }
 
     public boolean createFile() throws IOException {
-        File file = new File(System.getProperty("user.home")+"/interaactionPoint/profiles/calibrations/userCalibration.json");
+        File file = new File(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/userCalibration.json");
         return file.createNewFile();
     }
 
     public void writeSaveToFile(Coordinates[] coordinates) throws IOException {
-        FileWriter myWriter = new FileWriter(System.getProperty("user.home")+"/interaactionPoint/profiles/calibrations/userCalibration.json");
+        FileWriter myWriter = new FileWriter(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/userCalibration.json");
         myWriter.write(new Gson().toJson(coordinates));
         myWriter.close();
     }
 
-    public boolean loadSave(){
+    public boolean loadSave() {
         try {
-            FileReader myReader =new FileReader(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/userCalibration.json");
+            FileReader myReader = new FileReader(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/userCalibration.json");
             Coordinates[] coordinates = new Gson().fromJson(myReader, Coordinates[].class);
-            if(coordinates!= null && coordinates.length ==9) {
+            if (coordinates != null && coordinates.length == 9) {
                 for (int i = 0; i < 9; i++) {
                     calibrationPoints[i] = new CalibrationPoint(coordinates[i].offsetX, coordinates[i].offsetY, coordinates[i].calibrationX, coordinates[i].calibrationY);
                 }
@@ -143,7 +142,7 @@ public class CalibrationConfig {
             } else {
                 throw new FileNotFoundException();
             }
-        } catch(FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             for (int i = 0; i < 9; i++) {
                 calibrationPoints[i] = new CalibrationPoint();
             }
