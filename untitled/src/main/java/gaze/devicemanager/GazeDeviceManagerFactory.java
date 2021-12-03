@@ -1,6 +1,5 @@
 package gaze.devicemanager;
 
-import application.Configuration;
 import application.Main;
 import lombok.Getter;
 import utils.CalibrationConfig;
@@ -20,7 +19,7 @@ public class GazeDeviceManagerFactory {
         final TobiiGazeDeviceManager gazeDeviceManager;
         gazeDeviceManager = new TobiiGazeDeviceManager(main, calibrationConfig);
 
-        gazeDeviceManager.init(new Configuration());
+        gazeDeviceManager.init();
         return gazeDeviceManager;
     }
 
