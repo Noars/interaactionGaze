@@ -153,8 +153,8 @@ public class CalibrationPane extends Pane {
             target = new Circle(primaryScreenBounds.getHeight() / 5);
             target.setCenterX(calibrationCross.getLayoutX());
             target.setCenterY(calibrationCross.getLayoutY());
-            target.setFill(Color.YELLOWGREEN);
-            target.setOpacity(0.2);
+            target.setFill(Color.LIGHTGREY);
+            target.setOpacity(0.1);
 
             EventHandler<Event> event = e -> {
                 if (e.getEventType() == GazeEvent.GAZE_MOVED) {
@@ -195,10 +195,8 @@ public class CalibrationPane extends Pane {
             c.setFill(Color.RED);
             c.setOpacity(0.3);
             c.setMouseTransparent(true);
-
             calibrationConfig.get(currentTest).capturedCoordinates.add(curCoord);
-
-            getChildren().add(c);
+            //getChildren().add(c);
         } else if (calibrationConfig.get(currentTest).capturedCoordinates.size() == numberOfCoordinateToTest && calibrationConfig.get(currentTest).circle == null) {
             double coordXsum = 0, coordYsum = 0;
 

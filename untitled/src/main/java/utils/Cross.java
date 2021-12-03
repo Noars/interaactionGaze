@@ -21,7 +21,7 @@ public class Cross extends Group {
         center.setRadius(2);
 
         getChildren().addAll(horizontalLine, verticalLine, center);
-        //setMouseTransparent(true);
+        setMouseTransparent(true);
     }
 
 
