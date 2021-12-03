@@ -32,7 +32,7 @@ public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
         Tobii.gazePosition();
 
         try {
-            positionPollerRunnable = new PositionPollerRunnable( mouseInfo, calibrationConfig, this);
+            positionPollerRunnable = new PositionPollerRunnable(mouseInfo, calibrationConfig, this);
         } catch (AWTException e) {
             e.printStackTrace();
         }

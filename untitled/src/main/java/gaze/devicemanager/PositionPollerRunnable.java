@@ -16,21 +16,18 @@ import java.util.LinkedList;
 public class PositionPollerRunnable implements Runnable {
 
     private final TobiiGazeDeviceManager tobiiGazeDeviceManager;
+    @Setter
+    public int numberOfLastPositionsToCheck = 200;
+    public LinkedList<Point2D> lastPositions = new LinkedList<>();
+    public LinkedList<Point2D> currentPoint = new LinkedList<>();
     Robot robot = new Robot();
+    boolean userIsMoving = false;
     private gaze.MouseInfo mouseInfo;
     @Setter
     private transient boolean stopRequested = false;
     @Setter
     private transient boolean pauseRequested = false;
-
     private CalibrationConfig calibrationConfig;
-
-
-    @Setter
-    public int numberOfLastPositionsToCheck = 200;
-    public LinkedList<Point2D> lastPositions = new LinkedList<>();
-    public LinkedList<Point2D> currentPoint = new LinkedList<>();
-    boolean userIsMoving = false;
 
     public PositionPollerRunnable(gaze.MouseInfo mouseInfo, CalibrationConfig calibrationConfig, final TobiiGazeDeviceManager tobiiGazeDeviceManager) throws AWTException {
         this.mouseInfo = mouseInfo;
