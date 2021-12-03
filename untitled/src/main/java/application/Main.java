@@ -62,7 +62,7 @@ public class Main extends Application {
             calibScene.getStylesheets().add("style.css");
             primaryStage.setScene(calibScene);
             calibScene.setFill(Color.TRANSPARENT);
-            calibrationPane.installEventHandler(primaryStage, this);
+            // calibrationPane.installEventHandler(primaryStage, this);
             primaryStage.initStyle(StageStyle.TRANSPARENT);
 
             primaryStage.show();
