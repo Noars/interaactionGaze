@@ -1,6 +1,5 @@
 package gaze.devicemanager;
 
-import application.Configuration;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
@@ -11,23 +10,26 @@ import tobii.Tobii;
 import utils.CalibrationConfig;
 
 import java.awt.*;
+import java.util.LinkedList;
 
 @Slf4j
 public class PositionPollerRunnable implements Runnable {
 
     private final TobiiGazeDeviceManager tobiiGazeDeviceManager;
-    private final Configuration configuration;
+    @Setter
+    public int numberOfLastPositionsToCheck = 200;
+    public LinkedList<Point2D> lastPositions = new LinkedList<>();
+    public LinkedList<Point2D> currentPoint = new LinkedList<>();
     Robot robot = new Robot();
+    boolean userIsMoving = false;
     private gaze.MouseInfo mouseInfo;
     @Setter
     private transient boolean stopRequested = false;
     @Setter
     private transient boolean pauseRequested = false;
-
     private CalibrationConfig calibrationConfig;
 
-    public PositionPollerRunnable(Configuration configuration, gaze.MouseInfo mouseInfo, CalibrationConfig calibrationConfig, final TobiiGazeDeviceManager tobiiGazeDeviceManager) throws AWTException {
-        this.configuration = configuration;
+    public PositionPollerRunnable(gaze.MouseInfo mouseInfo, CalibrationConfig calibrationConfig, final TobiiGazeDeviceManager tobiiGazeDeviceManager) throws AWTException {
         this.mouseInfo = mouseInfo;
         this.tobiiGazeDeviceManager = tobiiGazeDeviceManager;
         this.calibrationConfig = calibrationConfig;
@@ -38,7 +40,6 @@ public class PositionPollerRunnable implements Runnable {
         while (!stopRequested) {
             try {
                 if (!pauseRequested) {
-                    configuration.analyse(MouseInfo.getPointerInfo().getLocation().getX(), MouseInfo.getPointerInfo().getLocation().getY());
                     poll(calibrationConfig);
                 }
             } catch (final RuntimeException e) {
@@ -73,18 +74,57 @@ public class PositionPollerRunnable implements Runnable {
         }
 
         if (xRatio != 0.5 || yRatio != 0.5) {
-            if (configuration.waitForUserMove()) {
+            Point location = MouseInfo.getPointerInfo().getLocation();
+            analyse(location.getX(), location.getY());
+            if (waitForUserMove()) {
                 final Point2D point = new Point2D(positionX + offsetX, positionY + offsetY);
                 robot.mouseMove((int) point.getX(), (int) point.getY());
-                Point2D newPoint = new Point2D(MouseInfo.getPointerInfo().getLocation().getX(),
-                        MouseInfo.getPointerInfo().getLocation().getY());
-                mouseInfo.addPosition(newPoint);
-                configuration.currentPoint.add(newPoint);
+                mouseInfo.addPosition(point);
+                currentPoint.add(point);
                 Platform.runLater(() -> tobiiGazeDeviceManager.onGazeUpdate(point, "gaze"));
             } else {
-                configuration.updateLastPositions();
+                updateLastPositions();
             }
         }
+    }
+
+    public boolean waitForUserMove() {
+        return !userIsMoving || lasPositionDidntMoved();
+    }
+
+    public void analyse(double x, double y) {
+        if (
+                (currentPoint != null && currentPoint.size() > 0
+                        && !isArround(x, currentPoint.getLast().getX()) && !isArround(y, currentPoint.getLast().getY()))
+        ) {
+            this.userIsMoving = true;
+        }
+    }
+
+    public boolean isArround(double coord0, double coord1) {
+        return coord0 <= coord1 + 2 && coord0 >= coord1 - 2;
+    }
+
+    public void updateLastPositions() {
+        while (lastPositions.size() >= numberOfLastPositionsToCheck) {
+            lastPositions.pop();
+        }
+        lastPositions.add(new Point2D(MouseInfo.getPointerInfo().getLocation().getX(), MouseInfo.getPointerInfo().getLocation().getY()));
+    }
+
+    public boolean lasPositionDidntMoved() {
+        if (lastPositions.size() == numberOfLastPositionsToCheck) {
+            Point2D pos = lastPositions.get(0);
+            for (int i = 0; i < numberOfLastPositionsToCheck; i++) {
+                if (!lastPositions.get(i).equals(pos)) {
+                    return false;
+                }
+            }
+            lastPositions.clear();
+            this.userIsMoving = false;
+            return true;
+        }
+        return false;
     }
 
 }

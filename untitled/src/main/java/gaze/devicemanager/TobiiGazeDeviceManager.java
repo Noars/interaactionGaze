@@ -1,6 +1,5 @@
 package gaze.devicemanager;
 
-import application.Configuration;
 import application.Main;
 import gaze.MouseInfo;
 import tobii.Tobii;
@@ -28,12 +27,12 @@ public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
         positionPollerRunnable.setPauseRequested(b);
     }
 
-    public void init(Configuration configuration) {
+    public void init() {
 
         Tobii.gazePosition();
 
         try {
-            positionPollerRunnable = new PositionPollerRunnable(configuration, mouseInfo, calibrationConfig, this);
+            positionPollerRunnable = new PositionPollerRunnable(mouseInfo, calibrationConfig, this);
         } catch (AWTException e) {
             e.printStackTrace();
         }

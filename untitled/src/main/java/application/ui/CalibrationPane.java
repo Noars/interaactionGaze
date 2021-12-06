@@ -11,8 +11,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -38,6 +36,8 @@ public class CalibrationPane extends Pane {
     public static final int LEFT_CENTER = 7;
     public static final int CENTER = 8;
     public static final int TESTENDED = 9;
+
+    Circle target;
 
     GazeDeviceManager gazeDeviceManager;
     Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
@@ -114,6 +114,7 @@ public class CalibrationPane extends Pane {
         double height = primaryScreenBounds.getHeight() / 10;
 
         if (currentTest == TESTENDED) {
+            resetTarget();
             calibrationCross.setOpacity(0);
             endCalibration(main);
         } else {
@@ -146,6 +147,34 @@ public class CalibrationPane extends Pane {
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() / 2);
             }
             calibrationConfig.get(currentTest).setCross(nextCross());
+
+            resetTarget();
+
+            target = new Circle(primaryScreenBounds.getHeight() / 5);
+            target.setCenterX(calibrationCross.getLayoutX());
+            target.setCenterY(calibrationCross.getLayoutY());
+            target.setFill(Color.LIGHTGREY);
+            target.setOpacity(0.1);
+
+            EventHandler<Event> event = e -> {
+                if (e.getEventType() == GazeEvent.GAZE_MOVED) {
+                    calibrate(main);
+                } else if (e.getEventType() == MouseEvent.MOUSE_MOVED) {
+                    calibrate(main);
+                }
+            };
+
+            target.addEventHandler(GazeEvent.GAZE_MOVED, event);
+            gazeDeviceManager.addEventFilter(target);
+
+            this.getChildren().add(target);
+        }
+    }
+
+    public void resetTarget() {
+        if (target != null) {
+            target.setOnMouseMoved(null);
+            this.getChildren().remove(target);
         }
     }
 
@@ -164,20 +193,22 @@ public class CalibrationPane extends Pane {
             c.setCenterX(curCoord.getX());
             c.setCenterY(curCoord.getY());
             c.setFill(Color.RED);
-            c.setOpacity(1);
-
+            c.setOpacity(0.3);
+            c.setMouseTransparent(true);
             calibrationConfig.get(currentTest).capturedCoordinates.add(curCoord);
-
-            getChildren().add(c);
+            //getChildren().add(c);
         } else if (calibrationConfig.get(currentTest).capturedCoordinates.size() == numberOfCoordinateToTest && calibrationConfig.get(currentTest).circle == null) {
             double coordXsum = 0, coordYsum = 0;
 
-            for (Point2D gazedCoordinate : calibrationConfig.get(currentTest).capturedCoordinates) {
-                coordXsum = coordXsum + gazedCoordinate.getX();
-                coordYsum = coordYsum + gazedCoordinate.getY();
+
+            for (int i = calibrationConfig.get(currentTest).capturedCoordinates.size() / 2;
+                 i < calibrationConfig.get(currentTest).capturedCoordinates.size(); i++) {
+                coordXsum = coordXsum + calibrationConfig.get(currentTest).capturedCoordinates.get(i).getX();
+                coordYsum = coordYsum + calibrationConfig.get(currentTest).capturedCoordinates.get(i).getY();
             }
-            coordXsum = coordXsum / (double) calibrationConfig.get(currentTest).capturedCoordinates.size();
-            coordYsum = coordYsum / (double) calibrationConfig.get(currentTest).capturedCoordinates.size();
+            coordXsum = coordXsum / (double) (calibrationConfig.get(currentTest).capturedCoordinates.size() / 2);
+            coordYsum = coordYsum / (double) (calibrationConfig.get(currentTest).capturedCoordinates.size() / 2);
+
 
             Circle newCircle = new Circle();
             newCircle.setRadius(5);
@@ -200,24 +231,13 @@ public class CalibrationPane extends Pane {
         }
     }
 
-    public void installEventHandler(final Stage keyNode, Main main) {
-        final EventHandler<KeyEvent> keyEventHandler = keyEvent -> {
-            if (keyEvent.getCode() == KeyCode.SPACE) {
-                if (keyEvent.getEventType() == KeyEvent.KEY_PRESSED) {
-                    if (currentTest < 9) {
-                        addValue(10);
-                    }
-                } else if (keyEvent.getEventType() == KeyEvent.KEY_RELEASED) {
-                    if (currentTest < 9 && calibrationConfig.get(currentTest).circle != null) {
-                        currentTest++;
-                        startCurrentTest(main);
-                    }
-                }
-            }
-        };
-
-        keyNode.getScene().setOnKeyPressed(keyEventHandler);
-        keyNode.getScene().setOnKeyReleased(keyEventHandler);
+    public void calibrate(Main main) {
+        if (currentTest < 9 && calibrationConfig.get(currentTest).circle == null) {
+            addValue(100);
+        } else if (currentTest < 9 && calibrationConfig.get(currentTest).circle != null) {
+            currentTest++;
+            startCurrentTest(main);
+        }
     }
 
     public Point2D getGazePosition(double x, double y) {
