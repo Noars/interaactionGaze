@@ -10,6 +10,9 @@
     <file url="file://$PROJECT_DIR$/untitled/gradle/package.gradle" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/untitled/gradle/pmd.gradle" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/untitled/gradle/templates" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/untitled/src/main/bin/gazeplay-linux.sh" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/untitled/src/main/bin/gazeplay-macos.sh" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/untitled/src/main/bin/gazeplay-windows.bat" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/untitled/src/main/java/application/Configuration.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/untitled/src/main/java/gaze/devicemanager/PositionPollerRunnable.java" charset="UTF-8" />
     <file url="PROJECT" charset="windows-1252" />

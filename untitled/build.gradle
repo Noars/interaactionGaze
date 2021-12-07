@@ -11,23 +11,31 @@ buildscript {
 plugins {
     id 'application'
     id 'distribution'
-    id 'de.undercouch.download' version '3.2.0'
+    id 'jacoco'
+
     id 'org.openjfx.javafxplugin' version '0.0.8'
     id 'io.freefair.lombok' version '4.1.4'
+    id 'com.github.hierynomus.license-report' version '0.15.0'
+    id 'com.github.spotbugs' version '2.0.0'
+    id 'net.researchgate.release' version '2.6.0'
+    id "de.undercouch.download" version '4.0.4'
+
+    id 'org.springframework.boot' version '2.2.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
 ext.javafxVersion = "11.0.2"
+// Make it available everywhere via the project ext:
+ext {
+    Download = de.undercouch.gradle.tasks.download.Download
+    download = download
+}
 
 apply from: "${rootDir}/gradle/package.gradle"
 apply from: "${rootDir}/gradle/installer.gradle"
 apply from: "${rootDir}/gradle/jre.gradle"
 apply from: "${rootDir}/gradle/drivers.gradle"
 
-// Make it available everywhere via the project ext:
-ext {
-    Download = de.undercouch.gradle.tasks.download.Download
-    download = download
-}
 
 javafx {
     version = javafxVersion
@@ -35,12 +43,17 @@ javafx {
 }
 
 apply plugin: 'java'
-apply plugin: 'distribution'
-apply plugin: 'maven-publish'
 apply plugin: 'maven'
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'maven-publish'
 apply plugin: 'jacoco'
+apply plugin: 'org.openjfx.javafxplugin'
+apply plugin: 'io.freefair.lombok'
+apply plugin: 'com.github.hierynomus.license-report'
+apply plugin: 'com.github.spotbugs'
+apply plugin: "pmd"
 apply plugin: 'distribution'
-
 
 sourceSets {
     main {
@@ -70,6 +83,27 @@ allprojects {
     }
 }
 
+
+allprojects {
+    group = 'com.github.gazeplay'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+
+        maven {
+            url = 'https://jitpack.io'
+        }
+
+        maven {
+            url = 'https://raw.github.com/agomezmoron/screen-recorder/mvn-repo'
+        }
+    }
+}
+
+
+
 dependencies {
     compile 'com.github.GazePlay:TobiiStreamEngineForJava:5.0'
     compile 'com.google.code.gson:gson:2.8.1'
@@ -89,7 +123,6 @@ dependencies {
 
 distributions {
     noJRE {
-        setDistributionBaseName "${project.name}-no-jre"
         contents {
             with distributions.main.contents
             from("build/reports")
@@ -100,21 +133,19 @@ distributions {
     }
 
     windows {
-        setDistributionBaseName "${project.name}-windows-x64"
         contents {
             with distributions.main.contents
             from("build/reports")
             from("build/bin/gazeplay-windows.bat") {
                 into 'bin'
             }
-            from("build/jre/windows-x64") {
+            from("build/jre/windows") {
                 into 'lib/jre'
             }
         }
     }
 
     linux {
-        setDistributionBaseName "${project.name}-linux-x64"
         contents {
             with distributions.main.contents
             from("build/reports")
@@ -144,6 +175,33 @@ distributions {
     }
 }
 
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": project.name,
+                "Implementation-Version": project.version,
+                "Implementation-Vendor": "Univ. Grenoble Alpes - LIG - GETALP",
+                "Main-Class": 'application.Main',
+                "Class-Path": configurations.runtime.collect { it.getName() }.join(' '),
+                "JavaFX-Version": javafxVersion,
+                "Built-By": System.properties['user.name']
+        )
+    }
+}
+
+tasks.jar.dependsOn('createLicence')
+
+task createLicence(dependsOn: ['processResources'], type: Copy, group: 'license') {
+    from("${rootDir}/gradle/templates/licence.txt")
+    expand([
+            "version": version,
+            "date"   : new Date().format('yyyy-MM-dd')
+    ])
+    into("${processResources.destinationDir}/data/common")
+}
+
+def generatedResources = "${buildDir}/generated-resources/main"
+
 task('downloadAndExtractLinuxDependecies').dependsOn('downloadAndExtractLinuxJREwithLibavPlugin', 'downloadAndExtractTobiiDriversForLinux')
 
 macosDistTar.dependsOn(downloadAndExtractMacosJRE)
@@ -158,7 +216,7 @@ tasks.withType(Tar){
 distZip {
     duplicatesStrategy = 'exclude'
 }
-[bootJar, bootDistTar, bootDistZip]*.enabled = false
+[bootJar, bootDistTar, bootDistZip]*.enabled = true
 
 release {
     failOnPublishNeeded = false
@@ -166,7 +224,7 @@ release {
     versionPropertyFile = 'gradle.properties'
 }
 
-mainClassName = 'net.gazeplay.GazePlayLauncher'
+mainClassName = 'application.Main'
 
 defaultTasks 'clean', 'build', 'checkPMDReport'
 startScripts.enabled = false
