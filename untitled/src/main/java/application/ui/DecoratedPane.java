@@ -1,5 +1,7 @@
 package application.ui;
 
+import javafx.beans.Observable;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -12,10 +14,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class DecoratedPane extends BorderPane {
-
-    Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 
     private double xOffset = 0;
     private double yOffset = 0;
@@ -49,41 +51,24 @@ public class DecoratedPane extends BorderPane {
         this.setTop(topBar);
         this.setStyle("-fx-background-color: #282e35; -fx-background-radius: 15");
 
-        topBar.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
-            }
+        topBar.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
         });
-        topBar.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                double tempX, tempY;
+        topBar.setOnMouseDragged(event -> {
+            double tempX, tempY;
+            ObservableList<Screen> screens = Screen.getScreensForRectangle(primaryStage.getX(),primaryStage.getY(), primaryStage.getWidth(),primaryStage.getHeight());
+            Rectangle2D primaryScreenBounds = screens.get(0).getVisualBounds();
 
-                if (event.getScreenX() - xOffset < 0) {
-                    tempX = 0;
-                    xOffset = event.getSceneX();
-                } else if (event.getScreenX() - xOffset < primaryScreenBounds.getWidth() - primaryStage.getWidth()) {
-                    tempX = event.getScreenX() - xOffset;
-                } else {
-                    tempX = primaryScreenBounds.getWidth() - primaryStage.getWidth();
-                    xOffset = event.getSceneX();
-                }
+                tempX = event.getScreenX() - xOffset;
 
-                if (event.getScreenY() - yOffset < 0) {
-                    tempY = 0;
-                    yOffset = event.getSceneY();
-                } else if (event.getScreenY() - yOffset < primaryScreenBounds.getHeight() - primaryStage.getHeight()) {
-                    tempY = event.getScreenY() - yOffset;
-                } else {
-                    tempY = primaryScreenBounds.getHeight() - primaryStage.getHeight();
-                    yOffset = event.getSceneY();
-                }
+            if (event.getScreenY() - yOffset < 0) {
+                tempY = 0;
+            } else
+                tempY = Math.min(event.getScreenY() - yOffset, primaryScreenBounds.getHeight() - primaryStage.getHeight() / 3);
 
-                primaryStage.setX(tempX);
-                primaryStage.setY(tempY);
-            }
+            primaryStage.setX(tempX);
+            primaryStage.setY(tempY);
         });
     }
 }
