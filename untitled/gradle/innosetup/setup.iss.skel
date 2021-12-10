@@ -49,12 +49,12 @@ Source: "..\\${unpackedDirectory}\\license\\*"; DestDir: "{app}\\license"; Flags
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\\InteraactionGaze"; Filename: "{app}\\bin\\interaactionPicto-windows.bat"; IconFilename: "{app}\\bin\\gazeplayicon.ico"; Flags: runminimized
+Name: "{group}\\InteraactionGaze"; Filename: "{app}\\bin\\interaactionGaze-windows.bat"; IconFilename: "{app}\\bin\\gazeplayicon.ico"; Flags: runminimized
 Name: "{group}\\Uninstall InteraactionGaze"; Filename: "{uninstallexe}"; IconFilename: "{app}\\bin\\gazeplayicon.ico"
-Name: "{commondesktop}\\InteraactionGaze"; Filename: "{app}\\bin\\interaactionPicto-windows.bat"; Tasks: desktopicon; IconFilename: "{app}\\bin\\gazeplayicon.ico"
+Name: "{commondesktop}\\InteraactionGaze"; Filename: "{app}\\bin\\interaactionGaze-windows.bat"; Tasks: desktopicon; IconFilename: "{app}\\bin\\gazeplayicon.ico"
 
 [Run]
-Filename: "{app}\\bin\\interaactionPicto-windows.bat"; Description: "{cm:LaunchProgram,InteraactionGaze}"; Flags: shellexec postinstall skipifsilent
+Filename: "{app}\\bin\\interaactionGaze-windows.bat"; Description: "{cm:LaunchProgram,InteraactionGaze}"; Flags: shellexec postinstall skipifsilent
 
 [Code]
 function GetUninstallString: string;

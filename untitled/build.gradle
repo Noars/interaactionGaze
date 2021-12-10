@@ -214,7 +214,7 @@ distributions {
         contents {
             with distributions.main.contents
             from("build/reports")
-            from("build/bin/interaactionPicto-windows.bat") {
+            from("build/bin/interaactionGaze-windows.bat") {
                 into 'bin'
             }
             from("build/jre/windows") {
@@ -227,7 +227,7 @@ distributions {
         contents {
             with distributions.main.contents
             from("build/reports")
-            from("build/bin/interaactionPicto-linux.sh") {
+            from("build/bin/interaactionGaze-linux.sh") {
                 into 'bin'
             }
             from("build/jre/linux-x64") {
@@ -243,7 +243,7 @@ distributions {
         contents {
             with distributions.main.contents
             from("build/reports")
-            from("build/bin/interaactionPicto-macos.sh") {
+            from("build/bin/interaactionGaze-macos.sh") {
                 into 'bin'
             }
             from("build/jre/macos") {
