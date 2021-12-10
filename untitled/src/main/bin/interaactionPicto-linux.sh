@@ -2,7 +2,7 @@
 
 set -e
 
-MAIN_JAR_FILE=gazeplay-@VERSION@.jar
+MAIN_JAR_FILE=untitled.jar
 
 export JAVA_OPTS="-Xms256m -Xmx1g"
 export JAVA_OPTS="$JAVA_OPTS -Dlogging.appender.console.level=OFF"
@@ -56,7 +56,7 @@ else
   echo "Tobii4C drivers are installed."
 fi
 
-export JAVA_CMD="java -cp \"$CLASSPATH\" ${JAVA_OPTS} net.gazeplay.GazePlayLauncher"
+export JAVA_CMD="java -cp \"$CLASSPATH\" ${JAVA_OPTS} -jar "$LIB_DIR"/untitled.jar"
 
 echo "Executing command line: $JAVA_CMD"
 

@@ -22,7 +22,6 @@ task generateWindowsInstallerInDocker(dependsOn: ['unzipDistribution', 'prepareI
     }
 }
 
-
 task prepareInnoSetupFiles(group: 'distribution') {
     doLast {
         def innoSetupDir = new File("${buildDir}/innosetup")
@@ -38,7 +37,6 @@ task prepareInnoSetupFiles(group: 'distribution') {
             ])
             into(innoSetupDir)
         }
-
 
         copy {
             from("${rootDir}/gradle/templates/licence.txt")

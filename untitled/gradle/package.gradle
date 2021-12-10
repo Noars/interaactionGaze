@@ -22,5 +22,5 @@ task scriptsForRelease(type: Copy, group: 'distribution') {
 task packageAppWithDistPermissions(dependsOn: packageApp, type: Exec, group: 'distribution') {
     commandLine 'chmod', '-R', '777', "${rootDir}/build/distributions"
 }
-//
-//beforeReleaseBuild.dependsOn packageAppWithDistPermissions
+
+beforeReleaseBuild.dependsOn packageAppWithDistPermissions
