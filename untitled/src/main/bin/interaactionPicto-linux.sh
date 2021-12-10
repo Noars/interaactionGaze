@@ -33,29 +33,6 @@ export PATH=${JAVA_HOME}/bin:${PATH}
 
 echo "PATH = ${PATH}"
 
-USB_PKG_OK=$(dpkg -s tobiiusbservice | grep "install ok installed")
-
-ENGINE_PKG_OK=$(dpkg -s tobii_engine_linux | grep "install ok installed")
-
-if [ "" = "${USB_PKG_OK}" ] || [ "" = "${ENGINE_PKG_OK}" ]
-then
-  echo "Tobii4C drivers not installed."
-  while true; do
-    read -p "Do you wish to install tobii4C drivers?[y/n]" yn
-    case $yn in
-        [Yy]* )
-          cd $WORKING_DIR/../tobiiDrivers/drivers/
-          sh ./install_drivers.sh
-          cd $WORKING_DIR
-          break;;
-        [Nn]* ) break;;
-        * ) echo "Please answer yes or no.";;
-    esac
-  done
-else
-  echo "Tobii4C drivers are installed."
-fi
-
 export JAVA_CMD="java -cp \"$CLASSPATH\" ${JAVA_OPTS} -jar "$LIB_DIR"/untitled.jar"
 
 echo "Executing command line: $JAVA_CMD"
