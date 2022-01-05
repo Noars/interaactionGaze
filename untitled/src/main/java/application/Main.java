@@ -81,7 +81,6 @@ public class Main extends Application {
         primaryStage.setFullScreen(true);
         primaryStage.setFullScreenExitHint("");
         primaryStage.getScene().setRoot(this.getCalibrationPane());
-        primaryStage.getScene().setCursor(Cursor.CROSSHAIR);
         calibrationPane.startCalibration(this);
     }
 

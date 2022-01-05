@@ -10,10 +10,13 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -23,6 +26,7 @@ import utils.CalibrationPoint;
 import utils.Cross;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class CalibrationPane extends Pane {
 
@@ -38,6 +42,8 @@ public class CalibrationPane extends Pane {
     public static final int TESTENDED = 9;
 
     Circle target;
+    Circle imgTarget;
+    Timeline rotateCalibrationCross;
 
     GazeDeviceManager gazeDeviceManager;
     Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
@@ -59,12 +65,12 @@ public class CalibrationPane extends Pane {
         this.setFocusTraversable(true);
     }
 
-
     public void startCalibration(Main main) {
         getChildren().clear();
         currentTest = 0;
         resetCalibrationPoints();
         calibrationCross = new Cross();
+        calibrationCross.setOpacity(0);
         getChildren().add(calibrationCross);
 
         EventHandler<Event> event = e -> {
@@ -75,37 +81,33 @@ public class CalibrationPane extends Pane {
             }
         };
 
-        Timeline rotateCalibrationCross = new Timeline();
-        rotateCalibrationCross.getKeyFrames().addAll(
-                new KeyFrame(Duration.seconds(1), // set start position at 0
-                        new KeyValue(calibrationCross.rotateProperty(), 0),
-                        new KeyValue(calibrationCross.rotateProperty(), 360)));
-        rotateCalibrationCross.setCycleCount(Timeline.INDEFINITE);
-        rotateCalibrationCross.play();
+        Button backHome = new Button("Terminer");
+        backHome.setOnAction((e) -> {
+            returnGazeMenu(main);
+        });
+
+        this.getChildren().add(backHome);
 
         this.addEventHandler(GazeEvent.GAZE_MOVED, event);
-        //this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
+        this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
         gazeDeviceManager.addEventFilter(this);
 
         startCurrentTest(main);
     }
 
-    public void endCalibration(Main main) {
-
-        Button backHome = new Button("Valider");
-        backHome.setOnAction((e) -> {
-            main.goToMain(primaryStage);
-
-        });
-
-        this.getChildren().add(backHome);
-
+    public void saveCalibration() {
         calibrationConfig.setAllAngles();
         try {
             calibrationConfig.save();
+            System.out.println("save done !");
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("save fail !");
         }
+    }
+
+    public void returnGazeMenu(Main main){
+        main.goToMain(primaryStage);
     }
 
     public void startCurrentTest(Main main) {
@@ -116,7 +118,8 @@ public class CalibrationPane extends Pane {
         if (currentTest == TESTENDED) {
             resetTarget();
             calibrationCross.setOpacity(0);
-            endCalibration(main);
+            saveCalibration();
+            messageCalibration(main);
         } else {
             if (currentTest == TOP_LEFT) {
                 calibrationCross.setLayoutX(width);
@@ -167,8 +170,45 @@ public class CalibrationPane extends Pane {
             target.addEventHandler(GazeEvent.GAZE_MOVED, event);
             gazeDeviceManager.addEventFilter(target);
 
+            setImgTarget();
+
             this.getChildren().add(target);
         }
+    }
+
+    public void messageCalibration(Main main){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Calibration");
+        alert.setHeaderText(null);
+        alert.setContentText("Calibration réussi ! Vous allez sortir de la calibration !");
+        alert.show();
+        try {
+            TimeUnit.SECONDS.sleep(5);
+            alert.close();
+            returnGazeMenu(main);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setImgTarget(){
+
+        imgTarget = new Circle(50);
+        imgTarget.setCenterX(calibrationCross.getLayoutX());
+        imgTarget.setCenterY(calibrationCross.getLayoutY());
+
+        Image addImgTarget = new Image("images/target/snake.png");
+        imgTarget.setFill(new ImagePattern(addImgTarget));
+
+        this.getChildren().add(imgTarget);
+
+        rotateCalibrationCross = new Timeline();
+        rotateCalibrationCross.getKeyFrames().addAll(
+                new KeyFrame(Duration.seconds(1), // set start position at 0
+                        new KeyValue(imgTarget.rotateProperty(), 0),
+                        new KeyValue(imgTarget.rotateProperty(), 360)));
+        rotateCalibrationCross.setCycleCount(Timeline.INDEFINITE);
+        rotateCalibrationCross.play();
     }
 
     public void resetTarget() {
@@ -236,6 +276,7 @@ public class CalibrationPane extends Pane {
             addValue(100);
         } else if (currentTest < 9 && calibrationConfig.get(currentTest).circle != null) {
             currentTest++;
+            rotateCalibrationCross.stop();
             startCurrentTest(main);
         }
     }
