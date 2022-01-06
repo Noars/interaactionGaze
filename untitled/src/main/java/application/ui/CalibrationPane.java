@@ -3,9 +3,7 @@ package application.ui;
 import application.Main;
 import gaze.devicemanager.GazeDeviceManager;
 import gaze.devicemanager.GazeEvent;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
@@ -182,13 +180,14 @@ public class CalibrationPane extends Pane {
         alert.setHeaderText(null);
         alert.setContentText("Calibration réussi ! Vous allez sortir de la calibration !");
         alert.show();
-        try {
-            TimeUnit.SECONDS.sleep(5);
+        SequentialTransition sleep = new SequentialTransition(new PauseTransition(Duration.seconds(5)));
+        sleep.setOnFinished(event -> {
             alert.close();
+            primaryStage.setWidth(600);
+            primaryStage.setHeight(250);
             returnGazeMenu(main);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        });
+        sleep.play();
     }
 
     public void setImgTarget(){
@@ -197,7 +196,7 @@ public class CalibrationPane extends Pane {
         imgTarget.setCenterX(calibrationCross.getLayoutX());
         imgTarget.setCenterY(calibrationCross.getLayoutY());
 
-        Image addImgTarget = new Image("images/target/snake.png");
+        Image addImgTarget = new Image(calibrationConfig.getImgUse());
         imgTarget.setFill(new ImagePattern(addImgTarget));
 
         this.getChildren().add(imgTarget);
@@ -222,6 +221,7 @@ public class CalibrationPane extends Pane {
         Cross newCross = new Cross();
         newCross.setLayoutX(calibrationCross.getLayoutX());
         newCross.setLayoutY(calibrationCross.getLayoutY());
+        newCross.setOpacity(0);
         this.getChildren().add(newCross);
         return newCross;
     }
