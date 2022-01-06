@@ -1,9 +1,6 @@
 package application;
 
-import application.ui.CalibrationPane;
-import application.ui.DecoratedPane;
-import application.ui.MainPane;
-import application.ui.OptionsPane;
+import application.ui.*;
 import gaze.MouseInfo;
 import gaze.devicemanager.GazeDeviceManagerFactory;
 import gaze.devicemanager.TobiiGazeDeviceManager;
@@ -33,6 +30,8 @@ public class Main extends Application {
     MouseInfo mouseInfo;
     @Getter
     OptionsPane optionsPane;
+    @Getter
+    OptionsCalibrationPane optionsCalibrationPane;
 
     DecoratedPane decoratedPane;
 
@@ -52,6 +51,7 @@ public class Main extends Application {
             gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(this, calibrationConfig);
 
             optionsPane = new OptionsPane(primaryStage, this);
+            optionsCalibrationPane = new OptionsCalibrationPane(primaryStage, this, calibrationConfig);
             calibrationPane = new CalibrationPane(primaryStage, gazeDeviceManager, calibrationConfig);
             home = new MainPane(this, primaryStage);
 
@@ -81,8 +81,12 @@ public class Main extends Application {
         primaryStage.setFullScreen(true);
         primaryStage.setFullScreenExitHint("");
         primaryStage.getScene().setRoot(this.getCalibrationPane());
-        primaryStage.getScene().setCursor(Cursor.CROSSHAIR);
         calibrationPane.startCalibration(this);
+    }
+
+    public void goToOptionsCalibration(Stage primaryStage){
+        ((BorderPane) primaryStage.getScene().getRoot()).setCenter(this.getOptionsCalibrationPane());
+        primaryStage.getScene().setCursor(Cursor.DEFAULT);
     }
 
     public void goToOptions(Stage primaryStage) {

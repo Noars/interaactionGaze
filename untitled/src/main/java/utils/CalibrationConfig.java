@@ -18,6 +18,10 @@ public class CalibrationConfig {
 
     @Getter
     @Setter
+    String imgUse = "images/target/snake.jpg";
+
+    @Getter
+    @Setter
     double mainOffsetX = 0;
 
     @Getter

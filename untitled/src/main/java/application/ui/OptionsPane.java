@@ -24,6 +24,7 @@ public class OptionsPane extends BorderPane {
 
         Button calibrate = createCalibrateButton(main, primaryStage);
 
+        Button settingsCalibration = createSettingsCalibrationButton(main, primaryStage);
 
         GridPane gridPane = new GridPane();
         gridPane.setHgap(5);
@@ -50,7 +51,7 @@ public class OptionsPane extends BorderPane {
 
             });
         }
-        hbox = new HBox(back, calibrate, gridPane);
+        hbox = new HBox(back, calibrate, settingsCalibration, gridPane);
         hbox.setSpacing(5);
         hbox.setAlignment(Pos.CENTER);
         BorderPane.setAlignment(hbox, Pos.CENTER);
@@ -85,5 +86,20 @@ public class OptionsPane extends BorderPane {
             main.goToMain(primaryStage);
         });
         return back;
+    }
+
+    public Button createSettingsCalibrationButton(Main main, Stage primaryStage){
+        Button settingsCalibration = new MainButton("Options Calibration");
+        settingsCalibration.setGraphic(createButtonImageView("images/white/option.png"));
+        settingsCalibration.getStyleClass().add("rose");
+        settingsCalibration.setContentDisplay(ContentDisplay.TOP);
+        settingsCalibration.setPrefHeight(200);
+        settingsCalibration.setPrefWidth(495. / 5);
+        settingsCalibration.setOnAction((e) -> {
+            primaryStage.setWidth(600);
+            primaryStage.setHeight(600);
+            main.goToOptionsCalibration(primaryStage);
+        });
+        return settingsCalibration;
     }
 }
