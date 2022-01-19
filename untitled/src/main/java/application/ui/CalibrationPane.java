@@ -79,13 +79,6 @@ public class CalibrationPane extends Pane {
             }
         };
 
-        Button backHome = new Button("Terminer");
-        backHome.setOnAction((e) -> {
-            returnGazeMenu(main);
-        });
-
-        this.getChildren().add(backHome);
-
         this.addEventHandler(GazeEvent.GAZE_MOVED, event);
         this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
         gazeDeviceManager.addEventFilter(this);
@@ -171,6 +164,19 @@ public class CalibrationPane extends Pane {
             setImgTarget();
 
             this.getChildren().add(target);
+
+            addExitButton(main);
+        }
+    }
+
+    public void addExitButton(Main main){
+        if (currentTest == TOP_LEFT) {
+            Button backHome = new Button("Terminer");
+            backHome.setOnAction((e) -> {
+                returnGazeMenu(main);
+            });
+
+            this.getChildren().add(backHome);
         }
     }
 

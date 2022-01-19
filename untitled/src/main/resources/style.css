@@ -95,3 +95,16 @@
     -fx-text-fill: white;
     -fx-font-family: Futura;
 }
+
+.selected{
+    -fx-background-color: white;
+    -fx-text-fill: white;
+    -fx-border-color: red;
+    -fx-font-family: Futura;
+    -fx-font-weight: bold ;
+    -fx-border-width: 2;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-border-radius: 15;
+    -fx-background-radius: 16;
+}
