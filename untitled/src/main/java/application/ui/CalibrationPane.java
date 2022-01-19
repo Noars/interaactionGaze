@@ -24,7 +24,6 @@ import utils.CalibrationPoint;
 import utils.Cross;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class CalibrationPane extends Pane {
 
