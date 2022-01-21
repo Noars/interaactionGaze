@@ -24,7 +24,6 @@ import utils.CalibrationPoint;
 import utils.Cross;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class CalibrationPane extends Pane {
 
@@ -78,13 +77,6 @@ public class CalibrationPane extends Pane {
                 curCoord = new Point2D(((MouseEvent) e).getX(), ((MouseEvent) e).getY());
             }
         };
-
-        Button backHome = new Button("Terminer");
-        backHome.setOnAction((e) -> {
-            returnGazeMenu(main);
-        });
-
-        this.getChildren().add(backHome);
 
         this.addEventHandler(GazeEvent.GAZE_MOVED, event);
         this.addEventHandler(MouseEvent.MOUSE_MOVED, event);
@@ -171,6 +163,19 @@ public class CalibrationPane extends Pane {
             setImgTarget();
 
             this.getChildren().add(target);
+
+            addExitButton(main);
+        }
+    }
+
+    public void addExitButton(Main main){
+        if (currentTest == TOP_LEFT) {
+            Button backHome = new Button("Terminer");
+            backHome.setOnAction((e) -> {
+                returnGazeMenu(main);
+            });
+
+            this.getChildren().add(backHome);
         }
     }
 

@@ -4,18 +4,25 @@ import application.ui.*;
 import gaze.MouseInfo;
 import gaze.devicemanager.GazeDeviceManagerFactory;
 import gaze.devicemanager.TobiiGazeDeviceManager;
+import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import tobii.Tobii;
 import utils.CalibrationConfig;
+
+import java.util.Arrays;
 
 @Slf4j
 public class Main extends Application {
@@ -41,6 +48,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
+        String tobiiNotConnected = Arrays.toString(Tobii.gazePosition());
+
         try {
             primaryStage.setWidth(600);
             primaryStage.setHeight(250);
@@ -65,7 +75,14 @@ public class Main extends Application {
             // calibrationPane.installEventHandler(primaryStage, this);
             primaryStage.initStyle(StageStyle.TRANSPARENT);
 
-            primaryStage.show();
+            System.out.println(tobiiNotConnected);
+            System.out.println(Arrays.toString(Tobii.gazePosition()));
+
+            if (!Arrays.toString(Tobii.gazePosition()).equals(tobiiNotConnected)){
+                primaryStage.show();
+            }else {
+                tobiiNotConnectedMessage(primaryStage);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,4 +118,19 @@ public class Main extends Application {
         primaryStage.getScene().setCursor(Cursor.DEFAULT);
     }
 
+    public void tobiiNotConnectedMessage(Stage primaryStage){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Eye Tracker");
+        alert.setHeaderText(null);
+        alert.setContentText("Eye Tracker non détecté ! Veuillez brancher votre Eye Tracker avant de lancer InterAACtionGaze !");
+        alert.show();
+        SequentialTransition sleep = new SequentialTransition(new PauseTransition(Duration.seconds(10)));
+        sleep.setOnFinished(event -> {
+            alert.close();
+            primaryStage.setWidth(600);
+            primaryStage.setHeight(250);
+            System.exit(0);
+        });
+        sleep.play();
+    }
 }

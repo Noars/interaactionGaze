@@ -16,27 +16,46 @@ public class OptionsCalibrationPane extends BorderPane {
 
     HBox hbox;
 
+    String actualTarget = "snake";
+
+    Button turtle;
+    Button squirrel;
+    Button snake;
+    Button rabbit;
+    Button owl;
+    Button octopus;
+    Button lion;
+    Button hippo;
+    Button hedgehog;
+    Button giraffe;
+    Button fox;
+    Button elephant;
+    Button dog;
+    Button crab;
+    Button bear;
+    Button astonished;
+
     public OptionsCalibrationPane(Stage primaryStage, Main main, CalibrationConfig calibrationConfig){
         super();
 
         Button back = createBackButton(main, primaryStage);
 
-        Button turtle = createTurtleButton(main, primaryStage, calibrationConfig);
-        Button squirrel = createSquirrelButton(main, primaryStage, calibrationConfig);
-        Button snake = createSnakeButton(main, primaryStage, calibrationConfig);
-        Button rabbit = createRabbitButton(main, primaryStage, calibrationConfig);
-        Button owl = createOwlButton(main, primaryStage, calibrationConfig);
-        Button octopus = createOctopusButton(main, primaryStage, calibrationConfig);
-        Button lion = createLionButton(main, primaryStage, calibrationConfig);
-        Button hippo = createHippoButton(main, primaryStage, calibrationConfig);
-        Button hedgehog = createHedgehogButton(main, primaryStage, calibrationConfig);
-        Button giraffe = createGiraffeButton(main, primaryStage, calibrationConfig);
-        Button fox = createFoxButton(main, primaryStage, calibrationConfig);
-        Button elephant = createElephantButton(main, primaryStage, calibrationConfig);
-        Button dog = createDogButton(main, primaryStage, calibrationConfig);
-        Button crab = createCrabButton(main, primaryStage, calibrationConfig);
-        Button bear = createBearButton(main, primaryStage, calibrationConfig);
-        Button astonished = createAstonishedButton(main, primaryStage, calibrationConfig);
+        turtle = createTurtleButton(calibrationConfig);
+        squirrel = createSquirrelButton(calibrationConfig);
+        snake = createSnakeButton(calibrationConfig);
+        rabbit = createRabbitButton(calibrationConfig);
+        owl = createOwlButton(calibrationConfig);
+        octopus = createOctopusButton(calibrationConfig);
+        lion = createLionButton(calibrationConfig);
+        hippo = createHippoButton(calibrationConfig);
+        hedgehog = createHedgehogButton(calibrationConfig);
+        giraffe = createGiraffeButton(calibrationConfig);
+        fox = createFoxButton(calibrationConfig);
+        elephant = createElephantButton(calibrationConfig);
+        dog = createDogButton(calibrationConfig);
+        crab = createCrabButton(calibrationConfig);
+        bear = createBearButton(calibrationConfig);
+        astonished = createAstonishedButton(calibrationConfig);
 
         GridPane gridPane = new GridPane();
         gridPane.setHgap(5);
@@ -86,245 +105,317 @@ public class OptionsCalibrationPane extends BorderPane {
         return back;
     }
 
-    public Button createAstonishedButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createAstonishedButton(CalibrationConfig calibrationConfig){
         Button astonished = new MainButton("");
         astonished.setGraphic(createButtonImageView("images/target/astonished.png"));
         astonished.getStyleClass().add("white");
         astonished.setPrefHeight(200);
         astonished.setPrefWidth(495. / 5);
         astonished.setOnAction((e) -> {
+            changeSelectedTarget();
+            astonished.getStyleClass().add("selected");
+            actualTarget = "astonished";
             calibrationConfig.setImgUse("images/target/astonished.png");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return astonished;
     }
 
-    public Button createBearButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createBearButton(CalibrationConfig calibrationConfig){
         Button bear = new MainButton("");
         bear.setGraphic(createButtonImageView("images/target/bear.jpg"));
         bear.getStyleClass().add("white");
         bear.setPrefHeight(200);
         bear.setPrefWidth(495. / 5);
         bear.setOnAction((e) -> {
+            changeSelectedTarget();
+            bear.getStyleClass().add("selected");
+            actualTarget = "bear";
             calibrationConfig.setImgUse("images/target/bear.jpg");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return bear;
     }
 
-    public Button createCrabButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createCrabButton(CalibrationConfig calibrationConfig){
         Button crab = new MainButton("");
         crab.setGraphic(createButtonImageView("images/target/crab.png"));
         crab.getStyleClass().add("white");
         crab.setPrefHeight(200);
         crab.setPrefWidth(495. / 5);
         crab.setOnAction((e) -> {
+            changeSelectedTarget();
+            crab.getStyleClass().add("selected");
+            actualTarget = "crab";
             calibrationConfig.setImgUse("images/target/crab.png");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return crab;
     }
 
-    public Button createDogButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createDogButton(CalibrationConfig calibrationConfig){
         Button dog = new MainButton("");
         dog.setGraphic(createButtonImageView("images/target/dog.jpg"));
         dog.getStyleClass().add("white");
         dog.setPrefHeight(200);
         dog.setPrefWidth(495. / 5);
         dog.setOnAction((e) -> {
+            changeSelectedTarget();
+            dog.getStyleClass().add("selected");
+            actualTarget = "dog";
             calibrationConfig.setImgUse("images/target/dog.jpg");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return dog;
     }
 
-    public Button createElephantButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createElephantButton(CalibrationConfig calibrationConfig){
         Button elephant = new MainButton("");
         elephant.setGraphic(createButtonImageView("images/target/elephant.jpg"));
         elephant.getStyleClass().add("white");
         elephant.setPrefHeight(200);
         elephant.setPrefWidth(495. / 5);
         elephant.setOnAction((e) -> {
+            changeSelectedTarget();
+            elephant.getStyleClass().add("selected");
+            actualTarget = "elephant";
             calibrationConfig.setImgUse("images/target/elephant.jpg");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return elephant;
     }
 
-    public Button createFoxButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createFoxButton(CalibrationConfig calibrationConfig){
         Button fox = new MainButton("");
         fox.setGraphic(createButtonImageView("images/target/fox.jpg"));
         fox.getStyleClass().add("white");
         fox.setPrefHeight(200);
         fox.setPrefWidth(495. / 5);
         fox.setOnAction((e) -> {
+            changeSelectedTarget();
+            fox.getStyleClass().add("selected");
+            actualTarget = "fox";
             calibrationConfig.setImgUse("images/target/fox.jpg");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return fox;
     }
 
-    public Button createGiraffeButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createGiraffeButton(CalibrationConfig calibrationConfig){
         Button giraffe = new MainButton("");
         giraffe.setGraphic(createButtonImageView("images/target/giraffe.jpg"));
         giraffe.getStyleClass().add("white");
         giraffe.setPrefHeight(200);
         giraffe.setPrefWidth(495. / 5);
         giraffe.setOnAction((e) -> {
+            changeSelectedTarget();
+            giraffe.getStyleClass().add("selected");
+            actualTarget = "giraffe";
             calibrationConfig.setImgUse("images/target/giraffe.jpg");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return giraffe;
     }
 
-    public Button createHedgehogButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createHedgehogButton(CalibrationConfig calibrationConfig){
         Button hedgehog = new MainButton("");
         hedgehog.setGraphic(createButtonImageView("images/target/hedgehog.png"));
         hedgehog.getStyleClass().add("white");
         hedgehog.setPrefHeight(200);
         hedgehog.setPrefWidth(495. / 5);
         hedgehog.setOnAction((e) -> {
+            changeSelectedTarget();
+            hedgehog.getStyleClass().add("selected");
+            actualTarget = "hedgehog";
             calibrationConfig.setImgUse("images/target/hedgehog.png");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return hedgehog;
     }
 
-    public Button createHippoButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createHippoButton(CalibrationConfig calibrationConfig){
         Button hippo = new MainButton("");
         hippo.setGraphic(createButtonImageView("images/target/hippo.jpg"));
         hippo.getStyleClass().add("white");
         hippo.setPrefHeight(200);
         hippo.setPrefWidth(495. / 5);
         hippo.setOnAction((e) -> {
+            changeSelectedTarget();
+            hippo.getStyleClass().add("selected");
+            actualTarget = "hippo";
             calibrationConfig.setImgUse("images/target/hippo.jpg");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return hippo;
     }
 
-    public Button createLionButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createLionButton(CalibrationConfig calibrationConfig){
         Button lion = new MainButton("");
         lion.setGraphic(createButtonImageView("images/target/lion.jpg"));
         lion.getStyleClass().add("white");
         lion.setPrefHeight(200);
         lion.setPrefWidth(495. / 5);
         lion.setOnAction((e) -> {
+            changeSelectedTarget();
+            lion.getStyleClass().add("selected");
+            actualTarget = "lion";
             calibrationConfig.setImgUse("images/target/lion.jpg");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return lion;
     }
 
-    public Button createOctopusButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createOctopusButton(CalibrationConfig calibrationConfig){
         Button octopus = new MainButton("");
         octopus.setGraphic(createButtonImageView("images/target/octopus.png"));
         octopus.getStyleClass().add("white");
         octopus.setPrefHeight(200);
         octopus.setPrefWidth(495. / 5);
         octopus.setOnAction((e) -> {
+            changeSelectedTarget();
+            octopus.getStyleClass().add("selected");
+            actualTarget = "octopus";
             calibrationConfig.setImgUse("images/target/octopus.png");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return octopus;
     }
 
-    public Button createOwlButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createOwlButton(CalibrationConfig calibrationConfig){
         Button owl = new MainButton("");
         owl.setGraphic(createButtonImageView("images/target/owl.png"));
         owl.getStyleClass().add("white");
         owl.setPrefHeight(200);
         owl.setPrefWidth(495. / 5);
         owl.setOnAction((e) -> {
+            changeSelectedTarget();
+            owl.getStyleClass().add("selected");
+            actualTarget = "owl";
             calibrationConfig.setImgUse("images/target/owl.png");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return owl;
     }
 
-    public Button createRabbitButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createRabbitButton(CalibrationConfig calibrationConfig){
         Button rabbit = new MainButton("");
         rabbit.setGraphic(createButtonImageView("images/target/rabbit.png"));
         rabbit.getStyleClass().add("white");
         rabbit.setPrefHeight(200);
         rabbit.setPrefWidth(495. / 5);
         rabbit.setOnAction((e) -> {
+            changeSelectedTarget();
+            rabbit.getStyleClass().add("selected");
+            actualTarget = "rabbit";
             calibrationConfig.setImgUse("images/target/rabbit.png");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return rabbit;
     }
 
-    public Button createSnakeButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createSnakeButton(CalibrationConfig calibrationConfig){
         Button snake = new MainButton("");
         snake.setGraphic(createButtonImageView("images/target/snake.jpg"));
         snake.getStyleClass().add("white");
+        snake.getStyleClass().add("selected");
         snake.setPrefHeight(200);
         snake.setPrefWidth(495. / 5);
         snake.setOnAction((e) -> {
+            changeSelectedTarget();
+            snake.getStyleClass().add("selected");
+            actualTarget = "snake";
             calibrationConfig.setImgUse("images/target/snake.jpg");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return snake;
     }
 
-    public Button createSquirrelButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createSquirrelButton(CalibrationConfig calibrationConfig){
         Button squirrel = new MainButton("");
         squirrel.setGraphic(createButtonImageView("images/target/squirrel.png"));
         squirrel.getStyleClass().add("white");
         squirrel.setPrefHeight(200);
         squirrel.setPrefWidth(495. / 5);
         squirrel.setOnAction((e) -> {
+            changeSelectedTarget();
+            squirrel.getStyleClass().add("selected");
+            actualTarget = "squirrel";
             calibrationConfig.setImgUse("images/target/squirrel.png");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return squirrel;
     }
 
-    public Button createTurtleButton(Main main, Stage primaryStage, CalibrationConfig calibrationConfig){
+    public Button createTurtleButton(CalibrationConfig calibrationConfig){
         Button turtle = new MainButton("");
         turtle.setGraphic(createButtonImageView("images/target/turtle.jpg"));
         turtle.getStyleClass().add("white");
         turtle.setPrefHeight(200);
         turtle.setPrefWidth(495. / 5);
         turtle.setOnAction((e) -> {
+            changeSelectedTarget();
+            turtle.getStyleClass().add("selected");
+            actualTarget = "turtle";
             calibrationConfig.setImgUse("images/target/turtle.jpg");
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            main.goToOptions(primaryStage);
         });
         return turtle;
     }
 
+    public void changeSelectedTarget(){
 
+        switch (actualTarget){
+
+            case "turtle":
+                turtle.getStyleClass().remove("selected");
+                break;
+
+            case "squirrel":
+                squirrel.getStyleClass().remove("selected");
+                break;
+
+            case "snake":
+                snake.getStyleClass().remove("selected");
+                break;
+
+            case "rabbit":
+                rabbit.getStyleClass().remove("selected");
+                break;
+
+            case "owl":
+                owl.getStyleClass().remove("selected");
+                break;
+
+            case "octopus":
+                octopus.getStyleClass().remove("selected");
+                break;
+
+            case "lion":
+                lion.getStyleClass().remove("selected");
+                break;
+
+            case "hippo":
+                hippo.getStyleClass().remove("selected");
+                break;
+
+            case "hedgehog":
+                hedgehog.getStyleClass().remove("selected");
+                break;
+
+            case "giraffe":
+                giraffe.getStyleClass().remove("selected");
+                break;
+
+            case "fox":
+                fox.getStyleClass().remove("selected");
+                break;
+
+            case "elephant":
+                elephant.getStyleClass().remove("selected");
+                break;
+
+            case "dog":
+                dog.getStyleClass().remove("selected");
+                break;
+
+            case "crab":
+                crab.getStyleClass().remove("selected");
+                break;
+
+            case "bear":
+                bear.getStyleClass().remove("selected");
+                break;
+
+            case "astonished":
+                astonished.getStyleClass().remove("selected");
+                break;
+
+            default:
+                break;
+        }
+    }
 }
