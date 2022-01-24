@@ -122,7 +122,7 @@ public class Main extends Application {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Eye Tracker");
         alert.setHeaderText(null);
-        alert.setContentText("Eye Tracker non détecté ! Veuillez brancher votre Eye Tracker avant de lancer InterAACtionGaze !");
+        alert.setContentText("Eye Tracker non détecté ! Ou non calibré !");
         alert.show();
         SequentialTransition sleep = new SequentialTransition(new PauseTransition(Duration.seconds(10)));
         sleep.setOnFinished(event -> {
