@@ -230,6 +230,9 @@ distributions {
             from("build/bin/interAACtionGaze-linux.sh") {
                 into 'bin'
             }
+            from("build/bin/interAACtionGaze-linux-calibration.sh") {
+                into 'bin'
+            }
             from("build/jre/linux-x64") {
                 into 'lib/jre'
             }

@@ -23,7 +23,11 @@ import utils.CalibrationConfig;
 import utils.CalibrationPoint;
 import utils.Cross;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class CalibrationPane extends Pane {
 
@@ -172,7 +176,21 @@ public class CalibrationPane extends Pane {
         if (currentTest == TOP_LEFT) {
             Button backHome = new Button("Terminer");
             backHome.setOnAction((e) -> {
-                returnGazeMenu(main);
+
+                File myFile = new File("args.txt");
+                Scanner myReader = null;
+                try {
+                    myReader = new Scanner(myFile);
+                } catch (FileNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+                String data = myReader.nextLine();
+
+                if (Objects.equals(data, "true")){
+                    System.exit(0);
+                }else {
+                    returnGazeMenu(main);
+                }
             });
 
             this.getChildren().add(backHome);
