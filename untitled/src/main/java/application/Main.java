@@ -22,7 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 import tobii.Tobii;
 import utils.CalibrationConfig;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.Scanner;
 
 @Slf4j
 public class Main extends Application {
@@ -43,15 +49,20 @@ public class Main extends Application {
     DecoratedPane decoratedPane;
 
     public static void main(String[] args) {
+        try {
+            File myFile = new File("args.txt");
+            FileWriter myWritter = new FileWriter("args.txt");
+            myWritter.write(args[0]);
+            myWritter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) {
-
-        String tobiiNotConnected = Arrays.toString(Tobii.gazePosition());
-
-        try {
+    public void start(Stage primaryStage) throws FileNotFoundException {
             primaryStage.setWidth(600);
             primaryStage.setHeight(250);
             primaryStage.setTitle("InteraactionGaze");
@@ -75,18 +86,15 @@ public class Main extends Application {
             // calibrationPane.installEventHandler(primaryStage, this);
             primaryStage.initStyle(StageStyle.TRANSPARENT);
 
-            System.out.println(tobiiNotConnected);
-            System.out.println(Arrays.toString(Tobii.gazePosition()));
+            File myFile = new File("args.txt");
+            Scanner myReader = new Scanner(myFile);
+            String data = myReader.nextLine();
 
-            if (!Arrays.toString(Tobii.gazePosition()).equals(tobiiNotConnected)){
-                primaryStage.show();
-            }else {
-                tobiiNotConnectedMessage(primaryStage);
+            if (Objects.equals(data, "true")){
+                startCalibration(primaryStage);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            primaryStage.show();
     }
 
     public void startCalibration(Stage primaryStage) {
@@ -116,21 +124,5 @@ public class Main extends Application {
         primaryStage.getScene().setRoot(decoratedPane);
         ((BorderPane) primaryStage.getScene().getRoot()).setCenter(this.getHome());
         primaryStage.getScene().setCursor(Cursor.DEFAULT);
-    }
-
-    public void tobiiNotConnectedMessage(Stage primaryStage){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Eye Tracker");
-        alert.setHeaderText(null);
-        alert.setContentText("Eye Tracker non détecté ! Ou non calibré !");
-        alert.show();
-        SequentialTransition sleep = new SequentialTransition(new PauseTransition(Duration.seconds(10)));
-        sleep.setOnFinished(event -> {
-            alert.close();
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            System.exit(0);
-        });
-        sleep.play();
     }
 }
