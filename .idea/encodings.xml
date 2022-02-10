@@ -3,6 +3,11 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/untitled/gradle/drivers.gradle" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/untitled/gradle/innosetup" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/untitled/gradle/innosetup/gazeicon.bmp" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/untitled/gradle/innosetup/gazeicon.bmp" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/untitled/gradle/innosetup/gazeicon.ico" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/untitled/gradle/innosetup/gazeicon.jpg" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/untitled/gradle/innosetup/gazeicon.png" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/untitled/gradle/installer.gradle" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/untitled/gradle/integration.gradle" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/untitled/gradle/jre" charset="UTF-8" />

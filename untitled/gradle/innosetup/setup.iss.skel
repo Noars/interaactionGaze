@@ -24,10 +24,10 @@ AppPublisherURL=https://github.com/InteraactionGaze/InteraactionGaze
 AppSupportURL=https://github.com/InteraactionGaze/InteraactionGaze/issues
 AppUpdatesURL=https://github.com/InteraactionGaze/InteraactionGaze/releases
 
-SetupIconFile=gazeplayicon.ico
+SetupIconFile=gazeicon.ico
 WizardStyle=modern
-WizardImageFile=gazeplayicon.bmp
-WizardSmallImageFile=gazeplayicon.bmp
+WizardImageFile=gazeicon.bmp
+WizardSmallImageFile=gazeicon.bmp
 
 DefaultDirName={commonpf}\\InteraactionGaze
 DefaultGroupName=InteraactionGaze
@@ -42,16 +42,16 @@ SolidCompression=yes
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "gazeplayicon.ico"; DestDir: "{app}\\bin"; Flags: ignoreversion
+Source: "gazeicon.ico"; DestDir: "{app}\\bin"; Flags: ignoreversion
 Source: "..\\${unpackedDirectory}\\bin\\*"; DestDir: "{app}\\bin"; Flags: ignoreversion
 Source: "..\\${unpackedDirectory}\\lib\\*"; DestDir: "{app}\\lib"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\\${unpackedDirectory}\\license\\*"; DestDir: "{app}\\license"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\\InteraactionGaze"; Filename: "{app}\\bin\\interaactionGaze-windows.bat"; IconFilename: "{app}\\bin\\gazeplayicon.ico"; Flags: runminimized
-Name: "{group}\\Uninstall InteraactionGaze"; Filename: "{uninstallexe}"; IconFilename: "{app}\\bin\\gazeplayicon.ico"
-Name: "{commondesktop}\\InteraactionGaze"; Filename: "{app}\\bin\\interaactionGaze-windows.bat"; Tasks: desktopicon; IconFilename: "{app}\\bin\\gazeplayicon.ico"
+Name: "{group}\\InteraactionGaze"; Filename: "{app}\\bin\\interaactionGaze-windows.bat"; IconFilename: "{app}\\bin\\gazeicon.ico"; Flags: runminimized
+Name: "{group}\\Uninstall InteraactionGaze"; Filename: "{uninstallexe}"; IconFilename: "{app}\\bin\\gazeicon.ico"
+Name: "{commondesktop}\\InteraactionGaze"; Filename: "{app}\\bin\\interaactionGaze-windows.bat"; Tasks: desktopicon; IconFilename: "{app}\\bin\\gazeicon.ico"
 
 [Run]
 Filename: "{app}\\bin\\interaactionGaze-windows.bat"; Description: "{cm:LaunchProgram,InteraactionGaze}"; Flags: shellexec postinstall skipifsilent

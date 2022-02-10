@@ -62,7 +62,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws FileNotFoundException {
+    public void start(Stage primaryStage) {
             primaryStage.setWidth(600);
             primaryStage.setHeight(250);
             primaryStage.setTitle("InteraactionGaze");
@@ -86,15 +86,20 @@ public class Main extends Application {
             // calibrationPane.installEventHandler(primaryStage, this);
             primaryStage.initStyle(StageStyle.TRANSPARENT);
 
-            File myFile = new File("args.txt");
-            Scanner myReader = new Scanner(myFile);
-            String data = myReader.nextLine();
+            try {
+                File myFile = new File("args.txt");
+                Scanner myReader = new Scanner(myFile);
+                String data = myReader.nextLine();
 
-            if (Objects.equals(data, "true")){
-                startCalibration(primaryStage);
+                if (Objects.equals(data, "true")){
+                    startCalibration(primaryStage);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                System.out.println("File not found !");
             }
 
-            primaryStage.show();
+        primaryStage.show();
     }
 
     public void startCalibration(Stage primaryStage) {
