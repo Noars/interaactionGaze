@@ -33,7 +33,7 @@ export PATH=${JAVA_HOME}/bin:${PATH}
 
 echo "PATH = ${PATH}"
 
-export JAVA_CMD="java -cp \"$CLASSPATH\" ${JAVA_OPTS} -jar "$LIB_DIR"/untitled.jar true"
+export JAVA_CMD="java -cp \"$CLASSPATH\" ${JAVA_OPTS} -jar "$LIB_DIR"/interAACtionGaze.jar true"
 
 echo "Executing command line: $JAVA_CMD"
 

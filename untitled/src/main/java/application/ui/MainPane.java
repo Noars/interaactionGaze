@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 public class MainPane extends BorderPane {
 
-    boolean running = true;
+    boolean running = false;
     boolean displayed = true;
     boolean iscancelled = false;
 
@@ -51,8 +51,8 @@ public class MainPane extends BorderPane {
     }
 
     public Button createStartStopButton(Main main, Stage primaryStage) {
-        Button startstop = new MainButton("Stop");
-        startstop.setGraphic(createButtonImageView("images/white/stop.png"));
+        Button startstop = new MainButton("Play");
+        startstop.setGraphic(createButtonImageView("images/white/play.png"));
         startstop.getStyleClass().add("green");
         startstop.setContentDisplay(ContentDisplay.TOP);
         startstop.setPrefHeight(200);
