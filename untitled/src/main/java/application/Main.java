@@ -48,6 +48,8 @@ public class Main extends Application {
 
     DecoratedPane decoratedPane;
 
+    boolean startWithCalibration = false;
+
     public static void main(String[] args) {
         try {
             File myFile = new File("args.txt");
@@ -62,39 +64,49 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws FileNotFoundException {
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
-            primaryStage.setTitle("InteraactionGaze");
+    public void start(Stage primaryStage) {
+        primaryStage.setWidth(600);
+        primaryStage.setHeight(250);
+        primaryStage.setTitle("InteraactionGaze");
 
-            mouseInfo = new MouseInfo();
-            CalibrationConfig calibrationConfig = new CalibrationConfig();
-            gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(this, calibrationConfig);
+        mouseInfo = new MouseInfo();
+        CalibrationConfig calibrationConfig = new CalibrationConfig();
+        gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(this, calibrationConfig);
 
-            optionsPane = new OptionsPane(primaryStage, this);
-            optionsCalibrationPane = new OptionsCalibrationPane(primaryStage, this, calibrationConfig);
-            calibrationPane = new CalibrationPane(primaryStage, gazeDeviceManager, calibrationConfig);
-            home = new MainPane(this, primaryStage);
+        optionsPane = new OptionsPane(primaryStage, this);
+        optionsCalibrationPane = new OptionsCalibrationPane(primaryStage, this, calibrationConfig);
+        calibrationPane = new CalibrationPane(primaryStage, gazeDeviceManager, calibrationConfig);
+        home = new MainPane(this, primaryStage);
 
-            decoratedPane = new DecoratedPane(primaryStage);
-            decoratedPane.setCenter(home);
+        decoratedPane = new DecoratedPane(primaryStage);
+        decoratedPane.setCenter(home);
 
-            Scene calibScene = new Scene(decoratedPane, primaryStage.getWidth(), primaryStage.getHeight());
-            calibScene.getStylesheets().add("style.css");
-            primaryStage.setScene(calibScene);
-            calibScene.setFill(Color.TRANSPARENT);
-            // calibrationPane.installEventHandler(primaryStage, this);
-            primaryStage.initStyle(StageStyle.TRANSPARENT);
+        Scene calibScene = new Scene(decoratedPane, primaryStage.getWidth(), primaryStage.getHeight());
+        calibScene.getStylesheets().add("style.css");
+        primaryStage.setScene(calibScene);
+        calibScene.setFill(Color.TRANSPARENT);
+        // calibrationPane.installEventHandler(primaryStage, this);
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
 
+        try {
             File myFile = new File("args.txt");
             Scanner myReader = new Scanner(myFile);
             String data = myReader.nextLine();
 
             if (Objects.equals(data, "true")){
                 startCalibration(primaryStage);
+                startWithCalibration = true;
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("File not found !");
+        }
 
-            primaryStage.show();
+        if (!startWithCalibration){
+            this.getGazeDeviceManager().setPause(true);
+        }
+
+        primaryStage.show();
     }
 
     public void startCalibration(Stage primaryStage) {
