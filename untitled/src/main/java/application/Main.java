@@ -4,29 +4,25 @@ import application.ui.*;
 import gaze.MouseInfo;
 import gaze.devicemanager.GazeDeviceManagerFactory;
 import gaze.devicemanager.TobiiGazeDeviceManager;
-import javafx.animation.PauseTransition;
-import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import tobii.Tobii;
 import utils.CalibrationConfig;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -51,13 +47,28 @@ public class Main extends Application {
     boolean startWithCalibration = false;
 
     public static void main(String[] args) {
+
+        String os = System.getProperty("os.name").toLowerCase();
+        String userName = System.getProperty("user.name");
+
         try {
-            File myFile = new File("args.txt");
-            FileWriter myWritter = new FileWriter("args.txt");
-            myWritter.write(args[0]);
-            myWritter.close();
+            if (os.indexOf("nux") >= 0){
+                File myFile = new File("args.txt");
+                FileWriter myWritter = new FileWriter("args.txt");
+                myWritter.write(args[0]);
+                myWritter.close();
+            }else{
+                File myFolder = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze");
+                myFolder.mkdirs();
+                File myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
+                if (!myFile.exists()){
+                    FileWriter myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
+                    myWritter.write("true");
+                    myWritter.close();
+                }
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
 
         launch(args);
@@ -88,18 +99,36 @@ public class Main extends Application {
         // calibrationPane.installEventHandler(primaryStage, this);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
 
+        String os = System.getProperty("os.name").toLowerCase();
+        String userName = System.getProperty("user.name");
+
         try {
-            File myFile = new File("args.txt");
+            File myFile = null;
+            if (os.indexOf("win") >= 0){
+                myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
+            }else {
+                myFile = new File("args.txt");
+            }
+
             Scanner myReader = new Scanner(myFile);
             String data = myReader.nextLine();
 
             if (Objects.equals(data, "true")){
                 startCalibration(primaryStage);
                 startWithCalibration = true;
+                if(os.indexOf("win") >= 0){
+                    try{
+                        FileWriter myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
+                        myWritter.write("false");
+                        myWritter.close();
+                    } catch (IOException e) {
+                        System.out.println(e);
+                    }
+                }
             }
+
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("File not found !");
+            System.out.println("");
         }
 
         if (!startWithCalibration){

@@ -2,7 +2,7 @@
 
 set -e
 
-MAIN_JAR_FILE=untitled.jar
+MAIN_JAR_FILE=interAACtionGaze.jar
 
 export JAVA_OPTS="-Xms256m -Xmx1g"
 export JAVA_OPTS="$JAVA_OPTS -Dlogging.appender.console.level=OFF"
