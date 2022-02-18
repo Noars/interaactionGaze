@@ -49,7 +49,6 @@ public class Main extends Application {
     public static void main(String[] args) {
 
         String os = System.getProperty("os.name").toLowerCase();
-        String userName = System.getProperty("user.name");
 
         try {
             if (os.indexOf("nux") >= 0){
@@ -58,6 +57,7 @@ public class Main extends Application {
                 myWritter.write(args[0]);
                 myWritter.close();
             }else{
+                String userName = System.getProperty("user.name");
                 File myFolder = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze");
                 myFolder.mkdirs();
                 File myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
@@ -100,11 +100,11 @@ public class Main extends Application {
         primaryStage.initStyle(StageStyle.TRANSPARENT);
 
         String os = System.getProperty("os.name").toLowerCase();
-        String userName = System.getProperty("user.name");
 
         try {
             File myFile = null;
             if (os.indexOf("win") >= 0){
+                String userName = System.getProperty("user.name");
                 myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
             }else {
                 myFile = new File("args.txt");
@@ -116,15 +116,6 @@ public class Main extends Application {
             if (Objects.equals(data, "true")){
                 startCalibration(primaryStage);
                 startWithCalibration = true;
-                if(os.indexOf("win") >= 0){
-                    try{
-                        FileWriter myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
-                        myWritter.write("false");
-                        myWritter.close();
-                    } catch (IOException e) {
-                        System.out.println(e);
-                    }
-                }
             }
 
         } catch (FileNotFoundException e) {
