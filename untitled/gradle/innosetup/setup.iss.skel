@@ -39,7 +39,7 @@ OutputBaseFilename=interAACtionGaze-windows-x64-installer
 SolidCompression=yes
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
 Source: "gazeicon.ico"; DestDir: "{app}\\bin"; Flags: ignoreversion
