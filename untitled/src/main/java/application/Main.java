@@ -4,15 +4,19 @@ import application.ui.*;
 import gaze.MouseInfo;
 import gaze.devicemanager.GazeDeviceManagerFactory;
 import gaze.devicemanager.TobiiGazeDeviceManager;
+import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import utils.CalibrationConfig;
@@ -21,8 +25,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -114,8 +116,12 @@ public class Main extends Application {
             String data = myReader.nextLine();
 
             if (Objects.equals(data, "true")){
-                startCalibration(primaryStage);
-                startWithCalibration = true;
+                if (os.indexOf("win") >= 0){
+                    startMessageCalibration(primaryStage);
+                }else {
+                    startCalibration(primaryStage);
+                    startWithCalibration = true;
+                }
             }
 
         } catch (FileNotFoundException e) {
@@ -127,6 +133,22 @@ public class Main extends Application {
         }
 
         primaryStage.show();
+    }
+
+    public void startMessageCalibration(Stage primaryStage) {
+        primaryStage.show();
+        Alert startAlert = new Alert(Alert.AlertType.INFORMATION);
+        startAlert.setTitle("Start Calibration");
+        startAlert.setHeaderText(null);
+        startAlert.setContentText("Nous allons commencer avec une première calibration !");
+        startAlert.show();
+        SequentialTransition startSleep = new SequentialTransition(new PauseTransition(Duration.seconds(5)));
+        startSleep.setOnFinished(event -> {
+            startAlert.close();
+            startCalibration(primaryStage);
+            startWithCalibration = true;
+        });
+        startSleep.play();
     }
 
     public void startCalibration(Stage primaryStage) {

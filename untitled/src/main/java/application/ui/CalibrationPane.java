@@ -10,7 +10,6 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -52,10 +51,6 @@ public class CalibrationPane extends Pane {
     Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
     Cross calibrationCross;
     int currentTest = TOP_LEFT;
-
-    ProgressBar pBar = new ProgressBar();
-    double pBarWidth = 500;
-    double pBarHeight = 30;
 
     Point2D curCoord = new Point2D(0, 0);
     Stage primaryStage;
@@ -117,53 +112,43 @@ public class CalibrationPane extends Pane {
 
         if (currentTest == TESTENDED) {
             imgTarget.setRadius(imgTarget.getRadius()/2);
-            pBar.setProgress(1.0F);
             resetTarget();
             calibrationCross.setOpacity(0);
             saveCalibration();
             messageCalibration(main);
         } else {
             if (currentTest == TOP_LEFT) {
-                pBar.setProgress(0.0F);
                 calibrationCross.setLayoutX(width);
                 calibrationCross.setLayoutY(height);
             } else if (currentTest == TOP_CENTER) {
-                pBar.setProgress(0.11F);
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() / 2);
                 calibrationCross.setLayoutY(height);
                 imgTarget.setRadius(imgTarget.getRadius()/2);
             } else if (currentTest == TOP_RIGHT) {
-                pBar.setProgress(0.22F);
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() - width);
                 calibrationCross.setLayoutY(height);
                 imgTarget.setRadius(imgTarget.getRadius()/2);
             } else if (currentTest == RIGHT_CENTER) {
-                pBar.setProgress(0.33F);
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() - width);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() / 2);
                 imgTarget.setRadius(imgTarget.getRadius()/2);
             } else if (currentTest == BOTTOM_RIGHT) {
-                pBar.setProgress(0.44F);
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() - width);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() - height);
                 imgTarget.setRadius(imgTarget.getRadius()/2);
             } else if (currentTest == BOTTOM_CENTER) {
-                pBar.setProgress(0.55F);
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() / 2);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() - height);
                 imgTarget.setRadius(imgTarget.getRadius()/2);
             } else if (currentTest == BOTTOM_LEFT) {
-                pBar.setProgress(0.66F);
                 calibrationCross.setLayoutX(width);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() - height);
                 imgTarget.setRadius(imgTarget.getRadius()/2);
             } else if (currentTest == LEFT_CENTER) {
-                pBar.setProgress(0.77);
                 calibrationCross.setLayoutX(width);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() / 2);
                 imgTarget.setRadius(imgTarget.getRadius()/2);
             } else if (currentTest == CENTER) {
-                pBar.setProgress(0.88F);
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() / 2);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() / 2);
                 imgTarget.setRadius(imgTarget.getRadius()/2);
@@ -192,11 +177,6 @@ public class CalibrationPane extends Pane {
             setImgTarget();
             this.getChildren().add(target);
             addExitButton(main);
-
-            pBar.setLayoutX((primaryScreenBounds.getWidth() / 2) - (pBarWidth / 2 ));
-            pBar.setLayoutY(10.0);
-            pBar.setPrefSize(pBarWidth, pBarHeight);
-            this.getChildren().add(pBar);
         }
     }
 
