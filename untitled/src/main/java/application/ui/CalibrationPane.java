@@ -208,15 +208,19 @@ public class CalibrationPane extends Pane {
 
         String os = System.getProperty("os.name").toLowerCase();
 
-        if(os.indexOf("win") >= 0){
-            try{
+        try {
+            if (os.contains("nux")){
+                FileWriter myWritter = new FileWriter("args.txt");
+                myWritter.write("false");
+                myWritter.close();
+            }else {
                 String userName = System.getProperty("user.name");
                 FileWriter myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
                 myWritter.write("false");
                 myWritter.close();
-            } catch (IOException e2) {
-                System.out.println(e2);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

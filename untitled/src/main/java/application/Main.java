@@ -53,7 +53,7 @@ public class Main extends Application {
         String os = System.getProperty("os.name").toLowerCase();
 
         try {
-            if (os.indexOf("nux") >= 0){
+            if (os.contains("nux")){
                 File myFile = new File("args.txt");
                 FileWriter myWritter = new FileWriter("args.txt");
                 myWritter.write(args[0]);
@@ -101,11 +101,13 @@ public class Main extends Application {
         // calibrationPane.installEventHandler(primaryStage, this);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
 
+        this.getGazeDeviceManager().setPause(false);
+
         String os = System.getProperty("os.name").toLowerCase();
 
         try {
-            File myFile = null;
-            if (os.indexOf("win") >= 0){
+            File myFile;
+            if (os.contains("win")){
                 String userName = System.getProperty("user.name");
                 myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
             }else {
@@ -116,7 +118,7 @@ public class Main extends Application {
             String data = myReader.nextLine();
 
             if (Objects.equals(data, "true")){
-                if (os.indexOf("win") >= 0){
+                if (os.contains("win")){
                     startMessageCalibration(primaryStage);
                 }else {
                     startCalibration(primaryStage);
