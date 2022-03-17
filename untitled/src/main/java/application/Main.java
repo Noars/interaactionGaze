@@ -54,17 +54,17 @@ public class Main extends Application {
 
         try {
             if (os.contains("nux")){
-                File myFile = new File("args.txt");
-                FileWriter myWritter = new FileWriter("args.txt");
+                File myFile = new File("calibration.txt");
+                FileWriter myWritter = new FileWriter("calibration.txt");
                 myWritter.write(args[0]);
                 myWritter.close();
             }else{
                 String userName = System.getProperty("user.name");
                 File myFolder = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze");
                 myFolder.mkdirs();
-                File myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
+                File myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
                 if (!myFile.exists()){
-                    FileWriter myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
+                    FileWriter myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
                     myWritter.write("true");
                     myWritter.close();
                 }
@@ -109,9 +109,9 @@ public class Main extends Application {
             File myFile;
             if (os.contains("win")){
                 String userName = System.getProperty("user.name");
-                myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
+                myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
             }else {
-                myFile = new File("args.txt");
+                myFile = new File("calibration.txt");
             }
 
             Scanner myReader = new Scanner(myFile);

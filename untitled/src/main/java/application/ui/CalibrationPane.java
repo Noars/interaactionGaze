@@ -102,6 +102,8 @@ public class CalibrationPane extends Pane {
     }
 
     public void returnGazeMenu(Main main){
+        primaryStage.setWidth(600);
+        primaryStage.setHeight(250);
         main.goToMain(primaryStage);
     }
 
@@ -200,8 +202,6 @@ public class CalibrationPane extends Pane {
         SequentialTransition sleep = new SequentialTransition(new PauseTransition(Duration.seconds(5)));
         sleep.setOnFinished(event -> {
             alert.close();
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
             returnGazeMenu(main);
         });
         sleep.play();
@@ -210,12 +210,12 @@ public class CalibrationPane extends Pane {
 
         try {
             if (os.contains("nux")){
-                FileWriter myWritter = new FileWriter("args.txt");
+                FileWriter myWritter = new FileWriter("calibration.txt");
                 myWritter.write("false");
                 myWritter.close();
             }else {
                 String userName = System.getProperty("user.name");
-                FileWriter myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\args.txt");
+                FileWriter myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
                 myWritter.write("false");
                 myWritter.close();
             }

@@ -20,7 +20,7 @@ public class MouseInfo {
     LinkedList<Point2D> previousPosition = new LinkedList<>();
     @Getter
     @Setter
-    boolean clikcActivated = false;
+    boolean clikcActivated = true;
     Timeline dwellTimeline;
     boolean dwellStarted;
     @Getter

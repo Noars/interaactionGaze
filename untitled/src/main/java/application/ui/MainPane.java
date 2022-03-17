@@ -97,8 +97,8 @@ public class MainPane extends BorderPane {
     }
 
     public Button createClickActivationButton(Main main, Stage primaryStage) {
-        Button clickActivation = new MainButton("Activer le click");
-        clickActivation.setGraphic(createButtonImageView("images/white/click-enabled.png"));
+        Button clickActivation = new MainButton("Desactiver le click");
+        clickActivation.setGraphic(createButtonImageView("images/white/click-disabled.png"));
         clickActivation.getStyleClass().add("orange");
         clickActivation.setContentDisplay(ContentDisplay.TOP);
         clickActivation.setPrefHeight(200);
