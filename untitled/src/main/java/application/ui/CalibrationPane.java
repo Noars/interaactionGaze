@@ -56,6 +56,7 @@ public class CalibrationPane extends Pane {
     Stage primaryStage;
 
     CalibrationConfig calibrationConfig;
+    String data;
 
     public CalibrationPane(Stage primaryStage, GazeDeviceManager gazeDeviceManager, CalibrationConfig mainCalibrationConfig) {
         super();
@@ -67,13 +68,14 @@ public class CalibrationPane extends Pane {
         this.setFocusTraversable(true);
     }
 
-    public void startCalibration(Main main) {
+    public void startCalibration(Main main, String data) {
         getChildren().clear();
         currentTest = 0;
         resetCalibrationPoints();
         calibrationCross = new Cross();
         calibrationCross.setOpacity(0);
         getChildren().add(calibrationCross);
+        this.data = data;
 
         EventHandler<Event> event = e -> {
             if (e.getEventType() == GazeEvent.GAZE_MOVED) {
@@ -102,9 +104,14 @@ public class CalibrationPane extends Pane {
     }
 
     public void returnGazeMenu(Main main){
-        primaryStage.setWidth(600);
-        primaryStage.setHeight(250);
-        main.goToMain(primaryStage);
+
+        if (Objects.equals(this.data, "true")){
+            System.exit(0);
+        }else {
+            primaryStage.setWidth(600);
+            primaryStage.setHeight(250);
+            main.goToMain(primaryStage);
+        }
     }
 
     public void startCurrentTest(Main main) {
@@ -194,6 +201,13 @@ public class CalibrationPane extends Pane {
     }
 
     public void messageCalibration(Main main){
+
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("win")){
+            this.data = "false";
+        }
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Calibration");
         alert.setHeaderText(null);
@@ -205,8 +219,6 @@ public class CalibrationPane extends Pane {
             returnGazeMenu(main);
         });
         sleep.play();
-
-        String os = System.getProperty("os.name").toLowerCase();
 
         try {
             if (os.contains("nux")){

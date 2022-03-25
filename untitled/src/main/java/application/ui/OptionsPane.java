@@ -70,7 +70,7 @@ public class OptionsPane extends BorderPane {
         calibrate.setPrefHeight(200);
         calibrate.setPrefWidth(495. / 5);
         calibrate.setOnAction((e) -> {
-            main.startCalibration(primaryStage);
+            main.startCalibration(primaryStage, "false");
         });
         return calibrate;
     }
