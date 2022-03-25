@@ -118,11 +118,11 @@ public class Main extends Application {
             String data = myReader.nextLine();
 
             if (Objects.equals(data, "true")){
+                startWithCalibration = true;
                 if (os.contains("win")){
                     startMessageCalibration(primaryStage, data);
                 }else {
                     startCalibration(primaryStage, data);
-                    startWithCalibration = true;
                 }
             }
 
