@@ -119,9 +119,9 @@ public class Main extends Application {
 
             if (Objects.equals(data, "true")){
                 if (os.contains("win")){
-                    startMessageCalibration(primaryStage);
+                    startMessageCalibration(primaryStage, data);
                 }else {
-                    startCalibration(primaryStage);
+                    startCalibration(primaryStage, data);
                     startWithCalibration = true;
                 }
             }
@@ -137,7 +137,7 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public void startMessageCalibration(Stage primaryStage) {
+    public void startMessageCalibration(Stage primaryStage, String data) {
         primaryStage.show();
         Alert startAlert = new Alert(Alert.AlertType.INFORMATION);
         startAlert.setTitle("Start Calibration");
@@ -147,13 +147,13 @@ public class Main extends Application {
         SequentialTransition startSleep = new SequentialTransition(new PauseTransition(Duration.seconds(5)));
         startSleep.setOnFinished(event -> {
             startAlert.close();
-            startCalibration(primaryStage);
+            startCalibration(primaryStage, data);
             startWithCalibration = true;
         });
         startSleep.play();
     }
 
-    public void startCalibration(Stage primaryStage) {
+    public void startCalibration(Stage primaryStage, String data) {
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         primaryStage.setX(primaryScreenBounds.getMinX());
         primaryStage.setY(primaryScreenBounds.getMinY());
@@ -162,7 +162,7 @@ public class Main extends Application {
         primaryStage.setFullScreen(true);
         primaryStage.setFullScreenExitHint("");
         primaryStage.getScene().setRoot(this.getCalibrationPane());
-        calibrationPane.startCalibration(this);
+        calibrationPane.startCalibration(this, data);
     }
 
     public void goToOptionsCalibration(Stage primaryStage){
