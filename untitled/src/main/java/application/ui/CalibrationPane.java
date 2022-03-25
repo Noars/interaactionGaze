@@ -105,7 +105,7 @@ public class CalibrationPane extends Pane {
 
     public void returnGazeMenu(Main main){
 
-        if (Objects.equals(data, "true")){
+        if (Objects.equals(this.data, "true")){
             System.exit(0);
         }else {
             primaryStage.setWidth(600);
