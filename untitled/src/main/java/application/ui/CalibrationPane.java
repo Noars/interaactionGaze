@@ -120,7 +120,7 @@ public class CalibrationPane extends Pane {
         double height = primaryScreenBounds.getHeight() / 10;
 
         if (currentTest == TESTENDED) {
-            imgTarget.setRadius(imgTarget.getRadius()/2);
+            imgTarget.setOpacity(0);
             resetTarget();
             calibrationCross.setOpacity(0);
             saveCalibration();
@@ -132,35 +132,35 @@ public class CalibrationPane extends Pane {
             } else if (currentTest == TOP_CENTER) {
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() / 2);
                 calibrationCross.setLayoutY(height);
-                imgTarget.setRadius(imgTarget.getRadius()/2);
+                imgTarget.setOpacity(0);
             } else if (currentTest == TOP_RIGHT) {
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() - width);
                 calibrationCross.setLayoutY(height);
-                imgTarget.setRadius(imgTarget.getRadius()/2);
+                imgTarget.setOpacity(0);
             } else if (currentTest == RIGHT_CENTER) {
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() - width);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() / 2);
-                imgTarget.setRadius(imgTarget.getRadius()/2);
+                imgTarget.setOpacity(0);
             } else if (currentTest == BOTTOM_RIGHT) {
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() - width);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() - height);
-                imgTarget.setRadius(imgTarget.getRadius()/2);
+                imgTarget.setOpacity(0);
             } else if (currentTest == BOTTOM_CENTER) {
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() / 2);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() - height);
-                imgTarget.setRadius(imgTarget.getRadius()/2);
+                imgTarget.setOpacity(0);
             } else if (currentTest == BOTTOM_LEFT) {
                 calibrationCross.setLayoutX(width);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() - height);
-                imgTarget.setRadius(imgTarget.getRadius()/2);
+                imgTarget.setOpacity(0);
             } else if (currentTest == LEFT_CENTER) {
                 calibrationCross.setLayoutX(width);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() / 2);
-                imgTarget.setRadius(imgTarget.getRadius()/2);
+                imgTarget.setOpacity(0);
             } else if (currentTest == CENTER) {
                 calibrationCross.setLayoutX(primaryScreenBounds.getWidth() / 2);
                 calibrationCross.setLayoutY(primaryScreenBounds.getHeight() / 2);
-                imgTarget.setRadius(imgTarget.getRadius()/2);
+                imgTarget.setOpacity(0);
             }
             calibrationConfig.get(currentTest).setCross(nextCross());
 
@@ -279,7 +279,7 @@ public class CalibrationPane extends Pane {
             c.setCenterX(curCoord.getX());
             c.setCenterY(curCoord.getY());
             c.setFill(Color.RED);
-            c.setOpacity(0.3);
+            c.setOpacity(0);
             c.setMouseTransparent(true);
             calibrationConfig.get(currentTest).capturedCoordinates.add(curCoord);
             //getChildren().add(c);
@@ -300,6 +300,7 @@ public class CalibrationPane extends Pane {
             newCircle.setRadius(5);
             newCircle.setCenterX(coordXsum);
             newCircle.setCenterY(coordYsum);
+            newCircle.setOpacity(0);
             newCircle.setFill(Color.LIGHTSKYBLUE);
 
             getChildren().add(newCircle);

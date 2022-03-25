@@ -139,18 +139,23 @@ public class Main extends Application {
 
     public void startMessageCalibration(Stage primaryStage, String data) {
         primaryStage.show();
+        primaryStage.setIconified(true);
+
         Alert startAlert = new Alert(Alert.AlertType.INFORMATION);
         startAlert.setTitle("Start Calibration");
         startAlert.setHeaderText(null);
         startAlert.setContentText("Nous allons commencer avec une première calibration !");
-        startAlert.show();
-        SequentialTransition startSleep = new SequentialTransition(new PauseTransition(Duration.seconds(5)));
-        startSleep.setOnFinished(event -> {
-            startAlert.close();
-            startCalibration(primaryStage, data);
-            startWithCalibration = true;
-        });
-        startSleep.play();
+        startAlert.showAndWait();
+
+        Alert eyeTrackerAlert = new Alert(Alert.AlertType.INFORMATION);
+        eyeTrackerAlert.setTitle("Start Calibration");
+        eyeTrackerAlert.setHeaderText(null);
+        eyeTrackerAlert.setContentText("Veuillez brancher votre Eye Tracker avant de continuer !");
+        eyeTrackerAlert.showAndWait();
+
+        startCalibration(primaryStage, data);
+        primaryStage.setIconified(false);
+        startWithCalibration = true;
     }
 
     public void startCalibration(Stage primaryStage, String data) {
