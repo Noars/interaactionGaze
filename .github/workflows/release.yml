@@ -18,7 +18,7 @@ jobs:
 
       - name: Download JREs
         run: |
-          ./gradlew --stacktrace --info downloadAndExtractJREs
+          ./untilted/gradlew --stacktrace --info downloadAndExtractJREs
           chmod -R 777 build/jre
       - name: Setup Git Config
         run: |
@@ -28,7 +28,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./gradlew --stacktrace --info release -Prelease.useAutomaticVersion=true
+          ./untilted/gradlew --stacktrace --info release -Prelease.useAutomaticVersion=true
       - name: Get Previous tag
         id: previous-tag
         uses: WyriHaximus/github-action-get-previous-tag@master
@@ -52,10 +52,10 @@ jobs:
         with:
           release-url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`.
           files: |
-            ./build/distributions/interAACtionGaze-linux.tar.gz
-            ./build/distributions/interAACtionGaze-macos.tar.gz
-            ./build/distributions/interAACtionGaze-noJRE.tar.gz
-            ./build/distributions/interAACtionGaze-noJRE.zip
-            ./build/distributions/interAACtionGaze-windows.zip
-            ./build/distributions/interAACtionGaze-windows-x64-installer.exe
+            ./untilted/build/distributions/interAACtionGaze-linux.tar.gz
+            ./untilted/build/distributions/interAACtionGaze-macos.tar.gz
+            ./untilted/build/distributions/interAACtionGaze-noJRE.tar.gz
+            ./untilted/build/distributions/interAACtionGaze-noJRE.zip
+            ./untilted/build/distributions/interAACtionGaze-windows.zip
+            ./untilted/build/distributions/interAACtionGaze-windows-x64-installer.exe
           github-token: ${{ secrets.GITHUB_TOKEN }}
