@@ -18,6 +18,7 @@ jobs:
 
       - name: Download JREs
         run: |
+          chmod +x ./untitled/gradlew
           ./untitled/gradlew --stacktrace --info downloadAndExtractJREs
           chmod -R 777 build/jre
       - name: Setup Git Config
