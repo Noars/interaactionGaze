@@ -28,11 +28,12 @@ public class MainPane extends BorderPane {
 
         Button hide = createHideButton(primaryStage);
 
-        Button clickActivation = createClickActivationButton(main, primaryStage);
+        //Button clickActivation = createClickActivationButton(main, primaryStage);
 
         Button options = createOptionsButton(main, primaryStage);
 
-        hbox = new HBox(startstop, hide, clickActivation, options);
+        //hbox = new HBox(startstop, hide, clickActivation, options);
+        hbox = new HBox(startstop, hide, options);
         hbox.setSpacing(5);
         hbox.setAlignment(Pos.CENTER);
         BorderPane.setAlignment(hbox, Pos.CENTER);
