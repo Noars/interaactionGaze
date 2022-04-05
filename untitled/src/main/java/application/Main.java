@@ -53,7 +53,7 @@ public class Main extends Application {
         String os = System.getProperty("os.name").toLowerCase();
 
         try {
-            if (os.contains("nux")){
+            if (os.contains("nux") || os.contains("mac")){
                 File myFile = new File("calibration.txt");
                 FileWriter myWritter = new FileWriter("calibration.txt");
                 myWritter.write(args[0]);
