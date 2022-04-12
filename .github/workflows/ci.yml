@@ -18,16 +18,16 @@ jobs:
 
       - name: Build with Gradle (no test)
         run: |
-        cd untitled/
-        ./gradlew --stacktrace --info build checkPMDReport -x test
+          cd untitled/
+          ./gradlew --stacktrace --info build checkPMDReport -x test
 
       - name: Set up xvfb for non headless tests
         run: sudo apt-get install xvfb
 
       - name: Run tests with Gradle
         run: |
-        cd untitled/
-        xvfb-run --auto-servernum ./gradlew --stacktrace --info test
+          cd untitled/
+          xvfb-run --auto-servernum ./gradlew --stacktrace --info test
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
