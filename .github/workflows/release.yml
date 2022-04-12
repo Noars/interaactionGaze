@@ -20,8 +20,6 @@ jobs:
         run: |
           chmod +x ./untitled/gradlew
           ./untitled/gradlew --stacktrace --info 
-          cd untitled/
-          chmod -R 777 build/jre
 
       - name: Run Gradle Release
         env:
