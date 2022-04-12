@@ -15,7 +15,7 @@ public class MainPane extends BorderPane {
 
     boolean running = false;
     boolean displayed = true;
-    boolean iscancelled = false;
+    //boolean iscancelled = false;
 
     HBox hbox;
 
@@ -97,7 +97,7 @@ public class MainPane extends BorderPane {
         return hide;
     }
 
-    public Button createClickActivationButton(Main main, Stage primaryStage) {
+    /*public Button createClickActivationButton(Main main, Stage primaryStage) {
         Button clickActivation = new MainButton("Desactiver le click");
         clickActivation.setGraphic(createButtonImageView("images/white/click-disabled.png"));
         clickActivation.getStyleClass().add("orange");
@@ -118,7 +118,7 @@ public class MainPane extends BorderPane {
             }
         });
         return clickActivation;
-    }
+    }*/
 
     public Button createOptionsButton(Main main, Stage primaryStage) {
         Button options = new MainButton("Options");

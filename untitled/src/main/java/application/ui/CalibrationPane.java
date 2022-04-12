@@ -4,6 +4,7 @@ import application.Main;
 import gaze.devicemanager.GazeDeviceManager;
 import gaze.devicemanager.GazeEvent;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -106,7 +108,7 @@ public class CalibrationPane extends Pane {
     public void returnGazeMenu(Main main){
 
         if (Objects.equals(this.data, "true")){
-            System.exit(0);
+            Platform.exit();
         }else {
             primaryStage.setWidth(600);
             primaryStage.setHeight(250);
@@ -203,6 +205,7 @@ public class CalibrationPane extends Pane {
     public void messageCalibration(Main main){
 
         String os = System.getProperty("os.name").toLowerCase();
+        FileWriter myWritter = null;
 
         if (os.contains("win")){
             this.data = "false";
@@ -222,17 +225,22 @@ public class CalibrationPane extends Pane {
 
         try {
             if (os.contains("nux")){
-                FileWriter myWritter = new FileWriter("calibration.txt");
+                myWritter = new FileWriter("calibration.txt", StandardCharsets.UTF_8);
                 myWritter.write("false");
-                myWritter.close();
             }else {
                 String userName = System.getProperty("user.name");
-                FileWriter myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
+                myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt", StandardCharsets.UTF_8);
                 myWritter.write("false");
-                myWritter.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                assert myWritter != null;
+                myWritter.close();
+            }catch (IOException e2){
+                e2.printStackTrace();
+            }
         }
     }
 
@@ -292,8 +300,8 @@ public class CalibrationPane extends Pane {
                 coordXsum = coordXsum + calibrationConfig.get(currentTest).capturedCoordinates.get(i).getX();
                 coordYsum = coordYsum + calibrationConfig.get(currentTest).capturedCoordinates.get(i).getY();
             }
-            coordXsum = coordXsum / (double) (calibrationConfig.get(currentTest).capturedCoordinates.size() / 2);
-            coordYsum = coordYsum / (double) (calibrationConfig.get(currentTest).capturedCoordinates.size() / 2);
+            coordXsum = coordXsum / (double) (calibrationConfig.get(currentTest).capturedCoordinates.size() / (double) 2);
+            coordYsum = coordYsum / (double) (calibrationConfig.get(currentTest).capturedCoordinates.size() / (double) 2);
 
 
             Circle newCircle = new Circle();
