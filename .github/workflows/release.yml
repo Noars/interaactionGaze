@@ -28,7 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd untitled/
-          ./gradlew --stacktrace --info generateWindowsInstallerInDocker  
+          ./gradlew --stacktrace --info packageApp 
 
       - name: Get Env
         run: |
