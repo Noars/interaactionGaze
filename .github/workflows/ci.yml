@@ -19,6 +19,7 @@ jobs:
       - name: Build with Gradle (no test)
         run: |
           cd untitled/
+          chmod +x ./gradlew
           ./gradlew --stacktrace --info build checkPMDReport -x test
 
       - name: Set up xvfb for non headless tests
