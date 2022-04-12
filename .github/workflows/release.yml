@@ -18,6 +18,7 @@ jobs:
 
       - name: Download JREs
         run: |
+          cd untitled/
           chmod +x ./gradlew
           ./gradlew --stacktrace --info
           chmod -R 777 build/jre
@@ -26,7 +27,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./untitled/gradlew --stacktrace --info generateWindowsInstaller
+          cd untitled/
+          ./gradlew --stacktrace --info generateWindowsInstaller
 
       - name: Get Env
         run: |
