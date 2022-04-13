@@ -67,10 +67,10 @@ jobs:
         with:
           release-url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`.
           files: |
-            ./build/distributions/interAACtionGaze-linux.tar.gz
-            ./build/distributions/interAACtionGaze-macos.tar.gz
-            ./build/distributions/interAACtionGaze-noJRE.tar.gz
-            ./build/distributions/interAACtionGaze-noJRE.zip
-            ./build/distributions/interAACtionGaze-windows.zip
-            ./build/distributions/interAACtionGaze-windows-x64-installer.exe
+            interAACtionGaze-linux.tar.gz
+            interAACtionGaze-macos.tar.gz
+            interAACtionGaze-noJRE.tar.gz
+            interAACtionGaze-noJRE.zip
+            interAACtionGaze-windows.zip
+            interAACtionGaze-windows-x64-installer.exe
           github-token: ${{ secrets.GITHUB_TOKEN }}
