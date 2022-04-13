@@ -22,13 +22,15 @@ jobs:
           chmod +x ./gradlew
           ./gradlew --stacktrace --info
           chmod -R 777 build/jre
+          cd ../
 
       - name: Run Gradle Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd untitled/
-          ./gradlew --stacktrace --info packageApp 
+          ./gradlew --stacktrace --info packageApp
+          cd ../
 
       - name: Get Env
         run: |
@@ -68,9 +70,8 @@ jobs:
           release-url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`.
           files: |
             ./untitled/build/distributions/interAACtionGaze-linux.tar.gz
-            ./../untitled/build/distributions/interAACtionGaze-macos.tar.gz
-            ../build/distributions/interAACtionGaze-noJRE.tar.gz
-            untitled/build/distributions/interAACtionGaze-noJRE.zip
-            ./build/distributions/interAACtionGaze-windows.zip
-            interAACtionGaze-windows-x64-installer.exe
+            ./untitled/build/distributions/interAACtionGaze-macos.tar.gz
+            ./untitled/build/distributions/interAACtionGaze-noJRE.tar.gz
+            ./untitled/build/distributions/interAACtionGaze-noJRE.zip
+            ./untitled/build/distributions/interAACtionGaze-windows.zip
           github-token: ${{ secrets.GITHUB_TOKEN }}
