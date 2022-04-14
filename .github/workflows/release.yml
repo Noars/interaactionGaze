@@ -22,9 +22,9 @@ jobs:
           ./gradlew --stacktrace --info downloadAndExtractJREs
           chmod -R 777 build/jre
 
-      - name: Package with Gradle
+      - name: Generate releases
         run: |
-          ./gradlew --stacktrace --info packageApp -x test
+          ./gradlew --stacktrace --info packageApp
 
       - name: Generate Windows Installer with InnoSetup
         run: |
@@ -74,4 +74,5 @@ jobs:
             ./build/distributions/interAACtionGaze-noJRE.tar.gz
             ./build/distributions/interAACtionGaze-noJRE.zip
             ./build/distributions/interAACtionGaze-windows.zip
+            ./build/distrbutions/interAACtionGaze-windows-x64-installer.exe
           github-token: ${{ secrets.GITHUB_TOKEN }}

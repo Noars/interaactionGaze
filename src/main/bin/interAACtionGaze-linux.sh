@@ -1,40 +1,104 @@
 #!/bin/sh
 
-set -e
+version=$(find $HOME/* -name "*InterAACtionGaze*")
+File="$version"/run.txt
 
-MAIN_JAR_FILE=interAACtionGaze.jar
+if [ -f "$File" ]; then
 
-export JAVA_OPTS="-Xms256m -Xmx1g"
-export JAVA_OPTS="$JAVA_OPTS -Dlogging.appender.console.level=OFF -Djdk.gtk.version=2"
+  read -r line< "$File"
 
-WORKING_DIR=$(pwd)
+  if [ "$line" = "true" ]; then
 
-echo "WORKING_DIR = ${WORKING_DIR}"
+    exit 0
 
-SCRIPT_DIR=$(dirname $0)
+  else
 
-echo "SCRIPT_DIR = ${SCRIPT_DIR}"
+    echo "true" > $File
 
-LIB_DIR=${SCRIPT_DIR}/../lib
+    set -e
 
-echo "LIB_DIR = ${LIB_DIR}"
+    MAIN_JAR_FILE=interAACtionGaze.jar
 
-LIB_DIR_RELATIVE=$(realpath --relative-to="${WORKING_DIR}" "${LIB_DIR}")
+    export JAVA_OPTS="-Xms256m -Xmx1g"
+    export JAVA_OPTS="$JAVA_OPTS -Dlogging.appender.console.level=OFF -Djdk.gtk.version=2"
 
-echo "LIB_DIR_RELATIVE = ${LIB_DIR_RELATIVE}"
+    WORKING_DIR=$(pwd)
 
-CLASSPATH=$(find ./$LIB_DIR_RELATIVE -name "*.jar" | sort | tr '\n' ':')
+    echo "WORKING_DIR = ${WORKING_DIR}"
 
-export JAVA_HOME=${LIB_DIR}/jre
+    SCRIPT_DIR=$(dirname $0)
 
-echo "JAVA_HOME = ${JAVA_HOME}"
+    echo "SCRIPT_DIR = ${SCRIPT_DIR}"
 
-export PATH=${JAVA_HOME}/bin:${PATH}
+    LIB_DIR=${SCRIPT_DIR}/../lib
 
-echo "PATH = ${PATH}"
+    echo "LIB_DIR = ${LIB_DIR}"
 
-export JAVA_CMD="java -cp \"$CLASSPATH\" ${JAVA_OPTS} -jar "$LIB_DIR"/interAACtionGaze.jar false"
+    LIB_DIR_RELATIVE=$(realpath --relative-to="${WORKING_DIR}" "${LIB_DIR}")
 
-echo "Executing command line: $JAVA_CMD"
+    echo "LIB_DIR_RELATIVE = ${LIB_DIR_RELATIVE}"
 
-${JAVA_CMD}
+    CLASSPATH=$(find ./$LIB_DIR_RELATIVE -name "*.jar" | sort | tr '\n' ':')
+
+    export JAVA_HOME=${LIB_DIR}/jre
+
+    echo "JAVA_HOME = ${JAVA_HOME}"
+
+    export PATH=${JAVA_HOME}/bin:${PATH}
+
+    echo "PATH = ${PATH}"
+
+    export JAVA_CMD="java -cp \"$CLASSPATH\" ${JAVA_OPTS} -jar "$LIB_DIR"/interAACtionGaze.jar false"
+
+    echo "Executing command line: $JAVA_CMD"
+
+    ${JAVA_CMD}
+
+  fi
+
+else
+
+  echo "true" > $File
+
+  set -e
+
+  MAIN_JAR_FILE=interAACtionGaze.jar
+
+  export JAVA_OPTS="-Xms256m -Xmx1g"
+  export JAVA_OPTS="$JAVA_OPTS -Dlogging.appender.console.level=OFF -Djdk.gtk.version=2"
+
+  WORKING_DIR=$(pwd)
+
+  echo "WORKING_DIR = ${WORKING_DIR}"
+
+  SCRIPT_DIR=$(dirname $0)
+
+  echo "SCRIPT_DIR = ${SCRIPT_DIR}"
+
+  LIB_DIR=${SCRIPT_DIR}/../lib
+
+  echo "LIB_DIR = ${LIB_DIR}"
+
+  LIB_DIR_RELATIVE=$(realpath --relative-to="${WORKING_DIR}" "${LIB_DIR}")
+
+  echo "LIB_DIR_RELATIVE = ${LIB_DIR_RELATIVE}"
+
+  CLASSPATH=$(find ./$LIB_DIR_RELATIVE -name "*.jar" | sort | tr '\n' ':')
+
+  export JAVA_HOME=${LIB_DIR}/jre
+
+  echo "JAVA_HOME = ${JAVA_HOME}"
+
+  export PATH=${JAVA_HOME}/bin:${PATH}
+
+  echo "PATH = ${PATH}"
+
+  export JAVA_CMD="java -cp \"$CLASSPATH\" ${JAVA_OPTS} -jar "$LIB_DIR"/interAACtionGaze.jar false"
+
+  echo "Executing command line: $JAVA_CMD"
+
+  ${JAVA_CMD}
+
+fi
+
+exit 0
