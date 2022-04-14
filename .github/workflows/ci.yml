@@ -16,13 +16,10 @@ jobs:
         with:
           java-version: 11
 
-      - name: Set up xvfb for non headless tests
-        run: sudo apt-get install xvfb
-
       - name: Run tests with Gradle
         run: |
           chmod +x ./gradlew
-          xvfb-run --auto-servernum ./gradlew --stacktrace --info test
+          ./gradlew --stacktrace --info spotbugsMain
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
