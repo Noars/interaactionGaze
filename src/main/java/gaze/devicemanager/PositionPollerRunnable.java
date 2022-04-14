@@ -73,7 +73,7 @@ public class PositionPollerRunnable implements Runnable {
             offsetY = calibrationConfig.getMainOffsetY();
         }
 
-        if (xRatio != 0.5 || yRatio != 0.5) {
+        if ( Math.abs(xRatio - 0.5) < .0000001 || Math.abs(yRatio - 0.5) < .0000001 ) {
             Point location = MouseInfo.getPointerInfo().getLocation();
             analyse(location.getX(), location.getY());
             if (waitForUserMove()) {

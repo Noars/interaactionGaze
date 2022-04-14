@@ -4,8 +4,6 @@ import application.ui.*;
 import gaze.MouseInfo;
 import gaze.devicemanager.GazeDeviceManagerFactory;
 import gaze.devicemanager.TobiiGazeDeviceManager;
-import javafx.animation.PauseTransition;
-import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
@@ -16,7 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import utils.CalibrationConfig;
@@ -25,6 +22,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -51,26 +49,36 @@ public class Main extends Application {
     public static void main(String[] args) {
 
         String os = System.getProperty("os.name").toLowerCase();
+        FileWriter myWritter = null;
 
         try {
             if (os.contains("nux") || os.contains("mac")){
                 File myFile = new File("calibration.txt");
-                FileWriter myWritter = new FileWriter("calibration.txt");
+                log.info(String.valueOf(myFile));
+                myWritter = new FileWriter("calibration.txt", StandardCharsets.UTF_8);
                 myWritter.write(args[0]);
-                myWritter.close();
             }else{
                 String userName = System.getProperty("user.name");
                 File myFolder = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze");
-                myFolder.mkdirs();
+                boolean createFolder = myFolder.mkdirs();
+                log.info("Folder created, path = " + createFolder);
                 File myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
                 if (!myFile.exists()){
-                    FileWriter myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
+                    myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt", StandardCharsets.UTF_8);
                     myWritter.write("true");
-                    myWritter.close();
+
                 }
             }
         } catch (IOException e) {
             System.out.println(e);
+        } finally {
+            try {
+                if (myWritter != null){
+                    myWritter.close();
+                }
+            }catch (IOException e2){
+                e2.printStackTrace();
+            }
         }
 
         launch(args);
@@ -114,7 +122,7 @@ public class Main extends Application {
                 myFile = new File("calibration.txt");
             }
 
-            Scanner myReader = new Scanner(myFile);
+            Scanner myReader = new Scanner(myFile, StandardCharsets.UTF_8);
             String data = myReader.nextLine();
 
             if (Objects.equals(data, "true")){
@@ -128,6 +136,8 @@ public class Main extends Application {
 
         } catch (FileNotFoundException e) {
             System.out.println("");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         if (!startWithCalibration){

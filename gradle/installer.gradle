@@ -32,7 +32,7 @@ task prepareInnoSetupFiles(group: 'distribution') {
             from("${rootDir}/gradle/innosetup/setup.iss.skel")
             rename("setup.iss.skel", "setup.iss")
             expand([
-                    applicationVersion: "${version}",
+                    applicationVersion: "latest",
                     unpackedDirectory : "${project.name}-windows"
             ])
             into(innoSetupDir)
@@ -41,7 +41,6 @@ task prepareInnoSetupFiles(group: 'distribution') {
         copy {
             from("${rootDir}/gradle/templates/licence.txt")
             expand([
-                    "version": version,
                     "date"   : new Date().format('yyyy-MM-dd')
             ])
             into(innoSetupDir)

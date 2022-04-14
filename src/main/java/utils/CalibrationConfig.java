@@ -10,6 +10,7 @@ import utils.save.Coordinates;
 
 import java.awt.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class CalibrationConfig {
 
@@ -131,14 +132,26 @@ public class CalibrationConfig {
     }
 
     public void writeSaveToFile(Coordinates[] coordinates) throws IOException {
-        FileWriter myWriter = new FileWriter(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/userCalibration.json");
-        myWriter.write(new Gson().toJson(coordinates));
-        myWriter.close();
+
+        FileWriter myWriter = null;
+
+        try {
+            myWriter = new FileWriter(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/userCalibration.json", StandardCharsets.UTF_8);
+            myWriter.write(new Gson().toJson(coordinates));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            assert myWriter != null;
+            myWriter.close();
+        }
     }
 
     public boolean loadSave() {
+
+        FileReader myReader = null;
+
         try {
-            FileReader myReader = new FileReader(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/userCalibration.json");
+            myReader = new FileReader(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/userCalibration.json", StandardCharsets.UTF_8);
             Coordinates[] coordinates = new Gson().fromJson(myReader, Coordinates[].class);
             if (coordinates != null && coordinates.length == 9) {
                 for (int i = 0; i < 9; i++) {
@@ -154,6 +167,17 @@ public class CalibrationConfig {
                 calibrationPoints[i] = new CalibrationPoint();
             }
             return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (myReader != null){
+                    myReader.close();
+                }
+            }catch (IOException e2){
+                e2.printStackTrace();
+            }
         }
     }
 }

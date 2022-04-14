@@ -1,0 +1,78 @@
+on:
+  push:
+    branches:
+      - master
+
+name: Release Gaze
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Download JREs
+        run: |
+          chmod +x ./gradlew
+          ./gradlew --stacktrace --info downloadAndExtractJREs
+          chmod -R 777 build/jre
+
+      - name: Generate releases
+        run: |
+          ./gradlew --stacktrace --info packageApp
+
+      - name: Generate Windows Installer with InnoSetup
+        run: |
+          chmod 777 build/distributions
+          chmod -R 777 build/jre
+          ./gradlew --stacktrace --info generateWindowsInstallerInDocker
+
+      - name: Get Env
+        run: |
+          echo "REPO_NAME=${{ github.repository }}" >> $GITHUB_ENV
+
+      - name: New tag
+        id: new-tag
+        run: |
+          LATEST_RELEASE_INFO=$(curl -s https://api.github.com/repos/${{ env.REPO_NAME }}/releases/latest)
+          NEW_VERSION_LINK=$(echo "$LATEST_RELEASE_INFO" | grep "browser_download_url.*interAACtionGaze*" | cut -d: -f2,3 | tr -d \")
+          NEW_VERSION=$( echo "${NEW_VERSION_LINK}" | cut -d/ -f9)
+          NEW_VERSION_NO_EXT=$( echo ${NEW_VERSION} | cut -d. -f1)
+          NEW_VERSION_NAME=$(echo "$LATEST_RELEASE_INFO" | grep "name.*interAACtionGaze*" | cut -d: -f2,3 | tr -d \" | head -n 1 | tr -d \,)
+          GET_TAG=$(echo "$NEW_VERSION_NAME" | cut -d " " -f3)
+          TAG_1=$(echo "$GET_TAG" | cut -d. -f1)
+          TAG_2=$(echo "$GET_TAG" | cut -d. -f2)
+          TAG_3=$(echo "$GET_TAG" | cut -d. -f3)
+          NEW_TAG=$(echo "$(( $TAG_3 + 1 ))")
+          TAG="${TAG_1}.${TAG_2}.${NEW_TAG}"
+          echo ::set-output name=tag::$(echo $TAG)
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.new-tag.outputs.tag }}
+          release_name: interAACtionGaze ${{ steps.new-tag.outputs.tag }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Assets to Release
+        id: upload-assets
+        uses: csexton/release-asset-action@v2
+        with:
+          release-url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`.
+          files: |
+            ./build/distributions/interAACtionGaze-linux.tar.gz
+            ./build/distributions/interAACtionGaze-macos.tar.gz
+            ./build/distributions/interAACtionGaze-noJRE.tar.gz
+            ./build/distributions/interAACtionGaze-noJRE.zip
+            ./build/distributions/interAACtionGaze-windows.zip
+            ./build/distributions/interAACtionGaze-windows-x64-installer.exe
+          github-token: ${{ secrets.GITHUB_TOKEN }}
