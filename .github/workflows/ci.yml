@@ -21,7 +21,6 @@ jobs:
 
       - name: Run tests with Gradle
         run: |
-          cd untitled/
           chmod +x ./gradlew
           xvfb-run --auto-servernum ./gradlew --stacktrace --info test
 
