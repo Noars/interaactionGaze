@@ -172,8 +172,9 @@ public class CalibrationConfig {
             return false;
         } finally {
             try {
-                assert myReader != null;
-                myReader.close();
+                if (myReader != null){
+                    myReader.close();
+                }
             }catch (IOException e2){
                 e2.printStackTrace();
             }

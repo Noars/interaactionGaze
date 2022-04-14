@@ -189,7 +189,6 @@ jar {
     manifest {
         attributes(
                 "Implementation-Title": project.name,
-                "Implementation-Version": project.version,
                 "Implementation-Vendor": "Univ. Grenoble Alpes - LIG - GETALP",
                 "Main-Class": 'application.Main',
                 "Class-Path": configurations.runtime.collect { it.getName() }.join(' '),
@@ -263,7 +262,6 @@ tasks.jar.dependsOn('createLicence')
 task createLicence(dependsOn: ['processResources'], type: Copy, group: 'license') {
     from("${rootDir}/gradle/templates/licence.txt")
     expand([
-            "version": version,
             "date"   : new Date().format('yyyy-MM-dd')
     ])
     into("${processResources.destinationDir}/data/common")
@@ -288,7 +286,6 @@ distZip {
 release {
     failOnPublishNeeded = false
     failOnCommitNeeded = false
-    versionPropertyFile = 'gradle.properties'
 }
 
 mainClassName = 'application.Main'

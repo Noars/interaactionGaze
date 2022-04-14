@@ -73,8 +73,9 @@ public class Main extends Application {
             System.out.println(e);
         } finally {
             try {
-                assert myWritter != null;
-                myWritter.close();
+                if (myWritter != null){
+                    myWritter.close();
+                }
             }catch (IOException e2){
                 e2.printStackTrace();
             }
