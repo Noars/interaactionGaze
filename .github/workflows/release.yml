@@ -19,13 +19,17 @@ jobs:
       - name: Download JREs
         run: |
           chmod +x ./gradlew
-          ./gradlew --stacktrace --info
+          ./gradlew --stacktrace --info downloadAndExtractJREs
           chmod -R 777 build/jre
 
-      - name: Run Gradle Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Package with Gradle
         run: |
+          ./gradlew --stacktrace --info packageApp -x test
+
+      - name: Generate Windows Installer with InnoSetup
+        run: |
+          chmod 777 build/distributions
+          chmod -R 777 build/jre
           ./gradlew --stacktrace --info generateWindowsInstallerInDocker
 
       - name: Get Env
