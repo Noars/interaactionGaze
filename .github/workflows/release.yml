@@ -74,5 +74,5 @@ jobs:
             ./build/distributions/interAACtionGaze-noJRE.tar.gz
             ./build/distributions/interAACtionGaze-noJRE.zip
             ./build/distributions/interAACtionGaze-windows.zip
-            ./build/distrbutions/interAACtionGaze-windows-x64-installer.exe
+            ./build/distributions/interAACtionGaze-windows-x64-installer.exe
           github-token: ${{ secrets.GITHUB_TOKEN }}
