@@ -168,6 +168,7 @@ subprojects {
 
 
 dependencies {
+    implementation 'org.projectlombok:lombok:1.18.20'
     compile 'com.github.GazePlay:TobiiStreamEngineForJava:5.0'
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'org.rxtx:rxtx:2.1.7'
