@@ -2,6 +2,7 @@ package gaze.devicemanager;
 
 import application.Main;
 import gaze.MouseInfo;
+import lombok.extern.slf4j.Slf4j;
 import tobii.Tobii;
 import utils.CalibrationConfig;
 
@@ -9,6 +10,7 @@ import java.awt.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Slf4j
 public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
 
     private MouseInfo mouseInfo;
@@ -28,6 +30,8 @@ public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
     }
 
     public void init() {
+
+        log.info("Init Tobii Gaze Device Manager");
 
         Tobii.gazePosition();
 
