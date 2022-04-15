@@ -1,5 +1,6 @@
 package gaze.devicemanager;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
@@ -37,6 +38,7 @@ public class PositionPollerRunnable implements Runnable {
 
     @Override
     public void run() {
+        log.info("Run Position Poller Runnable");
         while (!stopRequested) {
             try {
                 if (!pauseRequested) {
@@ -54,6 +56,7 @@ public class PositionPollerRunnable implements Runnable {
         }
     }
 
+    @SuppressFBWarnings
     private void poll(CalibrationConfig calibrationConfig) {
         final float[] pointAsFloatArray = Tobii.gazePosition();
 
@@ -73,7 +76,7 @@ public class PositionPollerRunnable implements Runnable {
             offsetY = calibrationConfig.getMainOffsetY();
         }
 
-        if ( Math.abs(xRatio - 0.5) < .0000001 || Math.abs(yRatio - 0.5) < .0000001 ) {
+        if ( xRatio != 0.5 || yRatio != 0.5 ) {
             Point location = MouseInfo.getPointerInfo().getLocation();
             analyse(location.getX(), location.getY());
             if (waitForUserMove()) {

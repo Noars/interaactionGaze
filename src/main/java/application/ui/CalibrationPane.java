@@ -1,6 +1,7 @@
 package application.ui;
 
 import application.Main;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import gaze.devicemanager.GazeDeviceManager;
 import gaze.devicemanager.GazeEvent;
 import javafx.animation.*;
@@ -24,13 +25,10 @@ import utils.CalibrationConfig;
 import utils.CalibrationPoint;
 import utils.Cross;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.Scanner;
 
 public class CalibrationPane extends Pane {
 
@@ -280,6 +278,7 @@ public class CalibrationPane extends Pane {
         return newCross;
     }
 
+    @SuppressFBWarnings
     public void addValue(int numberOfCoordinateToTest) {
         if (calibrationConfig.get(currentTest).capturedCoordinates.size() < numberOfCoordinateToTest) {
             Circle c = new Circle();
@@ -300,8 +299,8 @@ public class CalibrationPane extends Pane {
                 coordXsum = coordXsum + calibrationConfig.get(currentTest).capturedCoordinates.get(i).getX();
                 coordYsum = coordYsum + calibrationConfig.get(currentTest).capturedCoordinates.get(i).getY();
             }
-            coordXsum = coordXsum / (double) (calibrationConfig.get(currentTest).capturedCoordinates.size() / (double) 2);
-            coordYsum = coordYsum / (double) (calibrationConfig.get(currentTest).capturedCoordinates.size() / (double) 2);
+            coordXsum = coordXsum / (double) (calibrationConfig.get(currentTest).capturedCoordinates.size() / 2);
+            coordYsum = coordYsum / (double) (calibrationConfig.get(currentTest).capturedCoordinates.size() / 2);
 
 
             Circle newCircle = new Circle();

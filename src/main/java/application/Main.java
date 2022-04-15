@@ -44,8 +44,6 @@ public class Main extends Application {
 
     DecoratedPane decoratedPane;
 
-    boolean startWithCalibration = false;
-
     public static void main(String[] args) {
 
         String os = System.getProperty("os.name").toLowerCase();
@@ -109,7 +107,7 @@ public class Main extends Application {
         // calibrationPane.installEventHandler(primaryStage, this);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
 
-        this.getGazeDeviceManager().setPause(false);
+        this.getGazeDeviceManager().setPause(true);
 
         String os = System.getProperty("os.name").toLowerCase();
 
@@ -126,7 +124,7 @@ public class Main extends Application {
             String data = myReader.nextLine();
 
             if (Objects.equals(data, "true")){
-                startWithCalibration = true;
+                this.getGazeDeviceManager().setPause(false);
                 if (os.contains("win")){
                     startMessageCalibration(primaryStage, data);
                 }else {
@@ -138,10 +136,6 @@ public class Main extends Application {
             System.out.println("");
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
-        if (!startWithCalibration){
-            this.getGazeDeviceManager().setPause(true);
         }
 
         primaryStage.show();
@@ -165,7 +159,6 @@ public class Main extends Application {
 
         startCalibration(primaryStage, data);
         primaryStage.setIconified(false);
-        startWithCalibration = true;
     }
 
     public void startCalibration(Stage primaryStage, String data) {
