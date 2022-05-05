@@ -209,10 +209,16 @@ public class CalibrationPane extends Pane {
             this.data = "false";
         }
 
+        Rectangle2D sizeScreen = Screen.getPrimary().getVisualBounds();
+        double posX = sizeScreen.getWidth();
+        double posY = sizeScreen.getHeight();
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Calibration");
         alert.setHeaderText(null);
         alert.setContentText("Calibration réussi ! Vous allez sortir de la calibration !");
+        alert.setX((posX / 2.0) - 50.0 );
+        alert.setY((posY / 2.0) - 50.0 );
         alert.show();
         SequentialTransition sleep = new SequentialTransition(new PauseTransition(Duration.seconds(5)));
         sleep.setOnFinished(event -> {
