@@ -21,6 +21,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import lombok.extern.slf4j.Slf4j;
 import utils.CalibrationConfig;
 import utils.CalibrationPoint;
 import utils.Cross;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+@Slf4j
 public class CalibrationPane extends Pane {
 
     public static final int TOP_LEFT = 0;
@@ -213,10 +215,14 @@ public class CalibrationPane extends Pane {
         double posX = sizeScreen.getWidth();
         double posY = sizeScreen.getHeight();
 
+        log.info("screen -> " + sizeScreen);
+        log.info("posX -> " + posX);
+        log.info("posY -> " + posY);
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Calibration");
         alert.setHeaderText(null);
-        alert.setContentText("Calibration réussi ! Vous allez sortir de la calibration !");
+        alert.setContentText("Calibration réussi ! Vous allez sortir de la calibration dans quelques secondes !");
         alert.setX((posX / 2.0) - 50.0 );
         alert.setY((posY / 2.0) - 50.0 );
         alert.show();
