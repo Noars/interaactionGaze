@@ -219,8 +219,8 @@ public class CalibrationPane extends Pane {
         alert.setTitle("Calibration");
         alert.setHeaderText(null);
         alert.setContentText("Calibration réussi ! \n Vous allez sortir de la calibration dans quelques secondes !");
-        alert.setX(posX);
-        alert.setY(posY);
+        alert.setX((posX / 2.0) - 50.0);
+        alert.setY((posY / 2.0) - 50.0);
         alert.setWidth(500);
         alert.show();
         SequentialTransition sleep = new SequentialTransition(new PauseTransition(Duration.seconds(5)));
