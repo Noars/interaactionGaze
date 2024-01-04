@@ -1,4 +1,4 @@
-ext.jreSource = 'https://cdn.azul.com/zulu/bin/'
+ext.jreSource = 'https://cdn.azul.com/zulu/bin'
 ext.zuluVersion = '11.35.15'
 ext.jreVersion = '11.0.5'
 ext.jreFolder = "${buildDir}/jre"

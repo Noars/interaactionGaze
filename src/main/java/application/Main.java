@@ -50,7 +50,74 @@ public class Main extends Application {
     DecoratedPane decoratedPane;
 
     public static void main(String[] args) {
+        launch(args);
+    }
 
+    @Override
+    public void start(Stage primaryStage) {
+
+        this.setupApp();
+
+        primaryStage.setWidth(600);
+        primaryStage.setHeight(250);
+        primaryStage.setTitle("InteraactionGaze");
+
+        mouseInfo = new MouseInfo();
+        calibrationConfig = new CalibrationConfig(this);
+        gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(this, calibrationConfig);
+
+        optionsPane = new OptionsPane(primaryStage, this);
+        profilsPane = new ProfilsPane(primaryStage, this);
+        optionsCalibrationPane = new OptionsCalibrationPane(primaryStage, this, calibrationConfig);
+        calibrationPane = new CalibrationPane(primaryStage, gazeDeviceManager, calibrationConfig);
+        home = new MainPane(this, primaryStage);
+
+        decoratedPane = new DecoratedPane(this, primaryStage);
+        decoratedPane.setCenter(home);
+
+        Scene calibScene = new Scene(decoratedPane, primaryStage.getWidth(), primaryStage.getHeight());
+        calibScene.getStylesheets().add("style.css");
+        primaryStage.setScene(calibScene);
+        calibScene.setFill(Color.TRANSPARENT);
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+
+        this.getGazeDeviceManager().setPause(true);
+
+        String os = System.getProperty("os.name").toLowerCase();
+
+        try {
+            File myFile;
+            if (os.contains("win")){
+                String userName = System.getProperty("user.name");
+                myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
+                this.loadDefaultSettings("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\profils\\default\\settings.json");
+            }else {
+                myFile = new File("calibration.txt");
+                this.loadDefaultSettings("~/Documents/interAACtionGaze/profils/default/settings.json");
+            }
+
+            Scanner myReader = new Scanner(myFile, StandardCharsets.UTF_8);
+            String data = myReader.nextLine();
+
+            if (Objects.equals(data, "true")){
+                this.getGazeDeviceManager().setPause(false);
+                if (os.contains("win")){
+                    startMessageCalibration(primaryStage, data);
+                }else {
+                    startCalibration(primaryStage, data);
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        primaryStage.show();
+    }
+
+    public void setupApp(){
         String os = System.getProperty("os.name").toLowerCase();
         FileWriter myWritter = null;
 
@@ -139,69 +206,6 @@ public class Main extends Application {
                 e2.printStackTrace();
             }
         }
-
-        launch(args);
-    }
-
-    @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setWidth(600);
-        primaryStage.setHeight(250);
-        primaryStage.setTitle("InteraactionGaze");
-
-        mouseInfo = new MouseInfo();
-        calibrationConfig = new CalibrationConfig(this);
-        gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(this, calibrationConfig);
-
-        optionsPane = new OptionsPane(primaryStage, this);
-        profilsPane = new ProfilsPane(primaryStage, this);
-        optionsCalibrationPane = new OptionsCalibrationPane(primaryStage, this, calibrationConfig);
-        calibrationPane = new CalibrationPane(primaryStage, gazeDeviceManager, calibrationConfig);
-        home = new MainPane(this, primaryStage);
-
-        decoratedPane = new DecoratedPane(this, primaryStage);
-        decoratedPane.setCenter(home);
-
-        Scene calibScene = new Scene(decoratedPane, primaryStage.getWidth(), primaryStage.getHeight());
-        calibScene.getStylesheets().add("style.css");
-        primaryStage.setScene(calibScene);
-        calibScene.setFill(Color.TRANSPARENT);
-        primaryStage.initStyle(StageStyle.TRANSPARENT);
-
-        this.getGazeDeviceManager().setPause(true);
-
-        String os = System.getProperty("os.name").toLowerCase();
-
-        try {
-            File myFile;
-            if (os.contains("win")){
-                String userName = System.getProperty("user.name");
-                myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
-                this.loadDefaultSettings("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\profils\\default\\settings.json");
-            }else {
-                myFile = new File("calibration.txt");
-                this.loadDefaultSettings("~/Documents/interAACtionGaze/profils/default/settings.json");
-            }
-
-            Scanner myReader = new Scanner(myFile, StandardCharsets.UTF_8);
-            String data = myReader.nextLine();
-
-            if (Objects.equals(data, "true")){
-                this.getGazeDeviceManager().setPause(false);
-                if (os.contains("win")){
-                    startMessageCalibration(primaryStage, data);
-                }else {
-                    startCalibration(primaryStage, data);
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            System.out.println("");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        primaryStage.show();
     }
 
     public void loadDefaultSettings(String path) {
