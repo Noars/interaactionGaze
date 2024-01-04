@@ -1,16 +1,16 @@
 package application.ui;
 
-import javafx.beans.Observable;
+import application.Main;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -21,8 +21,9 @@ public class DecoratedPane extends BorderPane {
 
     private double xOffset = 0;
     private double yOffset = 0;
+    Label profil;
 
-    public DecoratedPane(Stage primaryStage) {
+    public DecoratedPane(Main main, Stage primaryStage) {
         Button exit = new Button("fermer");
         ImageView exitImage = new ImageView(new Image("images/white/close.png"));
         exit.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
@@ -30,9 +31,7 @@ public class DecoratedPane extends BorderPane {
         exitImage.setPreserveRatio(true);
         exitImage.setFitWidth(50);
         exit.setGraphic(exitImage);
-        exit.setOnAction((e) -> {
-            System.exit(0);
-        });
+        exit.setOnAction((e) -> System.exit(0));
 
         Button minimize = new Button("minimiser");
         ImageView minimizeImage = new ImageView(new Image("images/white/minimize.png"));
@@ -45,8 +44,18 @@ public class DecoratedPane extends BorderPane {
             primaryStage.setIconified(true);
         });
 
-        HBox topBar = new HBox(minimize, exit);
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(5);
+        gridPane.setVgap(5);
+        {
+            this.profil = new Label("Profil actuel : " + main.getMouseInfo().nameUser);
+            gridPane.add(profil, 2, 0);
+            profil.getStyleClass().add("profil");
+        }
+
+        HBox topBar = new HBox(gridPane, minimize, exit);
         topBar.setAlignment(Pos.CENTER_RIGHT);
+        gridPane.setAlignment(Pos.CENTER_LEFT);
         BorderPane.setAlignment(topBar, Pos.CENTER_RIGHT);
         this.setTop(topBar);
         this.setStyle("-fx-background-color: #282e35; -fx-background-radius: 15");
@@ -60,7 +69,7 @@ public class DecoratedPane extends BorderPane {
             ObservableList<Screen> screens = Screen.getScreensForRectangle(primaryStage.getX(),primaryStage.getY(), primaryStage.getWidth(),primaryStage.getHeight());
             Rectangle2D primaryScreenBounds = screens.get(0).getVisualBounds();
 
-                tempX = event.getScreenX() - xOffset;
+            tempX = event.getScreenX() - xOffset;
 
             if (event.getScreenY() - yOffset < 0) {
                 tempY = 0;
@@ -70,5 +79,9 @@ public class DecoratedPane extends BorderPane {
             primaryStage.setX(tempX);
             primaryStage.setY(tempY);
         });
+    }
+
+    public void updateProfil(String name){
+        this.profil.setText("Profil actuel : " +  name);
     }
 }
