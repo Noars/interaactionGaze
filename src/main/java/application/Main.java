@@ -48,6 +48,11 @@ public class Main extends Application {
     ProfilsPane profilsPane;
     @Getter
     DecoratedPane decoratedPane;
+    @Getter
+    EyeTrackerPane eyeTrackerPane;
+
+    public int width = 600;
+    public int height = 250;
 
     public static void main(String[] args) {
         launch(args);
@@ -58,14 +63,16 @@ public class Main extends Application {
 
         this.setupApp();
 
-        primaryStage.setWidth(600);
-        primaryStage.setHeight(250);
+        primaryStage.setWidth(this.width);
+        primaryStage.setHeight(this.height);
         primaryStage.setTitle("InteraactionGaze");
+        primaryStage.setAlwaysOnTop(false);
 
         mouseInfo = new MouseInfo();
         calibrationConfig = new CalibrationConfig(this);
         gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(this, calibrationConfig);
 
+        eyeTrackerPane = new EyeTrackerPane(this, primaryStage);
         optionsPane = new OptionsPane(primaryStage, this);
         profilsPane = new ProfilsPane(primaryStage, this);
         optionsCalibrationPane = new OptionsCalibrationPane(primaryStage, this, calibrationConfig);
@@ -109,7 +116,7 @@ public class Main extends Application {
             }
 
         } catch (FileNotFoundException e) {
-            System.out.println("");
+            System.out.println();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -281,9 +288,21 @@ public class Main extends Application {
     }
 
     public void goToMain(Stage primaryStage) {
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         primaryStage.setFullScreen(false);
         primaryStage.getScene().setRoot(decoratedPane);
+        primaryStage.setX((primaryScreenBounds.getWidth() - this.width)/2);
+        primaryStage.setY((primaryScreenBounds.getHeight() - this.height)/2);
         ((BorderPane) primaryStage.getScene().getRoot()).setCenter(this.getHome());
         primaryStage.getScene().setCursor(Cursor.DEFAULT);
+    }
+
+    public void goToEyeTracker(Stage primaryStage){
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        primaryStage.setX(3 * primaryScreenBounds.getWidth()/4);
+        primaryStage.setY(5);
+        primaryStage.setWidth(50);
+        primaryStage.setHeight(50);
+        primaryStage.getScene().setRoot(this.getEyeTrackerPane());
     }
 }

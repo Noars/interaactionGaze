@@ -18,8 +18,8 @@ public class MainPane extends BorderPane {
 
     public MainPane(Main main, Stage primaryStage) {
         super();
-        this.setWidth(600);
-        this.setHeight(200);
+        this.setWidth(main.width);
+        this.setHeight(main.height);
 
         Button startstop = createStartStopButton(main, primaryStage);
         Button profils = createProfilButton(main, primaryStage);
@@ -51,17 +51,8 @@ public class MainPane extends BorderPane {
         startstop.setPrefHeight(200);
         startstop.setPrefWidth(495. / 5);
         startstop.setOnAction((e) -> {
-            if (running) {
-                running = false;
-                main.getGazeDeviceManager().setPause(true);
-                startstop.setText("Play");
-                ((ImageView) startstop.getGraphic()).setImage(new Image("images/white/play.png"));
-            } else {
-                running = true;
-                main.getGazeDeviceManager().setPause(false);
-                startstop.setText("Stop");
-                ((ImageView) startstop.getGraphic()).setImage(new Image("images/white/stop.png"));
-            }
+            main.getGazeDeviceManager().setPause(false);
+            main.goToEyeTracker(primaryStage);
         });
         return startstop;
     }

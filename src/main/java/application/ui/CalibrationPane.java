@@ -112,8 +112,8 @@ public class CalibrationPane extends Pane {
         if (Objects.equals(this.data, "true")){
             Platform.exit();
         }else {
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
+            primaryStage.setWidth(main.width);
+            primaryStage.setHeight(main.height);
             main.goToMain(primaryStage);
         }
     }
