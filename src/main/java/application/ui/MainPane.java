@@ -12,8 +12,6 @@ import javafx.stage.Stage;
 
 public class MainPane extends BorderPane {
 
-    boolean running = false;
-
     HBox hbox;
 
     public MainPane(Main main, Stage primaryStage) {
