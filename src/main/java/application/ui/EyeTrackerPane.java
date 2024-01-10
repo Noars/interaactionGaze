@@ -5,8 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
@@ -16,7 +15,6 @@ public class EyeTrackerPane extends BorderPane {
 
     private double xOffset = 0;
     private double yOffset = 0;
-    private boolean hasMoved = false;
     HBox hbox;
 
     public EyeTrackerPane(Main main, Stage primaryStage){
@@ -38,15 +36,14 @@ public class EyeTrackerPane extends BorderPane {
         stop.getStyleClass().add("red");
         stop.setPrefHeight(40);
         stop.setPrefWidth(40);
-        stop.setOnAction((e) -> {
-            if (!this.hasMoved){
-                primaryStage.setWidth(main.width);
-                primaryStage.setHeight(main.height);
-                main.getGazeDeviceManager().setPause(true);
-                main.goToMain(primaryStage);
-            }
-            else {
-                this.hasMoved = false;
+        stop.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY)){
+                if (event.getClickCount() == 2){
+                    primaryStage.setWidth(main.width);
+                    primaryStage.setHeight(main.height);
+                    main.getGazeDeviceManager().setPause(true);
+                    main.goToMain(primaryStage);
+                }
             }
         });
         this.addDragAndDrop(stop, primaryStage);
@@ -59,7 +56,6 @@ public class EyeTrackerPane extends BorderPane {
             yOffset = event.getSceneY();
         });
         button.setOnMouseDragged(event -> {
-            this.hasMoved = true;
             double tempX, tempY;
             ObservableList<Screen> screens = Screen.getScreensForRectangle(primaryStage.getX(),primaryStage.getY(), primaryStage.getWidth(),primaryStage.getHeight());
             Rectangle2D primaryScreenBounds = screens.get(0).getVisualBounds();
