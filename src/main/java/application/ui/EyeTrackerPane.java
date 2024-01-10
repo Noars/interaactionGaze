@@ -34,8 +34,8 @@ public class EyeTrackerPane extends BorderPane {
     private Button addStopButton(Main main, Stage primaryStage){
         Button stop = new MainButton("");
         stop.getStyleClass().add("red");
-        stop.setPrefHeight(40);
-        stop.setPrefWidth(40);
+        stop.setPrefHeight(30);
+        stop.setPrefWidth(30);
         stop.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)){
                 if (event.getClickCount() == 2){

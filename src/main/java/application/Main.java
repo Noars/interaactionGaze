@@ -301,8 +301,8 @@ public class Main extends Application {
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         primaryStage.setX(3 * primaryScreenBounds.getWidth()/4);
         primaryStage.setY(5);
-        primaryStage.setWidth(50);
-        primaryStage.setHeight(50);
+        primaryStage.setWidth(35);
+        primaryStage.setHeight(35);
         primaryStage.getScene().setRoot(this.getEyeTrackerPane());
     }
 }
