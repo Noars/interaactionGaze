@@ -2,7 +2,6 @@ package application.ui;
 
 import application.Main;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.image.Image;
@@ -23,7 +22,7 @@ public class MainPane extends BorderPane {
 
         Button startstop = createStartStopButton(main, primaryStage);
         Button profils = createProfilButton(main, primaryStage);
-        Button hide = createHideButton();
+        Button hide = createHideButton(main);
         Button clickActivation = createClickActivationButton(main);
         Button options = createOptionsButton(main, primaryStage);
 
@@ -82,7 +81,7 @@ public class MainPane extends BorderPane {
         return options;
     }
 
-    public Button createHideButton() {
+    public Button createHideButton(Main main) {
         Button hide = new MainButton("Cacher le curseur");
         hide.setGraphic(createButtonImageView("images/white/hide.png"));
         hide.getStyleClass().add("purple");
@@ -92,14 +91,14 @@ public class MainPane extends BorderPane {
         hide.setOnAction((e) -> {
             if (displayed) {
                 displayed = false;
-                this.setCursor(Cursor.NONE);
                 hide.setText("Afficher le curseur");
                 ((ImageView) hide.getGraphic()).setImage(new Image("images/white/show.png"));
+                main.getMouseInfo().hideShowMouseCursor();
             } else {
                 displayed = true;
-                this.setCursor(Cursor.DEFAULT);
                 hide.setText("Cacher le curseur");
                 ((ImageView) hide.getGraphic()).setImage(new Image("images/white/hide.png"));
+                main.getMouseInfo().hideShowMouseCursor();
             }
         });
         return hide;

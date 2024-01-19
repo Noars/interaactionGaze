@@ -217,6 +217,9 @@ distributions {
             from("build/bin/interAACtionGaze-windows.bat") {
                 into 'bin'
             }
+            from("build/resources/main/AutoHotkey_2.0.11") {
+                into 'lib/AutoHotkey'
+            }
             from("build/jre/windows") {
                 into 'lib/jre'
             }

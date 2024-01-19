@@ -7,6 +7,7 @@ import gaze.MouseInfo;
 import gaze.devicemanager.GazeDeviceManagerFactory;
 import gaze.devicemanager.TobiiGazeDeviceManager;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
@@ -16,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
@@ -87,6 +89,7 @@ public class Main extends Application {
         primaryStage.setScene(calibScene);
         calibScene.setFill(Color.TRANSPARENT);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setOnCloseRequest(event -> mouseInfo.closeScriptMouseCursor());
 
         this.getGazeDeviceManager().setPause(true);
 

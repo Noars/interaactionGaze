@@ -1,6 +1,7 @@
 package application.ui;
 
 import application.Main;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -32,7 +33,10 @@ public class DecoratedPane extends BorderPane {
         exitImage.setPreserveRatio(true);
         exitImage.setFitWidth(50);
         exit.setGraphic(exitImage);
-        exit.setOnAction((e) -> System.exit(0));
+        exit.setOnAction((e) -> {
+            main.getMouseInfo().closeScriptMouseCursor();
+            System.exit(0);
+        });
 
         Button minimize = new Button("minimiser");
         ImageView minimizeImage = new ImageView(new Image("images/white/minimize.png"));

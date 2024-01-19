@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import lombok.Setter;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
+import java.io.IOException;
 import java.util.LinkedList;
 
 public class MouseInfo {
@@ -35,6 +37,7 @@ public class MouseInfo {
 
     public MouseInfo() {
         initTimer();
+        launchScriptMouseCursor();
     }
 
     synchronized public void addPosition(Point2D point) {
@@ -111,5 +114,46 @@ public class MouseInfo {
 
     public boolean dwellStarted() {
         return dwellStarted;
+    }
+
+    public void hideShowMouseCursor(){
+        try {
+            Robot bot = new Robot();
+            bot.keyPress(KeyCode.ALT.getCode());
+            bot.keyPress(KeyCode.P.getCode());
+            bot.keyRelease(KeyCode.ALT.getCode());
+            bot.keyRelease(KeyCode.P.getCode());
+        } catch (AWTException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void launchScriptMouseCursor(){
+        try {
+            //Dev
+            /*Runtime.getRuntime().exec("cmd.exe " +
+                    "/c " +
+                    System.getProperty("user.home") + "\\Documents\\GitHub\\interaactionGaze\\src\\main\\resources\\AutoHotkey_2.0.11\\AutoHotkey64.exe " +
+                    System.getProperty("user.home") + "\\Documents\\GitHub\\interaactionGaze\\src\\main\\resources\\AutoHotkey_2.0.11\\scripts\\hideShowMouseCursor.ahk");*/
+            //Release
+            Runtime.getRuntime().exec("cmd.exe " +
+                    "/c " +
+                    "C:\\PROGRA~2\\InteraactionGaze\\lib\\AutoHotkey\\AutoHotkey64.exe " +
+                    "C:\\PROGRA~2\\InteraactionGaze\\lib\\AutoHotkey\\scripts\\hideShowMouseCursor.ahk");
+        }catch (IOException ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void closeScriptMouseCursor(){
+        try {
+            Robot bot = new Robot();
+            bot.keyPress(KeyCode.ALT.getCode());
+            bot.keyPress(KeyCode.E.getCode());
+            bot.keyRelease(KeyCode.ALT.getCode());
+            bot.keyRelease(KeyCode.E.getCode());
+        } catch (AWTException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
