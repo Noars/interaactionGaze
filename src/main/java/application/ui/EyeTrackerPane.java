@@ -43,6 +43,7 @@ public class EyeTrackerPane extends BorderPane {
                     primaryStage.setHeight(main.height);
                     main.getGazeDeviceManager().setPause(true);
                     main.goToMain(primaryStage);
+                    main.getGazeDeviceManager().startCheckTobii();
                 }
             }
         });

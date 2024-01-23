@@ -7,7 +7,6 @@ import gaze.MouseInfo;
 import gaze.devicemanager.GazeDeviceManagerFactory;
 import gaze.devicemanager.TobiiGazeDeviceManager;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
@@ -17,7 +16,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
@@ -72,8 +70,8 @@ public class Main extends Application {
 
         mouseInfo = new MouseInfo();
         calibrationConfig = new CalibrationConfig(this);
+        decoratedPane = new DecoratedPane(this, primaryStage);
         gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(this, calibrationConfig);
-
         eyeTrackerPane = new EyeTrackerPane(this, primaryStage);
         optionsPane = new OptionsPane(primaryStage, this);
         profilsPane = new ProfilsPane(primaryStage, this);
@@ -81,15 +79,16 @@ public class Main extends Application {
         calibrationPane = new CalibrationPane(primaryStage, gazeDeviceManager, calibrationConfig);
         home = new MainPane(this, primaryStage);
 
-        decoratedPane = new DecoratedPane(this, primaryStage);
         decoratedPane.setCenter(home);
-
         Scene calibScene = new Scene(decoratedPane, primaryStage.getWidth(), primaryStage.getHeight());
         calibScene.getStylesheets().add("style.css");
         primaryStage.setScene(calibScene);
         calibScene.setFill(Color.TRANSPARENT);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
-        primaryStage.setOnCloseRequest(event -> mouseInfo.closeScriptMouseCursor());
+        primaryStage.setOnCloseRequest(event -> {
+            mouseInfo.closeScriptMouseCursor();
+            gazeDeviceManager.stopCheckTobii();
+        });
 
         this.getGazeDeviceManager().setPause(true);
 

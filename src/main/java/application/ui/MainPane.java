@@ -54,6 +54,7 @@ public class MainPane extends BorderPane {
         startstop.setOnAction((e) -> {
             main.getGazeDeviceManager().setPause(false);
             main.goToEyeTracker(primaryStage);
+            main.getGazeDeviceManager().stopCheckTobii();
         });
         return startstop;
     }

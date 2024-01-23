@@ -227,6 +227,7 @@ public class CalibrationPane extends Pane {
         SequentialTransition sleep = new SequentialTransition(new PauseTransition(Duration.seconds(5)));
         sleep.setOnFinished(event -> {
             alert.close();
+            main.getGazeDeviceManager().setPause(true);
             returnGazeMenu(main);
         });
         sleep.play();

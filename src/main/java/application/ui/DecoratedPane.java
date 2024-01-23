@@ -1,7 +1,6 @@
 package application.ui;
 
 import application.Main;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -24,6 +23,7 @@ public class DecoratedPane extends BorderPane {
     private double yOffset = 0;
     private boolean pinActived = false;
     Label profil;
+    Label eyeTracker;
 
     public DecoratedPane(Main main, Stage primaryStage) {
         Button exit = new Button("fermer");
@@ -81,6 +81,9 @@ public class DecoratedPane extends BorderPane {
             this.profil = new Label("Profil actuel : " + main.getMouseInfo().nameUser);
             gridPane.add(profil, 2, 0);
             profil.getStyleClass().add("profil");
+
+            this.eyeTracker = new Label("Eye Tracker");
+            gridPane.add(eyeTracker, 2, 1);
         }
 
         HBox topBar = new HBox(gridPane, pinOnTop, minimize, exit);
@@ -113,5 +116,17 @@ public class DecoratedPane extends BorderPane {
 
     public void updateProfil(String name){
         this.profil.setText("Profil actuel : " +  name);
+    }
+
+    public void updateEyeTracker(Boolean activated){
+        if (activated){
+            this.eyeTracker.setText("Eye Tracker Activé !");
+            this.eyeTracker.getStyleClass().clear();
+            this.eyeTracker.getStyleClass().add("eyeTrackerActivated");
+        }else {
+            this.eyeTracker.setText("Eye Tracker désactivé !");
+            this.eyeTracker.getStyleClass().clear();
+            this.eyeTracker.getStyleClass().add("eyeTrackerDisabled");
+        }
     }
 }
