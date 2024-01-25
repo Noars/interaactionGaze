@@ -1,8 +1,6 @@
 package application;
 
 import application.ui.*;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import gaze.MouseInfo;
 import gaze.devicemanager.GazeDeviceManagerFactory;
 import gaze.devicemanager.TobiiGazeDeviceManager;
@@ -18,14 +16,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
-import org.json.JSONObject;
 import utils.CalibrationConfig;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.Scanner;
+import utils.Settings;
 
 @Slf4j
 public class Main extends Application {
@@ -50,6 +42,8 @@ public class Main extends Application {
     DecoratedPane decoratedPane;
     @Getter
     EyeTrackerPane eyeTrackerPane;
+    @Getter
+    Settings settings;
 
     public int width = 600;
     public int height = 250;
@@ -61,8 +55,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        this.setupApp();
-
         primaryStage.setWidth(this.width);
         primaryStage.setHeight(this.height);
         primaryStage.setTitle("InteraactionGaze");
@@ -73,11 +65,12 @@ public class Main extends Application {
         decoratedPane = new DecoratedPane(this, primaryStage);
         gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(this, calibrationConfig);
         eyeTrackerPane = new EyeTrackerPane(this, primaryStage);
-        optionsPane = new OptionsPane(primaryStage, this);
-        profilsPane = new ProfilsPane(primaryStage, this);
+        optionsPane = new OptionsPane(this, primaryStage);
+        profilsPane = new ProfilsPane(this, primaryStage);
         optionsCalibrationPane = new OptionsCalibrationPane(primaryStage, this, calibrationConfig);
         calibrationPane = new CalibrationPane(primaryStage, gazeDeviceManager, calibrationConfig);
         home = new MainPane(this, primaryStage);
+        settings = new Settings(this, primaryStage);
 
         decoratedPane.setCenter(home);
         Scene calibScene = new Scene(decoratedPane, primaryStage.getWidth(), primaryStage.getHeight());
@@ -92,155 +85,8 @@ public class Main extends Application {
 
         this.getGazeDeviceManager().setPause(true);
 
-        String os = System.getProperty("os.name").toLowerCase();
-
-        try {
-            File myFile;
-            if (os.contains("win")){
-                String userName = System.getProperty("user.name");
-                myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
-                this.loadDefaultSettings("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\profils\\default\\settings.json");
-            }else {
-                myFile = new File("calibration.txt");
-                this.loadDefaultSettings("~/Documents/interAACtionGaze/profils/default/settings.json");
-            }
-
-            Scanner myReader = new Scanner(myFile, StandardCharsets.UTF_8);
-            String data = myReader.nextLine();
-
-            if (Objects.equals(data, "true")){
-                this.getGazeDeviceManager().setPause(false);
-                if (os.contains("win")){
-                    startMessageCalibration(primaryStage, data);
-                }else {
-                    startCalibration(primaryStage, data);
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            System.out.println();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        this.goToMain(primaryStage);
         primaryStage.show();
-    }
-
-    public void setupApp(){
-        String os = System.getProperty("os.name").toLowerCase();
-        FileWriter myWritter = null;
-
-        try {
-            if (os.contains("nux") || os.contains("mac")){
-
-                File myFolder = new File("~/Documents/interAACtionGaze");
-                boolean createFolder = myFolder.mkdirs();
-
-                File profils = new File("~/Documents/interAACtionGaze/profils");
-                boolean createProfilsFolder = profils.mkdirs();
-
-                File defaultSettings = new File("~/Documents/interAACtionGaze/profils/default");
-                boolean createDefaultSettingsFolder = defaultSettings.mkdirs();
-
-                File myLinuxFile = new File("~/Documents/interAACtionGaze/calibration.txt");
-                if (!myLinuxFile.exists()){
-                    myWritter = new FileWriter("~/Documents/interAACtionGaze/calibration.txt", StandardCharsets.UTF_8);
-                    myWritter.write("true");
-                }
-
-                JSONObject json = new JSONObject();
-                try {
-                    json.put("Name", "Default");
-                    json.put("FixationLength", 2000);
-                    json.put("SizeTarget", 50);
-                    json.put("RedColorBackground", "1.0");
-                    json.put("BlueColorBackground", "1.0");
-                    json.put("GreenColorBackground", "1.0");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try (PrintWriter out = new PrintWriter(new FileWriter("~/Documents/interAACtionGaze/profils/default/settings.json", StandardCharsets.UTF_8))) {
-                    out.write(json.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                log.info("Folder created, path = " + createFolder + ", " + createDefaultSettingsFolder + ", " + createProfilsFolder);
-
-            }else{
-                String userName = System.getProperty("user.name");
-
-                File myFolder = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze");
-                boolean createFolder = myFolder.mkdirs();
-
-                File profils = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\profils");
-                boolean createProfilsFolder = profils.mkdirs();
-
-                File defaultSettings = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\profils\\default");
-                boolean createDefaultSettingsFolder = defaultSettings.mkdirs();
-
-                File myWindowsFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
-                if (!myWindowsFile.exists()){
-                    myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt", StandardCharsets.UTF_8);
-                    myWritter.write("true");
-                }
-
-                JSONObject json = new JSONObject();
-                try {
-                    json.put("Name", "Default");
-                    json.put("FixationLength", 2000);
-                    json.put("SizeTarget", 50);
-                    json.put("RedColorBackground", "1.0");
-                    json.put("BlueColorBackground", "1.0");
-                    json.put("GreenColorBackground", "1.0");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try (PrintWriter out = new PrintWriter(new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\profils\\default\\settings.json", StandardCharsets.UTF_8))) {
-                    out.write(json.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                log.info("Folder created, path = " + createFolder + ", " + createDefaultSettingsFolder + ", " + createProfilsFolder);
-            }
-        } catch (IOException e) {
-            System.out.println(e);
-        } finally {
-            try {
-                if (myWritter != null){
-                    myWritter.close();
-                }
-            }catch (IOException e2){
-                e2.printStackTrace();
-            }
-        }
-    }
-
-    public void loadDefaultSettings(String path) {
-        try {
-            FileReader fileReader = new FileReader(path, StandardCharsets.UTF_8);
-            Object defaultSettings = new JsonParser().parse(fileReader);
-            JsonObject jsonDefaultSettings = (JsonObject) defaultSettings;
-
-            String name = jsonDefaultSettings.get("Name").getAsString();
-            String fixationLength = String.valueOf(jsonDefaultSettings.get("FixationLength"));
-            String sizeTarget = String.valueOf(jsonDefaultSettings.get("SizeTarget"));
-
-            double redColorBackground = Double.parseDouble(jsonDefaultSettings.get("RedColorBackground").getAsString());
-            double blueColorBackground = Double.parseDouble(jsonDefaultSettings.get("BlueColorBackground").getAsString());
-            double greenColorBackground = Double.parseDouble(jsonDefaultSettings.get("GreenColorBackground").getAsString());
-
-            this.mouseInfo.nameUser = name;
-            this.mouseInfo.DWELL_TIME = Integer.parseInt(fixationLength);
-            this.mouseInfo.SIZE_TARGET = Integer.parseInt(sizeTarget);
-            this.mouseInfo.COLOR_BACKGROUND = Color.color(redColorBackground, blueColorBackground, greenColorBackground);
-
-            fileReader.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void startMessageCalibration(Stage primaryStage, String data) {
@@ -259,11 +105,11 @@ public class Main extends Application {
         eyeTrackerAlert.setContentText("Veuillez brancher votre Eye Tracker avant de continuer !");
         eyeTrackerAlert.showAndWait();
 
-        startCalibration(primaryStage, data);
+        goToCalibration(primaryStage, data);
         primaryStage.setIconified(false);
     }
 
-    public void startCalibration(Stage primaryStage, String data) {
+    public void goToCalibration(Stage primaryStage, String data) {
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         primaryStage.setX(primaryScreenBounds.getMinX());
         primaryStage.setY(primaryScreenBounds.getMinY());

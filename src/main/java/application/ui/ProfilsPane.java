@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -28,7 +29,11 @@ public class ProfilsPane extends BorderPane {
     HBox hbox;
     boolean isWindowsOpen = false;
     String userSelected = "";
-    public ProfilsPane(Stage primaryStage, Main main) {
+
+    SelectProfilsPane selectProfilsPane;
+    AddProfilsPane addProfilsPane ;
+
+    public ProfilsPane(Main main, Stage primaryStage) {
         super();
 
         Button selectProfil = createSelectProfilButton(main, primaryStage);
@@ -58,9 +63,7 @@ public class ProfilsPane extends BorderPane {
         back.setContentDisplay(ContentDisplay.TOP);
         back.setPrefHeight(200);
         back.setPrefWidth(495. / 5);
-        back.setOnAction((e) -> {
-            main.goToMain(primaryStage);
-        });
+        back.setOnAction((e) -> main.goToMain(primaryStage));
         return back;
     }
 
@@ -72,73 +75,9 @@ public class ProfilsPane extends BorderPane {
         selectProfil.setPrefHeight(200);
         selectProfil.setPrefWidth(495. / 5);
         selectProfil.setOnAction((e) -> {
-
-            if (!this.isWindowsOpen){
-
-                this.isWindowsOpen = true;
-                String[] listName = this.getAllUser();
-
-                GridPane selectProfilGridPane = new GridPane();
-                selectProfilGridPane.setAlignment(Pos.CENTER);
-                selectProfilGridPane.setHgap(10);
-                selectProfilGridPane.setVgap(10);
-                selectProfilGridPane.setPadding(new Insets(25, 25, 25, 25));
-
-                Stage selectProfilStage = new Stage();
-
-                if (listName.length == 0){
-                    Text noUser = new Text("Il n'y a pas d'utilisateur !");
-                    noUser.setFill(Color.RED);
-                    selectProfilGridPane.add(noUser, 0, 1);
-                }else {
-                    Label allUser = new Label("Liste de tous les utilisateur :");
-                    selectProfilGridPane.add(allUser, 0, 1);
-
-                    ToggleGroup groupNames = new ToggleGroup();
-                    int maxIndex = 0;
-
-                    for (int i=0; i<listName.length; i++) {
-                        RadioButton btnName = new RadioButton(listName[i]);
-                        btnName.setToggleGroup(groupNames);
-                        selectProfilGridPane.add(btnName, 0, i+2);
-                        maxIndex = i+2;
-                    }
-
-                    groupNames.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) -> {
-                        if (groupNames.getSelectedToggle() != null) {
-                            String getBtnSelected = groupNames.getSelectedToggle().toString();
-                            String[] getName = getBtnSelected.split("'");
-                            userSelected = getName[1];
-                        }
-                    });
-
-                    Button selectUser = new Button("Sélectionner");
-                    HBox hbBtnSelect = new HBox(10);
-                    hbBtnSelect.setAlignment(Pos.BOTTOM_LEFT);
-                    hbBtnSelect.getChildren().add(selectUser);
-                    selectProfilGridPane.add(hbBtnSelect, 0, maxIndex+1);
-
-                    selectUser.setOnAction( event -> {
-                        if (!Objects.equals(this.userSelected, "")){
-                            this.isWindowsOpen = false;
-                            this.selectUser(main);
-                            selectProfilStage.close();
-                        }
-                    });
-                }
-
-                Scene selectProfilScene = new Scene(selectProfilGridPane, 400, 50 + (50 * listName.length));
-                selectProfilScene.getStylesheets().add("style.css");
-
-                selectProfilStage.setTitle("Supprimer un profil");
-                selectProfilStage.setScene(selectProfilScene);
-                selectProfilStage.setX(primaryStage.getX() + 100);
-                selectProfilStage.setY(primaryStage.getY() + 10);
-
-                selectProfilStage.show();
-
-                selectProfilStage.setOnCloseRequest(event -> this.isWindowsOpen = false);
-            }
+            selectProfilsPane = new SelectProfilsPane(main,primaryStage, this);
+            ((BorderPane) primaryStage.getScene().getRoot()).setCenter(this.selectProfilsPane);
+            primaryStage.getScene().setCursor(Cursor.DEFAULT);
         });
         return selectProfil;
     }
@@ -151,64 +90,9 @@ public class ProfilsPane extends BorderPane {
         addProfil.setPrefHeight(200);
         addProfil.setPrefWidth(495. / 5);
         addProfil.setOnAction((e) -> {
-
-            if (!this.isWindowsOpen){
-
-                this.isWindowsOpen = true;
-
-                GridPane addProfilGridPane = new GridPane();
-                addProfilGridPane.setAlignment(Pos.CENTER);
-                addProfilGridPane.setHgap(10);
-                addProfilGridPane.setVgap(10);
-                addProfilGridPane.setPadding(new Insets(25, 25, 25, 25));
-
-                Label userName = new Label("Nom utilisateur:");
-                addProfilGridPane.add(userName, 0, 1);
-
-                TextField userTextField = new TextField();
-                addProfilGridPane.add(userTextField, 1, 1);
-
-                Button btnAdd = new Button("Créer");
-                HBox hbBtnAdd = new HBox(10);
-                hbBtnAdd.setAlignment(Pos.BOTTOM_LEFT);
-                hbBtnAdd.getChildren().add(btnAdd);
-                addProfilGridPane.add(hbBtnAdd, 1, 4);
-
-                final Text error = new Text();
-                addProfilGridPane.add(error, 1, 6);
-
-                Scene addProfilScene = new Scene(addProfilGridPane, 400, 150);
-                addProfilScene.getStylesheets().add("style.css");
-
-                Stage addProfilStage = new Stage();
-                addProfilStage.setTitle("Ajouter un profil");
-                addProfilStage.setScene(addProfilScene);
-                addProfilStage.setX(primaryStage.getX() + 100);
-                addProfilStage.setY(primaryStage.getY() + 10);
-
-                addProfilStage.show();
-
-                btnAdd.setOnAction( event -> {
-
-                    boolean emptyName = Objects.equals(userTextField.getText(), "");
-                    boolean alreadyExist = this.checkIfNameAlreadyExist(userTextField.getText());
-
-                    if (emptyName){
-                        error.setFill(Color.RED);
-                        error.setText("Nom invalide ! Ne peut pas être vide !");
-                    } else if (alreadyExist) {
-                        error.setFill(Color.RED);
-                        error.setText("Nom invalide ! Existe déjà !");
-                    } else {
-                        this.isWindowsOpen = false;
-                        this.saveUser(userTextField.getText());
-                        addProfilStage.close();
-                    }
-
-                });
-
-                addProfilStage.setOnCloseRequest(event -> this.isWindowsOpen = false);
-            }
+            addProfilsPane = new AddProfilsPane(main,primaryStage);
+            ((BorderPane) primaryStage.getScene().getRoot()).setCenter(this.addProfilsPane);
+            primaryStage.getScene().setCursor(Cursor.DEFAULT);
         });
         return addProfil;
     }
@@ -301,48 +185,6 @@ public class ProfilsPane extends BorderPane {
         return deleteProfil;
     }
 
-    public boolean checkIfNameAlreadyExist(String name){
-
-        String[] pathnames;
-        String userName = System.getProperty("user.name");
-
-        File f = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\profils");
-        pathnames = f.list();
-
-        if (pathnames != null){
-            for (String pathname : pathnames) {
-                if (Objects.equals(pathname, name)){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    public void saveUser(String name){
-
-        String userName = System.getProperty("user.name");
-        File newUser = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\profils\\" + name);
-        boolean createUser = newUser.mkdirs();
-        log.info("Create new user = " + createUser);
-
-        JSONObject json = new JSONObject();
-        try {
-            json.put("Name", name);
-            json.put("FixationLength", 2000);
-            json.put("SizeTarget", 50);
-            json.put("RedColorBackground", "1.0");
-            json.put("BlueColorBackground", "1.0");
-            json.put("GreenColorBackground", "1.0");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try (PrintWriter out = new PrintWriter(new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\profils\\" + name + "\\settings.json", StandardCharsets.UTF_8))) {
-            out.write(json.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public String[] getAllUser(){
 
         String[] pathnames;
@@ -367,36 +209,5 @@ public class ProfilsPane extends BorderPane {
         }
         boolean deleteUser = folder.delete();
         log.info("User deleted -> " + deleteUser);
-    }
-
-    public void selectUser(Main main){
-        try {
-            String userName = System.getProperty("user.name");
-            FileReader fileReader = new FileReader("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\profils\\" + this.userSelected + "\\settings.json", StandardCharsets.UTF_8);
-            Object settings = new JsonParser().parse(fileReader);
-            JsonObject jsonDefaultSettings = (JsonObject) settings;
-
-            String name = jsonDefaultSettings.get("Name").getAsString();
-            String fixationLength = String.valueOf(jsonDefaultSettings.get("FixationLength"));
-            String sizeTarget = String.valueOf(jsonDefaultSettings.get("SizeTarget"));
-
-            double redColorBackground = Double.parseDouble(jsonDefaultSettings.get("RedColorBackground").getAsString());
-            double blueColorBackground = Double.parseDouble(jsonDefaultSettings.get("BlueColorBackground").getAsString());
-            double greenColorBackground = Double.parseDouble(jsonDefaultSettings.get("GreenColorBackground").getAsString());
-
-            main.getMouseInfo().nameUser = name;
-            main.getMouseInfo().DWELL_TIME = Integer.parseInt(fixationLength);
-            main.getMouseInfo().SIZE_TARGET = Integer.parseInt(sizeTarget);
-            main.getMouseInfo().COLOR_BACKGROUND = Color.color(redColorBackground, blueColorBackground, greenColorBackground);
-
-            main.getDecoratedPane().updateProfil(this.userSelected);
-            main.getCalibrationConfig().loadSave(main);
-            main.getOptionsPane().updateSettings(fixationLength, sizeTarget, Color.color(redColorBackground, blueColorBackground, greenColorBackground));
-
-            fileReader.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

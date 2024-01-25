@@ -33,8 +33,6 @@ public class MainPane extends BorderPane {
         this.setCenter(hbox);
 
         this.setStyle("-fx-background-color: #535e65; -fx-background-radius: 0 0 15 15");
-
-        main.getMouseInfo().initTimer();
     }
 
     public static ImageView createButtonImageView(String url) {

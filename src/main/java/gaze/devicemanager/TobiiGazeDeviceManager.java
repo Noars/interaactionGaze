@@ -12,6 +12,7 @@ import tobii.Tobii;
 import utils.CalibrationConfig;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,6 +27,7 @@ public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
     private IntegerProperty dwellRatio = new SimpleIntegerProperty(0);
     private Boolean alreadyStarted = false;
     public Timeline checkTobii;
+    public Boolean tobiiEnabled = false;
 
     public TobiiGazeDeviceManager(Main main, CalibrationConfig calibrationConfig) {
         super();
@@ -43,6 +45,7 @@ public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
 
         try {
             Tobii.gazePosition();
+            this.checkTobiiStatus();
             positionPollerRunnable = new PositionPollerRunnable(mouseInfo, calibrationConfig, this);
         } catch (AWTException e) {
             e.printStackTrace();
@@ -59,7 +62,6 @@ public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
                 new KeyFrame(Duration.ZERO),
                 new KeyFrame(Duration.millis(5000)));
         checkTobii.setOnFinished((e) -> {
-            log.info("passe !");
             float[] eyeTrackerNextPosition = Tobii.gazePosition();
             Boolean eyeTrackerStatus = (eyeTrackerPosition[0] != eyeTrackerNextPosition[0] || eyeTrackerPosition[1] != eyeTrackerNextPosition[1]);
             main.getDecoratedPane().updateEyeTracker(eyeTrackerStatus);
@@ -68,6 +70,7 @@ public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
                 this.startExecutorService();
             }else {
                 this.destroyExecutorService();
+                this.reloadTobii();
             }
 
             eyeTrackerPosition[0] = eyeTrackerNextPosition[0];
@@ -107,5 +110,16 @@ public class TobiiGazeDeviceManager extends AbstractGazeDeviceManager {
         if (executorService != null) {
             executorService.shutdown();
         }
+    }
+
+    public void reloadTobii(){
+        if (!this.tobiiEnabled){
+            Tobii.reloadIfNotLoaded();
+            this.checkTobiiStatus();
+        }
+    }
+
+    public void checkTobiiStatus(){
+        this.tobiiEnabled = Tobii.getTobiiStatus() == 0;
     }
 }

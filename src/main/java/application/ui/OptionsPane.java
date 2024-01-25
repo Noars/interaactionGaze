@@ -30,7 +30,7 @@ public class OptionsPane extends BorderPane {
     TextField sizeTarget;
     ColorPicker colorPicker;
 
-    public OptionsPane(Stage primaryStage, Main main) {
+    public OptionsPane(Main main, Stage primaryStage) {
         super();
 
         Button back = createBackButton(main, primaryStage);
@@ -131,7 +131,7 @@ public class OptionsPane extends BorderPane {
         calibrate.setPrefWidth(495. / 5);
         calibrate.setOnAction((e) -> {
             this.saveSettings(main);
-            main.startCalibration(primaryStage, "false");
+            main.goToCalibration(primaryStage, "false");
         });
         return calibrate;
     }
