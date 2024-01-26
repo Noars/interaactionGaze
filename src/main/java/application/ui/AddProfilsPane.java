@@ -56,7 +56,7 @@ public class AddProfilsPane extends BorderPane {
             addProfilsGridPane.add(hbBtnAdd, 0, 4);
 
             final Text error = new Text();
-            error.setStyle("-fx-font-size: 15px; -fx-text-fill: white");
+            error.setStyle("-fx-font-size: 15px");
             addProfilsGridPane.add(error, 0, 6);
 
             btnAdd.setOnAction(event -> {

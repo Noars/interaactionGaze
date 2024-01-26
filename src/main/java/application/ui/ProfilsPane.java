@@ -32,6 +32,7 @@ public class ProfilsPane extends BorderPane {
 
     SelectProfilsPane selectProfilsPane;
     AddProfilsPane addProfilsPane ;
+    DeleteProfilsPane deleteProfilsPane ;
 
     public ProfilsPane(Main main, Stage primaryStage) {
         super();
@@ -105,82 +106,9 @@ public class ProfilsPane extends BorderPane {
         deleteProfil.setPrefHeight(200);
         deleteProfil.setPrefWidth(495. / 5);
         deleteProfil.setOnAction((e) -> {
-
-            if (!this.isWindowsOpen){
-
-                this.isWindowsOpen = true;
-                String[] listName = this.getAllUser();
-
-                GridPane deleteProfilGridPane = new GridPane();
-                deleteProfilGridPane.setAlignment(Pos.CENTER);
-                deleteProfilGridPane.setHgap(10);
-                deleteProfilGridPane.setVgap(10);
-                deleteProfilGridPane.setPadding(new Insets(25, 25, 25, 25));
-
-                Stage deleteProfilStage = new Stage();
-
-                if (listName.length == 0){
-                    Text noUser = new Text("Il n'y a pas d'utilisateur !");
-                    noUser.setFill(Color.RED);
-                    deleteProfilGridPane.add(noUser, 0, 1);
-                }else {
-                    Label allUser = new Label("Liste de tous les utilisateur :");
-                    deleteProfilGridPane.add(allUser, 0, 1);
-
-                    ToggleGroup groupNames = new ToggleGroup();
-                    int maxIndex = 0;
-
-                    for (int i=1; i<listName.length; i++) {
-                        RadioButton btnName = new RadioButton(listName[i]);
-                        btnName.setToggleGroup(groupNames);
-                        deleteProfilGridPane.add(btnName, 0, i+2);
-                        maxIndex = i+2;
-                    }
-
-                    groupNames.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) -> {
-                        if (groupNames.getSelectedToggle() != null) {
-                            String getBtnSelected = groupNames.getSelectedToggle().toString();
-                            String[] getName = getBtnSelected.split("'");
-                            userSelected = getName[1];
-                        }
-                    });
-
-                    Button btnDelete = new Button("Supprimer");
-                    HBox hbBtnDelete = new HBox(10);
-                    hbBtnDelete.setAlignment(Pos.BOTTOM_LEFT);
-                    hbBtnDelete.getChildren().add(btnDelete);
-                    deleteProfilGridPane.add(hbBtnDelete, 0, maxIndex+1);
-
-                    final Text error = new Text();
-                    deleteProfilGridPane.add(error, 0, maxIndex+2);
-
-                    btnDelete.setOnAction( event -> {
-                        if (!Objects.equals(this.userSelected, "") && !Objects.equals(this.userSelected, "default")){
-                            this.isWindowsOpen = false;
-                            this.deleteUser();
-                            deleteProfilStage.close();
-                        } else if (Objects.equals(this.userSelected, "")){
-                            error.setFill(Color.RED);
-                            error.setText("Aucun utilisateur sélectionner !");
-                        }else {
-                            error.setFill(Color.RED);
-                            error.setText("Default ne peut être supprimer !");
-                        }
-                    });
-                }
-
-                Scene deleteProfilScene = new Scene(deleteProfilGridPane, 400, 50 + (50 * (listName.length - 1)));
-                deleteProfilScene.getStylesheets().add("style.css");
-
-                deleteProfilStage.setTitle("Supprimer un profil");
-                deleteProfilStage.setScene(deleteProfilScene);
-                deleteProfilStage.setX(primaryStage.getX() + 100);
-                deleteProfilStage.setY(primaryStage.getY() + 10);
-
-                deleteProfilStage.show();
-
-                deleteProfilStage.setOnCloseRequest(event -> this.isWindowsOpen = false);
-            }
+            deleteProfilsPane = new DeleteProfilsPane(main,primaryStage,this);
+            ((BorderPane) primaryStage.getScene().getRoot()).setCenter(this.deleteProfilsPane);
+            primaryStage.getScene().setCursor(Cursor.DEFAULT);
         });
         return deleteProfil;
     }
@@ -196,18 +124,11 @@ public class ProfilsPane extends BorderPane {
         return pathnames;
     }
 
-    public void deleteUser(){
-        String userName = System.getProperty("user.name");
-        File folder = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\profils\\" + this.userSelected);
-        File[] contents = folder.listFiles();
-
-        if (contents != null) {
-            for (File f : contents) {
-                boolean deleteFile = f.delete();
-                log.info("File deleted -> " + deleteFile);
-            }
+    public int getHeightNeeded(Main main, int nbUser){
+        int heightNeeded = nbUser - 2;
+        if (heightNeeded < 0){
+            heightNeeded = 0;
         }
-        boolean deleteUser = folder.delete();
-        log.info("User deleted -> " + deleteUser);
+        return main.height + 35 * heightNeeded;
     }
 }

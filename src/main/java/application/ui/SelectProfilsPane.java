@@ -13,6 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.FileReader;
@@ -35,7 +36,7 @@ public class SelectProfilsPane extends BorderPane {
         selectProfilsGridPane.setVgap(10);
         {
             String[] listName = profilsPane.getAllUser();
-            primaryStage.setHeight(main.height + 35 * (listName.length - 3));
+            primaryStage.setHeight(profilsPane.getHeightNeeded(main, listName.length));
 
             Label allUser = new Label("Liste de tous les utilisateurs :");
             allUser.setStyle("-fx-text-fill: white; -fx-font-size: 20px");
@@ -62,18 +63,30 @@ public class SelectProfilsPane extends BorderPane {
                 }
             });
 
-            Button selectUser = new Button("Sélectionner");
+            Button btnSelect = new Button("Sélectionner");
+            Button btnReturn = new Button("Retour");
             HBox hbBtnSelect = new HBox(10);
             hbBtnSelect.setAlignment(Pos.CENTER);
-            hbBtnSelect.getChildren().add(selectUser);
+            hbBtnSelect.getChildren().addAll(btnReturn, btnSelect);
             selectProfilsGridPane.add(hbBtnSelect, 0, 3);
 
-            selectUser.setOnAction( event -> {
+            final Text error = new Text();
+            error.setStyle("-fx-font-size: 15px;");
+            selectProfilsGridPane.add(error, 0, 4);
+
+            btnSelect.setOnAction( event -> {
                 if (!Objects.equals(this.userSelected, "")){
                     this.selectUser(main);
                     primaryStage.setHeight(main.height);
                     main.goToProfils(primaryStage);
+                }else {
+                    error.setFill(Color.RED);
+                    error.setText("Pas de profil sélectionner !");
                 }
+            });
+
+            btnReturn.setOnAction(event -> {
+                main.goToProfils(primaryStage);
             });
         }
 
