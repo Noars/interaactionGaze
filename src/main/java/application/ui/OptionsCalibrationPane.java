@@ -98,8 +98,8 @@ public class OptionsCalibrationPane extends BorderPane {
         back.setPrefHeight(200);
         back.setPrefWidth(495. / 5);
         back.setOnAction((e) -> {
-            primaryStage.setWidth(600);
-            primaryStage.setHeight(250);
+            primaryStage.setWidth(main.width);
+            primaryStage.setHeight(main.height);
             main.goToOptions(primaryStage);
         });
         return back;

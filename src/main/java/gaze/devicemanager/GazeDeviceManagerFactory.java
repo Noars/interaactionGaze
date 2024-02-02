@@ -19,7 +19,7 @@ public class GazeDeviceManagerFactory {
         final TobiiGazeDeviceManager gazeDeviceManager;
         gazeDeviceManager = new TobiiGazeDeviceManager(main, calibrationConfig);
 
-        gazeDeviceManager.init();
+        gazeDeviceManager.init(main);
         return gazeDeviceManager;
     }
 

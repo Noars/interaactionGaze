@@ -169,7 +169,7 @@ subprojects {
 
 dependencies {
     implementation 'org.projectlombok:lombok:1.18.20'
-    compile 'com.github.GazePlay:TobiiStreamEngineForJava:5.0'
+    compile 'com.github.GazePlay:TobiiStreamEngineForJava:5.1'
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'org.rxtx:rxtx:2.1.7'
     compile 'ch.qos.logback:logback-classic:1.2.1'
@@ -216,6 +216,9 @@ distributions {
             from("build/reports")
             from("build/bin/interAACtionGaze-windows.bat") {
                 into 'bin'
+            }
+            from("build/resources/main/AutoHotkey_2.0.11") {
+                into 'lib/AutoHotkey'
             }
             from("build/jre/windows") {
                 into 'lib/jre'

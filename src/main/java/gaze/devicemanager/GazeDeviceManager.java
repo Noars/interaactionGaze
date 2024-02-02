@@ -5,8 +5,6 @@ import javafx.scene.Node;
 
 public interface GazeDeviceManager {
 
-    void destroy();
-
     void addGazeMotionListener(GazeMotionListener listener);
 
     void removeGazeMotionListener(GazeMotionListener listener);

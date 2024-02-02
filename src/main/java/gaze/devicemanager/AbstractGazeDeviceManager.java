@@ -25,12 +25,7 @@ public abstract class AbstractGazeDeviceManager implements GazeDeviceManager {
     private final List<Node> toRemove = new LinkedList<>();
     private final List<Node> toAdd = new LinkedList<>();
 
-    public AbstractGazeDeviceManager() {
-
-    }
-
-    @Override
-    public abstract void destroy();
+    public AbstractGazeDeviceManager() {}
 
     @Override
     public void addGazeMotionListener(GazeMotionListener listener) {

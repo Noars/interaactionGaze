@@ -108,3 +108,27 @@
     -fx-border-radius: 15;
     -fx-background-radius: 16;
 }
+
+.profil {
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-family: Futura;
+    -fx-translate-x: -150px;
+    -fx-font-size: 20px;
+}
+
+.eyeTrackerActivated {
+    -fx-font-weight: bold;
+    -fx-text-fill: green;
+    -fx-font-family: Futura;
+    -fx-translate-x: -150px;
+    -fx-font-size: 15px;
+}
+
+.eyeTrackerDisabled{
+    -fx-font-weight: bold;
+    -fx-text-fill: red;
+    -fx-font-family: Futura;
+    -fx-translate-x: -150px;
+    -fx-font-size: 15px;
+}

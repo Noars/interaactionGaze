@@ -17,14 +17,7 @@ import javafx.stage.StageStyle;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import utils.CalibrationConfig;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.Scanner;
+import utils.Settings;
 
 @Slf4j
 public class Main extends Application {
@@ -41,103 +34,58 @@ public class Main extends Application {
     OptionsPane optionsPane;
     @Getter
     OptionsCalibrationPane optionsCalibrationPane;
-
+    @Getter
+    CalibrationConfig calibrationConfig;
+    @Getter
+    ProfilsPane profilsPane;
+    @Getter
     DecoratedPane decoratedPane;
+    @Getter
+    EyeTrackerPane eyeTrackerPane;
+    @Getter
+    Settings settings;
+
+    public int width = 600;
+    public int height = 250;
 
     public static void main(String[] args) {
-
-        String os = System.getProperty("os.name").toLowerCase();
-        FileWriter myWritter = null;
-
-        try {
-            if (os.contains("nux") || os.contains("mac")){
-                File myFile = new File("calibration.txt");
-                log.info(String.valueOf(myFile));
-                myWritter = new FileWriter("calibration.txt", StandardCharsets.UTF_8);
-                myWritter.write(args[0]);
-            }else{
-                String userName = System.getProperty("user.name");
-                File myFolder = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze");
-                boolean createFolder = myFolder.mkdirs();
-                log.info("Folder created, path = " + createFolder);
-                File myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
-                if (!myFile.exists()){
-                    myWritter = new FileWriter("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt", StandardCharsets.UTF_8);
-                    myWritter.write("true");
-
-                }
-            }
-        } catch (IOException e) {
-            System.out.println(e);
-        } finally {
-            try {
-                if (myWritter != null){
-                    myWritter.close();
-                }
-            }catch (IOException e2){
-                e2.printStackTrace();
-            }
-        }
-
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setWidth(600);
-        primaryStage.setHeight(250);
+
+        primaryStage.setWidth(this.width);
+        primaryStage.setHeight(this.height);
         primaryStage.setTitle("InteraactionGaze");
+        primaryStage.setAlwaysOnTop(false);
 
         mouseInfo = new MouseInfo();
-        CalibrationConfig calibrationConfig = new CalibrationConfig();
+        calibrationConfig = new CalibrationConfig(this);
+        decoratedPane = new DecoratedPane(this, primaryStage);
         gazeDeviceManager = GazeDeviceManagerFactory.getInstance().createNewGazeListener(this, calibrationConfig);
-
-        optionsPane = new OptionsPane(primaryStage, this);
+        eyeTrackerPane = new EyeTrackerPane(this, primaryStage);
+        optionsPane = new OptionsPane(this, primaryStage);
+        profilsPane = new ProfilsPane(this, primaryStage);
         optionsCalibrationPane = new OptionsCalibrationPane(primaryStage, this, calibrationConfig);
         calibrationPane = new CalibrationPane(primaryStage, gazeDeviceManager, calibrationConfig);
         home = new MainPane(this, primaryStage);
+        settings = new Settings(this, primaryStage);
 
-        decoratedPane = new DecoratedPane(primaryStage);
         decoratedPane.setCenter(home);
-
         Scene calibScene = new Scene(decoratedPane, primaryStage.getWidth(), primaryStage.getHeight());
         calibScene.getStylesheets().add("style.css");
         primaryStage.setScene(calibScene);
         calibScene.setFill(Color.TRANSPARENT);
-        // calibrationPane.installEventHandler(primaryStage, this);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setOnCloseRequest(event -> {
+            mouseInfo.closeScriptMouseCursor();
+            gazeDeviceManager.stopCheckTobii();
+        });
 
         this.getGazeDeviceManager().setPause(true);
 
-        String os = System.getProperty("os.name").toLowerCase();
-
-        try {
-            File myFile;
-            if (os.contains("win")){
-                String userName = System.getProperty("user.name");
-                myFile = new File("C:\\Users\\" + userName + "\\Documents\\interAACtionGaze\\calibration.txt");
-            }else {
-                myFile = new File("calibration.txt");
-            }
-
-            Scanner myReader = new Scanner(myFile, StandardCharsets.UTF_8);
-            String data = myReader.nextLine();
-
-            if (Objects.equals(data, "true")){
-                this.getGazeDeviceManager().setPause(false);
-                if (os.contains("win")){
-                    startMessageCalibration(primaryStage, data);
-                }else {
-                    startCalibration(primaryStage, data);
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            System.out.println("");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        this.goToMain(primaryStage);
         primaryStage.show();
     }
 
@@ -157,11 +105,11 @@ public class Main extends Application {
         eyeTrackerAlert.setContentText("Veuillez brancher votre Eye Tracker avant de continuer !");
         eyeTrackerAlert.showAndWait();
 
-        startCalibration(primaryStage, data);
+        goToCalibration(primaryStage, data);
         primaryStage.setIconified(false);
     }
 
-    public void startCalibration(Stage primaryStage, String data) {
+    public void goToCalibration(Stage primaryStage, String data) {
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         primaryStage.setX(primaryScreenBounds.getMinX());
         primaryStage.setY(primaryScreenBounds.getMinY());
@@ -177,6 +125,10 @@ public class Main extends Application {
         ((BorderPane) primaryStage.getScene().getRoot()).setCenter(this.getOptionsCalibrationPane());
         primaryStage.getScene().setCursor(Cursor.DEFAULT);
     }
+    public void goToProfils(Stage primaryStage){
+        ((BorderPane) primaryStage.getScene().getRoot()).setCenter(this.getProfilsPane());
+        primaryStage.getScene().setCursor(Cursor.DEFAULT);
+    }
 
     public void goToOptions(Stage primaryStage) {
         ((BorderPane) primaryStage.getScene().getRoot()).setCenter(this.getOptionsPane());
@@ -184,9 +136,21 @@ public class Main extends Application {
     }
 
     public void goToMain(Stage primaryStage) {
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         primaryStage.setFullScreen(false);
         primaryStage.getScene().setRoot(decoratedPane);
+        primaryStage.setX((primaryScreenBounds.getWidth() - this.width)/2);
+        primaryStage.setY((primaryScreenBounds.getHeight() - this.height)/2);
         ((BorderPane) primaryStage.getScene().getRoot()).setCenter(this.getHome());
         primaryStage.getScene().setCursor(Cursor.DEFAULT);
+    }
+
+    public void goToEyeTracker(Stage primaryStage){
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        primaryStage.setX(3 * primaryScreenBounds.getWidth()/4);
+        primaryStage.setY(5);
+        primaryStage.setWidth(35);
+        primaryStage.setHeight(35);
+        primaryStage.getScene().setRoot(this.getEyeTrackerPane());
     }
 }

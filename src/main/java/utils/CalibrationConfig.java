@@ -1,5 +1,6 @@
 package utils;
 
+import application.Main;
 import application.ui.CalibrationPane;
 import com.google.gson.Gson;
 import javafx.geometry.Point2D;
@@ -35,8 +36,8 @@ public class CalibrationConfig {
 
     double[] angle = new double[9];
 
-    public CalibrationConfig() {
-        loadSave();
+    public CalibrationConfig(Main main) {
+        loadSave(main);
     }
 
     public CalibrationPoint get(int i) {
@@ -109,34 +110,38 @@ public class CalibrationConfig {
         angleSetUpDone = true;
     }
 
-    public boolean save() throws IOException {
+    public boolean save(Main main) throws IOException {
         Coordinates[] coordinates = new Coordinates[9];
         for (int i = 0; i < 9; i++) {
             coordinates[i] = new Coordinates(this.calibrationPoints[i].offsetX, this.calibrationPoints[i].offsetY,
                     this.calibrationPoints[i].cross.getLayoutX(), this.calibrationPoints[i].cross.getLayoutY());
         }
-        createDirectories();
-        createFile();
-        writeSaveToFile(coordinates);
+        createFile(main);
+        writeSaveToFile(main, coordinates);
         return true;
     }
 
-    public boolean createDirectories() {
-        File file = new File(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/");
-        return file.mkdirs();
-    }
-
-    public boolean createFile() throws IOException {
-        File file = new File(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/userCalibration.json");
+    public boolean createFile(Main main) throws IOException {
+        File file;
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("nux") || os.contains("mac")){
+            file = new File("~/Documents/interAACtionGaze/profils/"+ main.getMouseInfo().nameUser + "/calibration.json");
+        }else {
+            file = new File("C:\\Users\\" + System.getProperty("user.name") + "\\Documents\\interAACtionGaze\\profils\\" + main.getMouseInfo().nameUser + "\\calibration.json");
+        }
         return file.createNewFile();
     }
 
-    public void writeSaveToFile(Coordinates[] coordinates) throws IOException {
+    public void writeSaveToFile(Main main, Coordinates[] coordinates) throws IOException {
 
         FileWriter myWriter = null;
-
+        String os = System.getProperty("os.name").toLowerCase();
         try {
-            myWriter = new FileWriter(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/userCalibration.json", StandardCharsets.UTF_8);
+            if (os.contains("nux") || os.contains("mac")){
+                myWriter = new FileWriter("~/Documents/interAACtionGaze/profils/"+ main.getMouseInfo().nameUser + "/calibration.json", StandardCharsets.UTF_8);
+            }else {
+                myWriter = new FileWriter("C:\\Users\\" + System.getProperty("user.name") + "\\Documents\\interAACtionGaze\\profils\\" + main.getMouseInfo().nameUser + "\\calibration.json", StandardCharsets.UTF_8);
+            }
             myWriter.write(new Gson().toJson(coordinates));
         } catch (IOException e) {
             e.printStackTrace();
@@ -146,12 +151,16 @@ public class CalibrationConfig {
         }
     }
 
-    public boolean loadSave() {
+    public boolean loadSave(Main main) {
 
         FileReader myReader = null;
-
+        String os = System.getProperty("os.name").toLowerCase();
         try {
-            myReader = new FileReader(System.getProperty("user.home") + "/interaactionPoint/profiles/calibrations/userCalibration.json", StandardCharsets.UTF_8);
+            if (os.contains("nux") || os.contains("mac")){
+                myReader = new FileReader("~/Documents/interAACtionGaze/profils/"+ main.getMouseInfo().nameUser + "/calibration.json", StandardCharsets.UTF_8);
+            }else {
+                myReader = new FileReader("C:\\Users\\" + System.getProperty("user.name") + "\\Documents\\interAACtionGaze\\profils\\" + main.getMouseInfo().nameUser + "\\calibration.json", StandardCharsets.UTF_8);
+            }
             Coordinates[] coordinates = new Gson().fromJson(myReader, Coordinates[].class);
             if (coordinates != null && coordinates.length == 9) {
                 for (int i = 0; i < 9; i++) {
