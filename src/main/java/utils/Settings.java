@@ -19,11 +19,10 @@ public class Settings {
 
     Main main;
     String os;
-    public Settings(Main main, Stage primaryStage){
+    public Settings(Main main){
         os = System.getProperty("os.name").toLowerCase();
         this.main = main;
         this.initDefaultSettings();
-        this.loadDefaultSettings(primaryStage);
     }
     public void initDefaultSettings() {
         FileWriter myWritter = null;
@@ -132,7 +131,6 @@ public class Settings {
             String data = myReader.nextLine();
 
             if (Objects.equals(data, "true")){
-                main.getGazeDeviceManager().setPause(false);
                 if (os.contains("win")){
                     main.startMessageCalibration(primaryStage, data);
                 }else {

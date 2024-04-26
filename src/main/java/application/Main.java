@@ -70,7 +70,7 @@ public class Main extends Application {
         optionsCalibrationPane = new OptionsCalibrationPane(primaryStage, this, calibrationConfig);
         calibrationPane = new CalibrationPane(primaryStage, gazeDeviceManager, calibrationConfig);
         home = new MainPane(this, primaryStage);
-        settings = new Settings(this, primaryStage);
+        settings = new Settings(this);
 
         decoratedPane.setCenter(home);
         Scene calibScene = new Scene(decoratedPane, primaryStage.getWidth(), primaryStage.getHeight());
@@ -87,6 +87,8 @@ public class Main extends Application {
 
         this.goToMain(primaryStage);
         primaryStage.show();
+
+        this.settings.loadDefaultSettings(primaryStage);
     }
 
     public void startMessageCalibration(Stage primaryStage, String data) {

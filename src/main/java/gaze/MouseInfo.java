@@ -129,6 +129,7 @@ public class MouseInfo {
     }
 
     public void launchScriptMouseCursor(){
+        this.closeScriptMouseCursor();
         try {
             //Dev
             /*Runtime.getRuntime().exec("cmd.exe " +

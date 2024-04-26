@@ -189,6 +189,8 @@ public class CalibrationPane extends Pane {
             setImgTarget(main);
             this.getChildren().add(target);
             addExitButton(main);
+
+            main.getGazeDeviceManager().setPause(false);
         }
     }
 
@@ -196,6 +198,7 @@ public class CalibrationPane extends Pane {
         if (currentTest == TOP_LEFT) {
             Button backHome = new Button("Terminer");
             backHome.setOnAction((e) -> {
+                main.getGazeDeviceManager().setPause(true);
                 returnGazeMenu(main);
             });
 
