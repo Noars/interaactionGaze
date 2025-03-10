@@ -12,6 +12,8 @@ import javafx.util.Duration;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.io.IOException;
@@ -34,6 +36,7 @@ public class MouseInfo {
     boolean dwellStarted;
     @Getter
     private IntegerProperty dwellRatio = new SimpleIntegerProperty(0);
+    public File coordinateFile;
 
     public MouseInfo() {
         initTimer();
@@ -99,6 +102,52 @@ public class MouseInfo {
             dwellStarted = false;
             dwellRatio.set(0);
         });
+    }
+
+    public void createCoordianteFile(){
+        String nameFile = "coordinates";
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("nux") || os.contains("mac")){
+            this.coordinateFile = new File("~/Documents/interAACtionGaze/profils/"+ this.nameUser + "/" + nameFile + ".csv");
+        }else {
+            this.coordinateFile = new File("C:\\Users\\" + System.getProperty("user.name") + "\\Documents\\interAACtionGaze\\profils\\" + this.nameUser + "\\" + nameFile + ".csv");
+        }
+        boolean fileExists = this.coordinateFile.exists();
+
+        if (fileExists){
+            int i = 1;
+            String newNameFile = "";
+            File newFile;
+            do {
+                newNameFile = nameFile + i;
+                if (os.contains("nux") || os.contains("mac")){
+                    newFile = new File("~/Documents/interAACtionGaze/profils/"+ this.nameUser + "/" + newNameFile + ".csv");
+                }else {
+                    newFile = new File("C:\\Users\\" + System.getProperty("user.name") + "\\Documents\\interAACtionGaze\\profils\\" + this.nameUser + "\\" + newNameFile + ".csv");
+                }
+                fileExists = newFile.exists();
+            }while (fileExists);
+            this.coordinateFile = newFile;
+            try (FileWriter writer = new FileWriter(this.coordinateFile, true)) { // Mode append (ajout)
+                writer.write("X,Y\n"); // Ajouter l'entête si le fichier est nouveau
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try (FileWriter writer = new FileWriter(this.coordinateFile, true)) { // Mode append (ajout)
+                writer.write("X,Y\n"); // Ajouter l'entête si le fichier est nouveau
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void addCoordinate(double x, double y) {
+        try (FileWriter writer = new FileWriter(this.coordinateFile, true)) { // Mode append (ajout)
+            writer.write(x + "," + y + "\n"); // Ajouter une nouvelle ligne
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void startTimer() {
