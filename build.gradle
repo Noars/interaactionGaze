@@ -114,7 +114,6 @@ subprojects {
 
     spotbugs {
         toolVersion = '4.9.3'
-        excludeFilter = file("spotbugs-exclude.xml")
     }
 
     spotbugsMain.enabled = true
@@ -299,6 +298,11 @@ tasks.named('macosDistTar') {
 tasks.named('windowsDistZip') {
     dependsOn tasks.named('downloadLicenses')
     dependsOn tasks.named('scriptsForRelease')
+}
+
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+    excludeFilter = file("spotbugs-exclude.xml")
 }
 
 tasks.withType(Tar){
