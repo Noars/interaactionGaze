@@ -59,8 +59,13 @@ task prepareInnoSetupFiles(group: 'distribution') {
 }
 
 task unzipDistribution(dependsOn: ['packageApp'], type: Copy, group: 'distribution') {
-    println("Fichiers présents")
-    dir.eachFileRecurse { f -> println f }
+    def dir = file("$buildDir/distributions")
+        if (dir.exists()) {
+            println "Fichiers présents dans $dir :"
+            dir.eachFileRecurse { f -> println f }
+        } else {
+            println "Le dossier $dir n'existe pas."
+        }
     from zipTree("${buildDir}/distributions/${project.name}-windows.zip")
     into buildDir
     fileMode 0777
