@@ -199,6 +199,7 @@ jar {
 
 distributions {
     noJRE {
+        setDistributionBaseName "${project.name}-no-jre"
         contents {
             with distributions.main.contents
             from("build/reports")
@@ -209,6 +210,7 @@ distributions {
     }
 
     windows {
+        setDistributionBaseName "${project.name}-windows"
         contents {
             with distributions.main.contents
             from("build/reports")
@@ -225,6 +227,7 @@ distributions {
     }
 
     linux {
+        setDistributionBaseName "${project.name}-linux"
         contents {
             with distributions.main.contents
             from("build/reports")
@@ -244,6 +247,7 @@ distributions {
     }
 
     macos {
+        setDistributionBaseName "${project.name}-macos"
         contents {
             with distributions.main.contents
             from("build/reports")
@@ -277,12 +281,6 @@ linuxDistTar.dependsOn(downloadAndExtractLinuxDependecies)
 
 tasks.named('resolveMainClassName') {
     dependsOn tasks.named('createLicence')
-}
-
-tasks.register('unzipDistribution', Copy) {
-    dependsOn tasks.named('windowsDistZip')
-    from zipTree("$buildDir/distributions/interAACtionGaze-windows.zip")
-    into "$buildDir/extracted"
 }
 
 tasks.named('noJREDistTar') {
