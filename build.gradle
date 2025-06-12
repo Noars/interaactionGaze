@@ -281,6 +281,7 @@ linuxDistTar.dependsOn(downloadAndExtractLinuxDependecies)
 
 tasks.named('resolveMainClassName') {
     dependsOn tasks.named('createLicence')
+    dependsOn tasks.named('unzipDistribution')
 }
 
 tasks.named('noJREDistTar') {
@@ -304,6 +305,7 @@ tasks.named('linuxDistZip') {
     dependsOn tasks.named('extractOpenJFXForLibavPlugin')
     dependsOn tasks.named('extractLinuxJRE')
     dependsOn tasks.named('extractTobiiDriversForLinux')
+    dependsOn tasks.named('unzipDistribution')
 }
 
 tasks.named('macosDistTar') {
@@ -315,12 +317,14 @@ tasks.named('macosDistZip') {
     dependsOn tasks.named('downloadLicenses')
     dependsOn tasks.named('scriptsForRelease')
     dependsOn tasks.named('extractMacosJRE')
+    dependsOn tasks.named('unzipDistribution')
 }
 
 tasks.named('windowsDistTar') {
     dependsOn tasks.named('downloadLicenses')
     dependsOn tasks.named('scriptsForRelease')
     dependsOn tasks.named('extractWindowsJRE')
+    dependsOn tasks.named('unzipDistribution')
 }
 
 tasks.named('windowsDistZip') {
