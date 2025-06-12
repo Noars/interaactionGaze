@@ -307,6 +307,12 @@ tasks.named('macosDistTar') {
     dependsOn tasks.named('scriptsForRelease')
 }
 
+tasks.named('macosDistZip') {
+    dependsOn tasks.named('downloadLicenses')
+    dependsOn tasks.named('scriptsForRelease')
+    dependsOn tasks.named('extractMacosJRE')
+}
+
 tasks.named('windowsDistZip') {
     dependsOn tasks.named('downloadLicenses')
     dependsOn tasks.named('scriptsForRelease')
