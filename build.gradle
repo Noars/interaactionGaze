@@ -279,6 +279,10 @@ tasks.named('resolveMainClassName') {
     dependsOn tasks.named('createLicence')
 }
 
+tasks.named('unzipDistribution') {
+    dependsOn tasks.named('windowsDistZip')
+}
+
 tasks.named('noJREDistTar') {
     dependsOn tasks.named('downloadLicenses')
     dependsOn tasks.named('scriptsForRelease')
