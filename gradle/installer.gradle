@@ -59,6 +59,8 @@ task prepareInnoSetupFiles(group: 'distribution') {
 }
 
 task unzipDistribution(dependsOn: ['packageApp'], type: Copy, group: 'distribution') {
+    println("Fichiers présents")
+    dir.eachFileRecurse { f -> println f }
     from zipTree("${buildDir}/distributions/${project.name}-windows.zip")
     into buildDir
     fileMode 0777
