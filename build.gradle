@@ -275,6 +275,11 @@ macosDistTar.dependsOn(downloadAndExtractMacosJRE)
 windowsDistZip.dependsOn(downloadAndExtractWindowsJRE)
 linuxDistTar.dependsOn(downloadAndExtractLinuxDependecies)
 
+tasks.named('resolveMainClassName') {
+    dependsOn tasks.named('unzipAfsrDistribution')
+    dependsOn tasks.named('unzipBeraDistribution')
+}
+
 tasks.named('noJREDistTar') {
     dependsOn tasks.named('downloadLicenses')
     dependsOn tasks.named('scriptsForRelease')
