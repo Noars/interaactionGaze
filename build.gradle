@@ -279,8 +279,10 @@ tasks.named('resolveMainClassName') {
     dependsOn tasks.named('createLicence')
 }
 
-tasks.named('unzipDistribution') {
+tasks.register('unzipDistribution', Copy) {
     dependsOn tasks.named('windowsDistZip')
+    from zipTree("$buildDir/distributions/interAACtionGaze-windows.zip")
+    into "$buildDir/extracted"
 }
 
 tasks.named('noJREDistTar') {
