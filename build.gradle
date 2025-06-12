@@ -284,6 +284,10 @@ tasks.named('resolveMainClassName') {
     dependsOn tasks.named('unzipDistribution')
 }
 
+tasks.named('distTar') {
+    dependsOn tasks.named('unzipDistribution')
+}
+
 tasks.named('noJREDistTar') {
     dependsOn tasks.named('downloadLicenses')
     dependsOn tasks.named('scriptsForRelease')
