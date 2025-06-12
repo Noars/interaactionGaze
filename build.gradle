@@ -292,6 +292,10 @@ tasks.named('distZip') {
     dependsOn tasks.named('unzipDistribution')
 }
 
+tasks.named('spotbugsMain') {
+    dependsOn tasks.named('unzipDistribution')
+}
+
 tasks.named('noJREDistTar') {
     dependsOn tasks.named('downloadLicenses')
     dependsOn tasks.named('scriptsForRelease')
