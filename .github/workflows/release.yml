@@ -62,6 +62,16 @@ jobs:
         run: |
           ./gradlew --stacktrace --info release      
 
+      - name: Rename Releases
+        run: |
+          cd ./build/distributions/
+          mv interAACtionGaze-linux*.tar.gz interAACtionGaze-linux.tar.gz
+          mv interAACtionGaze-macos*.tar.gz interAACtionGaze-macos.tar.gz
+          mv interAACtionGaze-no-jre*.zip interAACtionGaze-no-jre.zip
+          mv interAACtionGaze-no-jre*.tar.gz interAACtionGaze-no-jre.tar.gz
+          mv interAACtionGaze-windows*.zip interAACtionGaze-windows.zip
+          mv interAACtionGaze-windows*.exe interAACtionGaze-windows-x64-installer.exe
+
       - name: Get Env
         run: |
           echo "REPO_NAME=${{ github.repository }}" >> $GITHUB_ENV
