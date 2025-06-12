@@ -294,6 +294,13 @@ tasks.named('linuxDistTar') {
     dependsOn tasks.named('scriptsForRelease')
 }
 
+tasks.named('linuxDistZip') {
+    dependsOn tasks.named('downloadLicenses')
+    dependsOn tasks.named('scriptsForRelease')
+    dependsOn tasks.named('extractOpenJFXForLibavPlugin')
+    dependsOn tasks.named('extractLinuxJRE')
+}
+
 tasks.named('macosDistTar') {
     dependsOn tasks.named('downloadLicenses')
     dependsOn tasks.named('scriptsForRelease')
