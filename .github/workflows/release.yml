@@ -70,7 +70,7 @@ jobs:
           mv interAACtionGaze-no-jre*.zip interAACtionGaze-no-jre.zip
           mv interAACtionGaze-no-jre*.tar.gz interAACtionGaze-no-jre.tar.gz
           mv interAACtionGaze-windows*.zip interAACtionGaze-windows.zip
-          mv interAACtionGaze-windows*.exe interAACtionGaze-windows-x64-installer.exe
+          mv interAACtionGaze-windows-x64*installer.exe interAACtionGaze-windows-x64-installer.exe
 
       - name: Get Env
         run: |
