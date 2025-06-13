@@ -67,8 +67,8 @@ jobs:
           cd ./build/distributions/
           mv interAACtionGaze-linux*.tar.gz interAACtionGaze-linux.tar.gz
           mv interAACtionGaze-macos*.tar.gz interAACtionGaze-macos.tar.gz
-          mv interAACtionGaze-no-jre*.zip interAACtionGaze-no-jre.zip
-          mv interAACtionGaze-no-jre*.tar.gz interAACtionGaze-no-jre.tar.gz
+          mv interAACtionGaze-no-jre*.zip interAACtionGaze-noJRE.zip
+          mv interAACtionGaze-no-jre*.tar.gz interAACtionGaze-noJRE.tar.gz
           mv interAACtionGaze-windows*.zip interAACtionGaze-windows.zip
           mv interAACtionGaze-windows-x64*installer.exe interAACtionGaze-windows-x64-installer.exe
 
@@ -96,6 +96,7 @@ jobs:
               ;;
             patch)
               patch=$((patch + 1))
+              nexPatch=$((patch + 2))
               ;;
             *)
               echo "Option invalide: $bump"
@@ -104,9 +105,27 @@ jobs:
           esac
 
           new_tag="v$major.$minor.$patch"
+          next_tag="$major.$minor.$nexPatch"
           echo "tag=$new_tag" >> $GITHUB_OUTPUT
-          echo "Dernier tag : $latest_tag"
-          echo "Nouveau tag : $new_tag"
+          echo "nextTag=$next_tag" >> $GITHUB_OUTPUT
+
+      - name: Update version project
+        run: |
+          version="${{ steps.new-tag.outputs.nextTag }}"
+
+          if grep -q '^version=' gradle.properties; then
+            sed -i "s/^version=.*/version=${version}/" gradle.properties
+          else
+            echo "version=${version}" >> gradle.properties
+          fi
+
+      - name: Commit update version project
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add gradle.properties
+          git commit -m "Update version project to ${{ steps.new-tag.outputs.tag }}"
+          git push
 
       - name: Create GitHub Release
         id: create_release
