@@ -89,14 +89,16 @@ jobs:
               major=$((major + 1))
               minor=0
               patch=0
+              nexPatch=$((patch + 1))
               ;;
             minor)
               minor=$((minor + 1))
               patch=0
+              nexPatch=$((patch + 1))
               ;;
             patch)
               patch=$((patch + 1))
-              nexPatch=$((patch + 2))
+              nexPatch=$((patch + 1))
               ;;
             *)
               echo "Option invalide: $bump"
@@ -109,7 +111,7 @@ jobs:
           echo "tag=$new_tag" >> $GITHUB_OUTPUT
           echo "nextTag=$next_tag" >> $GITHUB_OUTPUT
 
-      - name: Update version project
+      - name: Update version project for gradle
         run: |
           version="${{ steps.new-tag.outputs.nextTag }}"
 
@@ -119,12 +121,12 @@ jobs:
             echo "version=${version}" >> gradle.properties
           fi
 
-      - name: Commit update version project
+      - name: Setup next release
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add gradle.properties
-          git commit -m "Update version project to ${{ steps.new-tag.outputs.tag }}"
+          git commit -m "Setup next release for gradle"
           git push
 
       - name: Create GitHub Release
